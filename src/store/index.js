@@ -7,7 +7,7 @@ Vue.use(Vuex)
 const state = {
     loadingTxt: '加载中...',
     isShowLogin: false,
-    isLogin: false,
+	isLogin: false,
     uid: '',
     avar: '',
     nickName: '',
