@@ -136,14 +136,21 @@ export default{
     },
     wxShare:function (title, desc, img, url){
         // alert('share')
-        var _thisUrl = window.location.href
-        var _shareTitle = title || '日日煮线下美食课程预约'
-        var _shareDesc = desc || '生活就要极致'
-        var _shareImg = img || 'http://api.daydaycook.com.cn/daydaycook/page/course/static/img/share.png'
-        var _shareUrl = url || _thisUrl
-        var _configUrl = this.getUrl()+"/daydaycook/wechat/getSignature.do?url=" + window.location.href;
+        // var _thisUrl = window.location.href
+        // var _shareTitle = title || '日日煮线下美食课程预约'
+        // var _shareDesc = desc || '生活就要极致'
+        // var _shareImg = img || 'http://api.daydaycook.com.cn/daydaycook/page/course/static/img/share.png'
+        // var _shareUrl = url || _thisUrl
+        // var _configUrl = this.getUrl()+"/daydaycook/wechat/getSignature.do?url=" + window.location.href;
+	    var _thisUrl = location.href.split('#')[0];
+	    var _shareTitle = title || '日日煮线下美食课程预约'
+	    var _shareDesc = desc || '生活就要极致'
+	    var _shareImg = img || 'http://api.daydaycook.com.cn/daydaycook/page/course/static/img/share.png'
+	    var _shareUrl = url || _thisUrl
+	    var _configUrl = this.getUrl()+"/daydaycook/wechat/getSignature.do?url=" + encodeURIComponent(location.href.split('#')[0]);
 
-        var ua = window.navigator.userAgent.toLowerCase(); 
+
+	    var ua = window.navigator.userAgent.toLowerCase();
         if(ua.match(/MicroMessenger/i) == 'micromessenger'){
             // alert(_configUrl)
             _axios.get(_configUrl)

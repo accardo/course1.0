@@ -19,7 +19,7 @@
             <div class="infoBox">
                 <div class="title">{{ allData.title }} </div>
                 <div class="teacher"><span>{{ allData.teacherName }}</span></div>
-                <p class="min">剩余名额 
+                <p class="min">剩余名额
                     <span style="color:#000;">
                         {{ allData.totalCount - allData.reservationCount}}
                     </span> 人
@@ -32,49 +32,56 @@
             <template v-if="!isMember && canMake">
                 <div class="btButton active 1" v-if="!isLogin" @click="needLogin=true"> 立即预约 </div>
                 <div class="btButton active 2" v-if="isLogin && allData.reservationState != 5" @click="showNotMPop=true">
-                    立即预约 
+                    立即预约
                 </div>
                 <div class="btButton" v-if="allData.reservationState == 5"> 预约已满 </div>
             </template>
 
             <template v-if="isMember && canMake">
-                <div class="btButton active 3" v-if="allData.reservationState == 1" @click="RSuccess = true"> 
-                    立即预约 
+                <div class="btButton active 3" v-if="allData.reservationState == 1" @click="RSuccess = true">
+                    立即预约
                 </div>
-                <div class="btButton active 4" v-if="allData.reservationState == 9 || allData.reservationState == 11" @click="showNotMPop=true"> 
-                    立即预约 
+                <div class="btButton active 4" v-if="allData.reservationState == 9 || allData.reservationState == 11" @click="showNotMPop=true">
+                    立即预约
                 </div>
-                <div class="btButton active 5" v-if="allData.reservationState == 7" @click="CSuccess=true"> 
-                    取消预约 
+                <div class="btButton active 5" v-if="allData.reservationState == 7" @click="CSuccess=true">
+                    取消预约
                 </div>
                 <div class="btButton 6" v-if="allData.reservationState == 5"> 预约已满 </div>
-                <div class="btButton 7" v-if="allData.reservationState != 1 && allData.reservationState != 7 && allData.reservationState != 9 && allData.reservationState != 11" > 
+                <div class="btButton 7" v-if="allData.reservationState != 1 && allData.reservationState != 7 && allData.reservationState != 9 && allData.reservationState != 11" >
                     {{ allData.stateReason }}
                 </div>
             </template>
             <template v-if="!canMake && reservationState == '1'">
-                <div class="btButton active 3 gray"> 
+                <div class="btButton active 3 gray">
                     即将开课，无法预约
                 </div>
             </template>
 
             <div class="popBg" v-show="showNotMPop" @click="showNotMPop=false"></div>
             <div class="popRed" v-show="showNotMPop">
-                <div class="img"> 
+                <div class="img">
                     <img src="../../../static/img/clock.png" alt="" />
                 </div>
                 <div class="tip">无法预约</div>
                 <div class="des">
-                    <p>由于您还不具备预约资格，无法预约该课程，请长按以下二维码联系店长哦</p>
-                    <img src="../../../static/img/dqr.png" alt="" />
+                    <p>由于您还不具备预约资格，无法预约该课程，请拨打门店电话咨询哦！</p>
+                    <!--正式 start-->
+                        <p v-if="isHostUrl == 'mobile' && allData.addressId && allData.addressId == 4"><span style="font-size: 16px">上海K11体验店：</span><a href="tel:02163233279" class="call" style="color: #fff; font-size: 16px">021-63233279</a></p>
+                        <p v-if="isHostUrl == 'mobile' && allData.addressId && allData.addressId == 6"><span style="font-size: 16px">广州K11体验店：</span><a href="tel:02088835253" class="call" style="color: #fff; font-size: 16px">020-88835253</a></p>
+                    <!--正式 end-->
+                    <!--测试 start-->
+                        <p v-if="isHostUrl !== 'mobile' && allData.addressId == '103'"><span style="font-size: 16px">上海K11体验店：</span><a href="tel:02163233279" class="call" style="color: #fff; font-size: 16px">021-63233279</a></p>
+                        <p v-if="isHostUrl !== 'mobile' && allData.addressId == '110'"><span style="font-size: 16px">广州K11体验店：</span><a href="tel:02088835253" class="call" style="color: #fff; font-size: 16px">020-88835253</a></p>
+                    <!--测试 end-->
                 </div>
                 <div class="button" @click="showNotMPop=false">知道了</div>
                 <div class="close icon-yk_btn_clear" @click="showNotMPop=false"></div>
             </div>
-            
+
             <div class="popBg" v-show="RSuccess" @click="RSuccess = false"></div>
             <div class="popRed" v-show="RSuccess">
-                <div class="img"> 
+                <div class="img">
                     <img src="../../../static/img/clock.png" alt="" />
                 </div>
                 <div class="tip">确定预约课程吗？</div>
@@ -93,7 +100,7 @@
 
             <div class="popBg" v-show="CSuccess" @click="CSuccess = false"></div>
             <div class="popRed" v-show="CSuccess">
-                <div class="img"> 
+                <div class="img">
                     <img src="../../../static/img/clock.png" alt="" />
                 </div>
                 <template v-if="cancelCount < 3">
@@ -141,20 +148,22 @@
                 recommendTxt: '确定',
                 cancelTxt: '确定',
                 canMake:true,           //默认可以预约
+                isHostUrl: ''
+
             }
         },
         created () {
-            let y = localStorage.getItem('indexPageY') 
+            let y = localStorage.getItem('indexPageY')
             if(y){
                 localStorage.setItem('newIndexPageY', y)
             }
-            this.initDate()
+            this.initDate();
         },
         components: {
             VTitle,
             loginLay,
         },
-        methods: { 
+        methods: {
             initDate:function(){
                 let locaUrl = window.location.href
                 if(locaUrl.indexOf('id=') > -1){
@@ -182,7 +191,9 @@
                         _this.cancelCount = obj.data.cancelCount
                         _this.showAll = true;
                         _this.endTime = obj.data.endDate;
-                        common.wxShare(_this.pageTitle, '日日煮线下美食课程预约', '',  _shareUrl)
+                        _this.isHost();
+                       // common.wxShare(_this.pageTitle, '日日煮线下美食课程预约', '',  _shareUrl)
+                        common.wxShare('日日煮线下美食课程预约', '生活就要极致', '',  _shareUrl);
                         _this.calcIfEnd();
                     }
                 })
@@ -250,6 +261,11 @@
                         window.location.reload()
                     }
                 })
+            },
+            // 判断正式环境 or 测试环境
+            isHost() {
+                let  host = window.location.host;
+                this.isHostUrl = host.split('.')[0];
             }
         },
         mounted (){
@@ -283,21 +299,21 @@
                 var mn = v.getMinutes()
 
                 var ww = v.getDay()
-                if (ww == 0) {  
-                    wstr = "日";  
-                } else if (ww == 1) {  
-                    wstr = "一";  
-                } else if (ww == 2) {  
-                    wstr = "二";  
-                } else if (ww == 3) {  
-                    wstr = "三";  
-                } else if (ww == 4) {  
-                    wstr = "四";  
-                } else if (ww == 5) {  
-                    wstr = "五";  
-                } else if (ww == 6) {  
-                    wstr = "六";  
-                }  
+                if (ww == 0) {
+                    wstr = "日";
+                } else if (ww == 1) {
+                    wstr = "一";
+                } else if (ww == 2) {
+                    wstr = "二";
+                } else if (ww == 3) {
+                    wstr = "三";
+                } else if (ww == 4) {
+                    wstr = "四";
+                } else if (ww == 5) {
+                    wstr = "五";
+                } else if (ww == 6) {
+                    wstr = "六";
+                }
                 return y + '年' + mt + '月' + d + '日 周' + wstr + ' ' + setv(h) + ':' + setv(mn)
             },
             formatTimeTwo:function(str){
