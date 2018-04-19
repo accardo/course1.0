@@ -51,7 +51,7 @@
             <div class="section">
                 <h2>广州店</h2>
                 <p>店址：广州市天河区珠江东路6号K11购物艺术中心B2-12商铺</p>
-                <p>电话：020-8883 5253，020-8883 5176</p>
+                <p>电话：020-88835253，020-88835176</p>
             </div>
 <!--             <div class="section txtCenter img">
                 <img style="width:50%;" src="../../../static/img/c_code.png" alt="" />

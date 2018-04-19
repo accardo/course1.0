@@ -65,15 +65,17 @@
                 </div>
                 <div class="tip">无法预约</div>
                 <div class="des">
-                    <p>由于您还不具备预约资格，无法预约该课程，请拨打门店电话咨询哦！</p>
-                    <!--正式 start-->
-                        <p v-if="isHostUrl == 'mobile' && allData.addressId && allData.addressId == 4"><span style="font-size: 16px">上海K11体验店：</span><a href="tel:02163233279" class="call" style="color: #fff; font-size: 16px">021-63233279</a></p>
-                        <p v-if="isHostUrl == 'mobile' && allData.addressId && allData.addressId == 6"><span style="font-size: 16px">广州K11体验店：</span><a href="tel:02088835253" class="call" style="color: #fff; font-size: 16px">020-88835253</a></p>
-                    <!--正式 end-->
-                    <!--测试 start-->
-                        <p v-if="isHostUrl !== 'mobile' && allData.addressId == '103'"><span style="font-size: 16px">上海K11体验店：</span><a href="tel:02163233279" class="call" style="color: #fff; font-size: 16px">021-63233279</a></p>
-                        <p v-if="isHostUrl !== 'mobile' && allData.addressId == '110'"><span style="font-size: 16px">广州K11体验店：</span><a href="tel:02088835253" class="call" style="color: #fff; font-size: 16px">020-88835253</a></p>
-                    <!--测试 end-->
+                    <p>由于您还不具备预约资格，无法预约该课程，请拨打门店电话咨询哦！ </p>
+                        <!--正式 start-->
+                        <template v-if="isHostUrl == 'mobile' && allData.addressId && allData.addressId == 4"><p>电话：<a href="tel:02163233279" class="dsc-call">021-63233279</a></p></template>
+                        <template v-if="isHostUrl == 'mobile' && allData.addressId && allData.addressId == 6"><p>电话：<a href="tel:02088835253" class="dsc-call">020-88835253</a></p></template>
+                        <!--正式 end-->
+                        <!--测试 start-->
+                        <template v-if="isHostUrl !== 'mobile' && allData.addressId == '103'"><p>电话：<a href="tel:02163233279" class="dsc-call">021-63233279</a></p></template>
+                        <template v-if="isHostUrl !== 'mobile' && allData.addressId == '110'"><p>电话：<a href="tel:02088835253" class="dsc-call">021-88835253</a></p></template>
+                        <!--测试 end-->
+
+
                 </div>
                 <div class="button" @click="showNotMPop=false">知道了</div>
                 <div class="close icon-yk_btn_clear" @click="showNotMPop=false"></div>
