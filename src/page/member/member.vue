@@ -17,7 +17,7 @@
            </div>
            <div class="contract box" v-show="isHaveContract">
            		<router-link to="/contract">
-               		<p>我的合同</p> 
+               		<p>我的合同</p>
                		<span class="icon-arrow icon-icon_contract_left rotate"></span>
            		</router-link>
            </div>
@@ -35,7 +35,7 @@
 	                   </div>
 	                </router-link>
                </li>
-               <li>  
+               <li>
                    <img src="../../../static/img/kechng.png" alt="" />
                    <p>我的预约</p>
                </li>
@@ -88,7 +88,7 @@
         	reserveList,
         	footerLay,
         },
-        methods: { 
+        methods: {
         	initUserInfo:function(){
         		this.avar = this.$store.state.avar || localStorage.getItem('avar')
                 this.uid = this.$store.state.uid || localStorage.getItem('uid')
@@ -141,7 +141,7 @@
             var _this = this
             document.body.className = ''
             window.onscroll = function(){
-            	let t = common.getScrollTop() 
+            	let t = common.getScrollTop()
             	let h = common.getWindowHeight()
             	let s = common.getScrollHeight()
 
@@ -156,7 +156,7 @@
         },
         watch:{
         	listData:function(){
-                let l = this.listData 
+                let l = this.listData
                 let e = document.querySelector('.popNotWrap')
                 if(l == 0){
                     e.classList.add('show')
