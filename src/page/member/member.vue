@@ -56,7 +56,6 @@
     import listLay from '../home/list'
     import reserveList from './reserveList'
     import VTitle from '@/components/title'
-    import { timeStamp } from '@/utils/utils.js';
 
     export default {
         data () {
