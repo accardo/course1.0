@@ -1327,7 +1327,7 @@ body.overflow {
 	background-repeat: no-repeat
 }
 
-.reserveList ul:first-child {
+/*.reserveList ul:first-child {
 	background-image: url(../img/icon_dangao.png);
 	background-size: auto 78%
 }
@@ -1341,7 +1341,7 @@ body.overflow {
 	border-bottom: 0px none;
 	background-image: url(../img/icon_pengren.png);
 	background-size: auto 90%
-}
+}*/
 
 .reserveList li {
 	float: left;

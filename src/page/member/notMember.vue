@@ -15,7 +15,9 @@
                 </div>
             </div>
         </div>
-        <div class="notMember">
+        <div class="notMemner"  v-html="notMemberData">
+        </div>
+       <!-- <div class="notMember">
             <div class="section" style="text-indent: 2em">
                 欢迎您光顾日日煮美食生活体验馆。我们的美食教室拥有甜点、面点、料理三大类美食课程，并且涵盖数十种精品美食教学，汇聚多位来自法国、瑞士、美国等厨艺名校的明星讲师，只为您打造追求极致的美味体验。欢迎您来店体验和咨询，日日煮将和您一起打造都市厨房新空间。
             </div>
@@ -53,10 +55,10 @@
                 <p>店址：广州市天河区珠江东路6号K11购物艺术中心B2-12商铺</p>
                 <p>电话：020-88835253，020-88835176</p>
             </div>
-<!--             <div class="section txtCenter img">
+&lt;!&ndash;             <div class="section txtCenter img">
                 <img style="width:50%;" src="../../../static/img/c_code.png" alt="" />
-            </div> -->
-        </div>
+            </div> &ndash;&gt;
+        </div>-->
         <footerLay v-bind:position="position"></footerLay>
     </div>
 </template>
@@ -72,21 +74,40 @@
                 nickName: '',
                 lineUserName: '',
                 avar: '',
-                position:2
+                position: 2,
+                notMemberData: '',
             }
         },
-        created () {
-            let isMember = this.$store.state.isMember || localStorage.getItem('isMember')
-            if(isMember == true || isMember == 'true'){
-                this.$router.push('/member')
-            }
-            this.avar = this.$store.state.avar || localStorage.getItem('avar')
-            this.nickName = this.$store.state.nickName || localStorage.getItem('nickName') || '游客'
-            this.lineUserName = this.$store.state.lineUserName || localStorage.getItem('lineUserName')
+        mounted () {
+            this.$nextTick(() => {
+                let isMember = this.$store.state.isMember || localStorage.getItem('isMember')
+                if(isMember == true || isMember == 'true'){
+                    this.$router.push('/member')
+                } else {
+                    this.noMemner();
+                }
+                this.avar = this.$store.state.avar || localStorage.getItem('avar')
+                this.nickName = this.$store.state.nickName || localStorage.getItem('nickName') || '游客'
+                this.lineUserName = this.$store.state.lineUserName || localStorage.getItem('lineUserName')
+            })
+
         },
         components: {
             VTitle,
             footerLay
+        },
+        methods: {
+            /*
+            * 不是会员用户显示
+            * */
+            noMemner() {
+                var noMemnerUrl = '/daydaycook/server/offline/address/courseIntroduce.do';
+                this.ajaxDataFun('post', noMemnerUrl , (obj) => {
+                    if (obj.code == '200') {
+                        this.notMemberData = obj.data;
+                    }
+                })
+            }
         }
     }
 </script>

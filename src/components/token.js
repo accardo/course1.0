@@ -11,7 +11,7 @@ import Common from './common'
 
 var domainAdd = window.location.protocol + "//" + window.location.host;
 if(domainAdd.indexOf('localhost') > -1 || domainAdd.indexOf('127') > -1 || domainAdd.indexOf('mobile-test') > -1 || domainAdd.indexOf('mobile-staging') > -1 || domainAdd.indexOf('test') > -1){
-    domainAdd = "//test.daydaycook.com.cn";
+    domainAdd = "https://test.daydaycook.com.cn";
 }else{
     domainAdd = "//api.daydaycook.com.cn";
 }
@@ -29,8 +29,8 @@ var cryptoKey; //crypto 第一次生成字节
 var cryptoKey_two;
 var totalKey; //通过公钥和随机生成的key 去请求accessTokenId接口
 var accessTokenUrl; //请求accessTokenId url
-var acctoken; 
-var clearToken; //解密后的token 
+var acctoken;
+var clearToken; //解密后的token
 var device = '6'; //device = 6代表pc
 var RASencrypt = new jsencrypt.JSEncrypt(); //RAS加密
 
@@ -46,14 +46,14 @@ var linshinowBrush;
 
 //AES加密
 function AESEncrypt(type,word){
-    var key = CryptoJS.enc.Base64.parse(type);  
+    var key = CryptoJS.enc.Base64.parse(type);
     var srcs = CryptoJS.enc.Utf8.parse(word);
     var encrypted = CryptoJS.AES.encrypt(srcs, key, {mode:CryptoJS.mode.ECB,padding: CryptoJS.pad.Pkcs7});
     return encrypted.toString();
 }
 //AES解密
 function AESDecrypt(type,word){
-    var key = CryptoJS.enc.Base64.parse(type);  
+    var key = CryptoJS.enc.Base64.parse(type);
     var decrypt = CryptoJS.AES.decrypt(word, key, {mode:CryptoJS.mode.ECB,padding: CryptoJS.pad.Pkcs7});
     return CryptoJS.enc.Utf8.stringify(decrypt).toString();
 }
@@ -75,11 +75,11 @@ function newHeader(){
     cryptoKey_two = _crypto.randomBytes(16);
     linshiKey = cryptoKey_two.toString('base64')
     // 对header参数进行加密
-    linshitokenBrush = AESEncrypt(linshiKey,tokenBrush); 
-    linshinowBrush = AESEncrypt(linshiKey,nowBrush); 
+    linshitokenBrush = AESEncrypt(linshiKey,tokenBrush);
+    linshinowBrush = AESEncrypt(linshiKey,nowBrush);
     linshidevice = AESEncrypt(linshiKey,device); // pc端
-    linshiHeadToken = AESEncrypt(linshiKey,clearToken); //通过临时key加密临时token 
-    linshiUrlkey = AESEncrypt(randomKey,linshiKey); //临时秘钥 
+    linshiHeadToken = AESEncrypt(linshiKey,clearToken); //通过临时key加密临时token
+    linshiUrlkey = AESEncrypt(randomKey,linshiKey); //临时秘钥
 
     linshiHeader = {
         "signature":linshitokenBrush,
@@ -109,10 +109,10 @@ function filterUrl(url,type){
     var urlArrlen;
     var returnUrl = "";
 
-    if(thisUrl.indexOf('?') > -1){ 
-        if(thisUrl.indexOf('ver=') > -1){ 
+    if(thisUrl.indexOf('?') > -1){
+        if(thisUrl.indexOf('ver=') > -1){
             thisUrl  = changeUrlArg(thisUrl,'version','3.3.3');
-        }else if(thisUrl.indexOf('version=') > -1){ 
+        }else if(thisUrl.indexOf('version=') > -1){
             thisUrl = changeUrlArg(thisUrl,'version','3.3.3');
         }else{
             thisUrl += "&version=3.3.3";
@@ -151,8 +151,9 @@ function getPubFunction(){
         if(obj.data.code == '200'){
             publickKey = obj.data.data.publickKey;
             RASencrypt.setPublicKey(publickKey); //通过公钥进行RAS加密
-            totalKey = encodeURIComponent(RASencrypt.encrypt(randomKey)); 
+            totalKey = encodeURIComponent(RASencrypt.encrypt(randomKey));
             //需要url编码作为参数去请求accessTokenUrl
+
             accessTokenUrl = domainAdd + "/auth/server/auth/authKey.do?cid=" + foreverCid + "&key=" + totalKey;
             _axios.get(accessTokenUrl)
             .then(function (obj) {
@@ -193,8 +194,9 @@ Vue.prototype.ajaxDataFun = function(method,url,callSuccess,jsonM){
                 if(obj.data.code == '200'){
                     publickKey = obj.data.data.publickKey;
                     RASencrypt.setPublicKey(publickKey); //通过公钥进行RAS加密
-                    totalKey = encodeURIComponent(RASencrypt.encrypt(randomKey)); 
+                    totalKey = encodeURIComponent(RASencrypt.encrypt(randomKey));
                     //需要url编码作为参数去请求accessTokenUrl
+
                     accessTokenUrl = domainAdd + "/auth/server/auth/authKey.do?cid=" + foreverCid + "&key=" + totalKey;
                     _axios.get(accessTokenUrl)
                     .then(function (obj) {

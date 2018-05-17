@@ -17,7 +17,7 @@
            </div>
            <div class="contract box" v-show="isHaveContract">
            		<router-link to="/contract">
-               		<p>我的合同</p> 
+               		<p>{{ contractEndTime }}到期</p>
                		<span class="icon-arrow icon-icon_contract_left rotate"></span>
            		</router-link>
            </div>
@@ -35,7 +35,7 @@
 	                   </div>
 	                </router-link>
                </li>
-               <li>  
+               <li>
                    <img src="../../../static/img/kechng.png" alt="" />
                    <p>我的预约</p>
                </li>
@@ -56,6 +56,8 @@
     import listLay from '../home/list'
     import reserveList from './reserveList'
     import VTitle from '@/components/title'
+    import { timeStamp } from '@/utils/utils.js';
+
     export default {
         data () {
             return {
@@ -70,7 +72,8 @@
                 listData: '',
                 isHaveContract: '',
                 endListen: false,
-                position:2
+                position:2,
+                contractEndTime: '' // 到期日期
             }
         },
         created () {
@@ -88,8 +91,24 @@
         	reserveList,
         	footerLay,
         },
-        methods: { 
-        	initUserInfo:function(){
+        methods: {
+            /**
+             * Description: 获取到期日期
+             * Author: yanlichen <lichen.yan@daydaycook.com>
+             * Date: 2018/5/16
+             */
+            getDateEnd() {
+                let uid = this.$store.state.uid || localStorage.getItem('uid');
+                let infoUrl = `/daydaycook/server/contract/userInfo.do?uid=${uid}`;
+                return new Promise((resolve) => {
+                    this.ajaxDataFun('post', infoUrl, (obj) => {
+                        if(obj.code == '200'){
+                            return resolve(obj);
+                        }
+                    });
+                });
+            },
+        	initUserInfo(){
         		this.avar = this.$store.state.avar || localStorage.getItem('avar')
                 this.uid = this.$store.state.uid || localStorage.getItem('uid')
         		this.phone = this.$store.state.phone || localStorage.getItem('phone')
@@ -97,6 +116,11 @@
         		this.nickName = this.$store.state.nickName || localStorage.getItem('nickName')
         		this.getList()  //获取我的课程列表
         		this.getInfoNum()  //获取消息数量
+                this.getDateEnd().then((data) => { // 获取到期日期
+                    let endTime = timeStamp(data);
+                    console.log(endTime)
+                    this.contractEndTime = `${endTime.Y}/${endTime.M}/${endTime.D}`;
+                });
         	},
         	getInfoNum:function(){
         		var _this = this
@@ -141,7 +165,7 @@
             var _this = this
             document.body.className = ''
             window.onscroll = function(){
-            	let t = common.getScrollTop() 
+            	let t = common.getScrollTop()
             	let h = common.getWindowHeight()
             	let s = common.getScrollHeight()
 
@@ -156,7 +180,7 @@
         },
         watch:{
         	listData:function(){
-                let l = this.listData 
+                let l = this.listData
                 let e = document.querySelector('.popNotWrap')
                 if(l == 0){
                     e.classList.add('show')

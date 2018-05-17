@@ -2,16 +2,26 @@
     <div id="container">
         <v-title>{{ pageTitle }}</v-title>
         <div class="booked ">
-            <div class="fixFilter" :class="{ two: cateLen == '2'}" v-show="cateLen > 1">
+            <div class="fixFilter" :class="{ two: cateLen == '2'}" v-show="cateLen > 1 && from !== '1'">
                 <ul class="clearfix">
-                    <li v-for="(item,i) in category.childs" :class="{active:i == index}" @click="changeCate(i,item.attributeId)">
-                        {{ item.attributeName }}{{ category.categoryName }}
-                    </li> 
+                    <li v-for="(item,i) in category" :class="{active:i == index}"
+                        @click="changeCate1(i,item.childs[0].attributeId)">
+                        {{ item.categoryName }}
+                    </li>
                 </ul>
             </div>
             <div class="num" :class="{one:cateLen == 1}">
-                <template v-if="cateLen == 1">
-                    <span v-if="category.childs" v-for="(item,i) in category.childs" v-show="i == index">{{ item.attributeName }}</span>{{ category.categoryName }}</template>剩余{{ totalSurplusCount }}次预约机会
+                <div v-if="from === '1'">
+                    不限制次数
+                </div>
+                <div v-if="from != '1'">
+                    <template v-if="cateLen == 1">
+                    <span v-if="category.childs"
+                          v-for="(item,i) in category.childs"
+                          v-show="i == index">{{ item.attributeName }}
+                    </span>
+                        {{ category.categoryName }}</template>剩余{{ totalSurplusCount }}次预约机会
+                </div>
             </div>
             <div class="list">
                 <div class="item" v-for="item in dataList">
@@ -55,56 +65,78 @@
                 cateLen: '',
                 dataList: '',
                 totalSurplusCount: '',
-                position:2
+                position:2,
+                from: '',
             }
         },
-        created () {
+        mounted () {
            this.initDate()
         },
         components: {
             VTitle,
             footerLay
         },
-        methods: { 
-            initDate:function(){
-                let locaUrl = window.location.href
-                if(locaUrl.indexOf('id=') > -1){
-                    this.id = common.getUrlPars(locaUrl).id
-                    this.cid = common.getUrlPars(locaUrl).cid
-                    this.index = common.getUrlPars(locaUrl).index
-                }
-                this.uid = this.$store.state.uid ||  localStorage.getItem('uid')
-                this.phone = this.$store.state.phone ||  localStorage.getItem('phone')
-                this.getCate()
-
-                if(this.cid == 'null' || this.cid == null){
-                    this.cid = ''
-                }
-                this.changeCate(this.index,this.cid)
-            },
-            getCate:function(){
-                var _this = this
-                var _cateUrl = '/daydaycook/server/contract/queryAllCourseCountByUser.do?uid=' + _this.uid + '&userPhone=' + _this.phone + "&categoryId=" + _this.id 
-
-                this.ajaxDataFun('post', _cateUrl, function(obj){
-                    if(obj.code== '200'){
-                        _this.category = obj.data[0]
-                        _this.cateLen = obj.data[0].childs.length
-                    }
+        methods: {
+            initDate(){
+                this.uid = this.$store.state.uid ||  localStorage.getItem('uid');
+                this.phone = this.$store.state.phone ||  localStorage.getItem('phone');
+                this.index = this.$route.query.index;
+                this.from = this.$route.query.from;
+                this.getCate().then((data) => {
+                     this.category = data.data[0].detail;
+                     this.cateLen = data.data[0].detail.length;
+                })
+                this.changeCate().then((data) => {
+                    this.dataList = data.data.maplist;
+                    this.totalSurplusCount = data.data.totalSurplusCount;
                 })
             },
-            changeCate:function(index, cid){
-                console.log(index)
-                var _this = this
-                this.index = index
-                var _listUrl = "/daydaycook/server/offline/record/list.do?uid=" + _this.uid + "&userPhone=" + _this.phone + "&categoryId=" + _this.id + "&attributeId=" + (cid || '') 
-                this.ajaxDataFun('post', _listUrl, function(obj){
+            /**
+             * Description: 次数显示接口
+             * Author: yanlichen <lichen.yan@daydaycook.com>
+             * Date: 2018/5/16
+             */
+            getCate() {
+                let cateUrl = `/daydaycook/server/contract/queryAllCourseCountByUser.do?uid=${this.uid}
+                              &userPhone=${this.phone}
+                              &categoryId=${this.$route.query.categoryId || ''}`;
+                return new Promise((resolve) => {
+                    this.ajaxDataFun('post', cateUrl, (data) => {
+                        if(data.code== '200'){
+                            resolve(data);
+                        }
+                    })
+                })
+            },
+            changeCate1:function(index, cid){
+                console.log(cid)
+                var _this = this;
+                this.index = index;
+                let listUrl = `/daydaycook/server/offline/record/list.do?uid=${this.uid}&userPhone=${this.phone}&categoryId=${this.$route.query.categoryId || 0}&attributeId=${cid || 0}&contractId=${this.$route.query.contractId || 0}&sellingCourseType=${this.$route.query.sellingCourseTypeId || 0}`;
+                console.log(listUrl);
+                this.ajaxDataFun('post', listUrl, function(obj){
                     if(obj.code == '200'){
                         _this.dataList = obj.data.maplist
                         _this.totalSurplusCount = obj.data.totalSurplusCount
                     }
                 })
-            },  
+            },
+            /**
+             * Description: 约课明细接口
+             * Author: yanlichen <lichen.yan@daydaycook.com>
+             * Date: 2018/5/16
+             */
+            changeCate() {
+               let listUrl = `/daydaycook/server/offline/record/list.do?uid=${this.uid}&userPhone=${this.phone}&categoryId=${this.$route.query.categoryId || 0}&attributeId=${this.$route.query.attributeId || 0}&contractId=${this.$route.query.contractId || 0}&sellingCourseType=${this.$route.query.sellingCourseTypeId || 0}`;
+                console.log(listUrl);
+               return new Promise((resolve) => {
+                   this.ajaxDataFun('post', listUrl, (obj) => {
+                       if(obj.code == '200'){
+                           resolve(obj);
+                       }
+                   })
+               })
+            },
         },
     }
 </script>
