@@ -17,7 +17,7 @@
            </div>
            <div class="contract box" v-show="isHaveContract">
            		<router-link to="/contract">
-               		<p>{{ contractEndTime }}到期</p>
+               		<p>{{ contractEndTime | formatDate }}到期</p>
                		<span class="icon-arrow icon-icon_contract_left rotate"></span>
            		</router-link>
            </div>
@@ -118,8 +118,9 @@
         		this.getInfoNum()  //获取消息数量
                 this.getDateEnd().then((data) => { // 获取到期日期
                     if (data.code == '200') {
-                        let endTime = timeStamp(data.userContract.contractEndTime);
-                        this.contractEndTime = `${endTime.Y}/${endTime.M}/${endTime.D}`;
+                        this.contractEndTime = data.userContract.contractEndTime;
+                        // let endTime = timeStamp(data.userContract.contractEndTime);
+                        // this.contractEndTime = `${endTime.Y}/${endTime.M}/${endTime.D}`;
                     }
                 });
         	},

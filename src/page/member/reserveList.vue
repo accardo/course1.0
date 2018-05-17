@@ -38,48 +38,48 @@
                 </router-link>
                 <div class="reserve-icon"></div>
             </div>
-            <!--<li class="no-limit-img" v-if="item.sellingCourseTypeId == '2'"></li>-->
-            <!--<li class="no-limit" v-if="item.sellingCourseTypeId == '2'">-->
-                <!--不限制预约次数-->
-            <!--</li>-->
-            <!--<li class="no-limit-img" v-if="item.sellingCourseTypeId == '3'"></li>-->
-            <!--<li class="no-limit" v-if="item.sellingCourseTypeId == '3'">-->
-                <!--<router-link to="">-->
-                    <!--<span>不限分类</span>-->
-                    <!--<p>可预约</p>-->
-                <!--</router-link>-->
-            <!--</li>-->
-            <!--<li class="position-fixed" v-if="item.sellingCourseTypeId == '1'" v-for="itmeA in item.detail">-->
-                <!--<img :src="itmeA.imageUrl" :alt="itmeA.categoryName">-->
-            <!--</li>-->
-            <!--<li v-if="item.sellingCourseTypeId == '1'" v-for="(itmeA, index) in item.detail">-->
-                <!--<router-link to="">-->
-                    <!--<span>{{ itmeA.categoryName }}</span>-->
-                    <!--<p>可预约</p>-->
-                 <!--</router-link>-->
-            <!--</li>-->
+            <!--<li class="no-limit-img" v-if="item.sellingCourseTypeId == '2'"></li>
+            <li class="no-limit" v-if="item.sellingCourseTypeId == '2'">
+                不限制预约次数
+            </li>
+            <li class="no-limit-img" v-if="item.sellingCourseTypeId == '3'"></li>
+            <li class="no-limit" v-if="item.sellingCourseTypeId == '3'">
+                <router-link to="">
+                    <span>不限分类</span>
+                    <p>可预约</p>
+                </router-link>
+            </li>
+            <li class="position-fixed" v-if="item.sellingCourseTypeId == '1'" v-for="itmeA in item.detail">
+                <img :src="itmeA.imageUrl" :alt="itmeA.categoryName">
+            </li>
+            <li v-if="item.sellingCourseTypeId == '1'" v-for="(itmeA, index) in item.detail">
+                <router-link to="">
+                    <span>{{ itmeA.categoryName }}</span>
+                    <p>可预约</p>
+                 </router-link>
+            </li>
 
-            <!--<li v-for="(list, index) in item.childs">-->
-                <!--<router-link :to="'/bookeDetails?cid=' + list.attributeId + '&id=' + item.categoryId + '&index=' + index">-->
-                    <!--<span>{{ list.attributeName }}</span>-->
-                    <!--<span class="blank" v-if="!list.attributeName "></span>-->
-                    <!--<p>-->
-                        <!--<i>{{ list.retainCount - list.refundCount - list.endCount}}</i>次-->
-                    <!--</p>-->
-                <!--</router-link>-->
-            <!--</li>-->
-            <!--<li v-for="(list, index) in item.childs">-->
-                <!--<router-link :to="'/bookeDetails?cid=' + list.attributeId + '&id=' + item.categoryId + '&index=' + index">-->
-                    <!--<span>{{ list.attributeName }}</span>-->
-                    <!--<span class="blank" v-if="!list.attributeName "></span>-->
-                    <!--<p>-->
-                        <!--<i>{{ list.retainCount - list.refundCount - list.endCount}}</i>次-->
-                    <!--</p>-->
-                <!--</router-link>-->
-            <!--</li>-->
-            <!--<li class="position-fixed">-->
-                <!--<div class="reserve-icon"></div>-->
-            <!--</li>-->
+            <li v-for="(list, index) in item.childs">
+                <router-link :to="'/bookeDetails?cid=' + list.attributeId + '&id=' + item.categoryId + '&index=' + index">
+                    <span>{{ list.attributeName }}</span>
+                    <span class="blank" v-if="!list.attributeName "></span>
+                    <p>
+                        <i>{{ list.retainCount - list.refundCount - list.endCount}}</i>次
+                    </p>
+                </router-link>
+            </li>
+            <li v-for="(list, index) in item.childs">
+                <router-link :to="'/bookeDetails?cid=' + list.attributeId + '&id=' + item.categoryId + '&index=' + index">
+                    <span>{{ list.attributeName }}</span>
+                    <span class="blank" v-if="!list.attributeName "></span>
+                    <p>
+                        <i>{{ list.retainCount - list.refundCount - list.endCount}}</i>次
+                    </p>
+                </router-link>
+            </li>
+            <li class="position-fixed">
+                <div class="reserve-icon"></div>
+            </li>-->
         </div>
     </div>
 </template>
@@ -101,17 +101,16 @@
 
         },
         methods: {
-            initUserInfo:function(){
-                this.uid = this.$store.state.uid || localStorage.getItem('uid')
-                this.phone = this.$store.state.phone || localStorage.getItem('phone')
+            initUserInfo() {
+                this.uid = this.$store.state.uid || localStorage.getItem('uid');
+                this.phone = this.$store.state.phone || localStorage.getItem('phone');
                 this.getNumList()
             },
-            getNumList:function(){
-                var _numUrl = '/daydaycook/server/contract/queryAllCourseCountByUser.do?uid=' + this.uid + '&mobile='+ this.phone;
-                var _this = this
-                this.ajaxDataFun('post', _numUrl, function(obj){
+            getNumList() {
+                var numUrl = `/daydaycook/server/contract/queryAllCourseCountByUser.do?uid=${this.uid}&mobile=${this.phone}`;
+                this.ajaxDataFun('post', numUrl, (obj) => {
                     if(obj.code == '200'){
-                        _this.bookList = obj.data
+                        this.bookList = obj.data
                     }
                 })
             }

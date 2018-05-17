@@ -30,16 +30,27 @@
                             <li>有效时间：{{ item.effectiveTime }}</li>
                         </ul>
                         <p class="tip">已使用次数／购买次数：</p>
-                        <div class="list" v-for="list in item.category">
-                            <span>{{ list.categoryName }}</span>
-                            <p v-for="child in list.childs">
-                                <i v-if="child.attributeName">{{ child.attributeName }}</i> 
-                                {{ child.totalBuyCount - child.retainCount }}/{{ child.totalBuyCount - child.refundCount }}次
-                            </p>
-                        </div>
+                        <template v-if="item.category && item.category.length > '0'">
+                            <div class="list" v-for="list in item.category">
+                                <span>{{ list.categoryName }}</span>
+                                <p v-for="child in list.childs">
+                                    <i v-if="child.attributeName">{{ child.attributeName }}</i>
+                                    {{ child.totalBuyCount - child.retainCount }}/{{ child.totalBuyCount - child.refundCount }}次
+                                </p>
+                            </div>
+                        </template>
+                        <template v-else>
+                            <div class="list">
+                                <span>{{ item.category.categoryName }}</span>
+                                <p>
+                                    <i></i>
+                                    {{ item.category.useCount }}/{{ item.category.totalBuyCount }}次
+                                </p>
+                            </div>
+                        </template>
                     </div>
                     <div class="sliderNum">
-                        {{ index + 1 }} / <span>{{ conList.length }}</span> 
+                        {{ index + 1 }} / <span>{{ conList.length }}</span>
                     </div>
                 </mt-swipe-item>
             </mt-swipe>
@@ -69,26 +80,25 @@
             VTitle,
         	footerLay,
         },
-        methods: { 
-            initUserInfo:function(){
-                this.uid = this.$store.state.uid || localStorage.getItem('uid')
-                this.getConList()
+        methods: {
+            initUserInfo() {
+                this.uid = this.$store.state.uid || localStorage.getItem('uid');
+                this.getConList();
             },
-            getConList:function(){
-                var _this = this
-                var _conUrl = "/daydaycook/server/contract/myContract.do?uid=" + this.uid
-                this.ajaxDataFun('post', _conUrl, function(obj){
+            getConList() {
+                var conUrl = `/daydaycook/server/contract/myContract.do?uid=${this.uid}`;
+                this.ajaxDataFun('post', conUrl, (obj) => {
                     if(obj.code == '200'){
-                        _this.conList = obj.data
-                        _this.conLen = obj.data.length
+                        this.conList = obj.data
+                        this.conLen = obj.data.length
                     }
                 })
             }
         },
         mounted (){
-            let app = document.getElementById('app')
-            document.body.className = 'maxHeight'
-            app.className = 'maxHeight'
+            let app = document.getElementById('app');
+            document.body.className = 'maxHeight';
+            app.className = 'maxHeight';
         }
     }
 </script>
