@@ -117,9 +117,10 @@
         		this.getList()  //获取我的课程列表
         		this.getInfoNum()  //获取消息数量
                 this.getDateEnd().then((data) => { // 获取到期日期
-                    let endTime = timeStamp(data);
-                    console.log(endTime)
-                    this.contractEndTime = `${endTime.Y}/${endTime.M}/${endTime.D}`;
+                    if (data.code == '200') {
+                        let endTime = timeStamp(data.userContract.contractEndTime);
+                        this.contractEndTime = `${endTime.Y}/${endTime.M}/${endTime.D}`;
+                    }
                 });
         	},
         	getInfoNum:function(){
