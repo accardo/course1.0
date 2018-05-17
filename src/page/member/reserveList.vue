@@ -33,7 +33,7 @@
                     <span>{{ item.showText }}</span>
                     <span>可预约</span>
                 </div>
-                <router-link class="limit-class-num" :to="'/bookeDetails?contractId=' + item.detail.contractId + '&sellingCourseTypeId='+ item.sellingCourseTypeId">
+                <router-link class="limit-class-num" :to="'/bookeDetails?contractId=' + item.detail.contractId + '&sellingCourseTypeId='+ item.sellingCourseTypeId + '&from=2'">
                     <div><b>{{item.detail.reservableCount}}</b>次</div>
                 </router-link>
                 <div class="reserve-icon"></div>
