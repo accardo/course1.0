@@ -2,9 +2,15 @@
     <div id="container">
         <v-title>{{ pageTitle }}</v-title>
         <div class="booked ">
-            <div class="fixFilter" :class="{ two: cateLen == '2'}" v-show="category.sellingCourseTypeId !== '3' && category.sellingCourseTypeId !== '2'">
+            <div class="fixFilter"
+                 :class="{ two: cateLen == '2'}"
+                 v-show="category.sellingCourseTypeId !== '3' && category.sellingCourseTypeId !== '2'"
+            >
                 <ul class="clearfix">
-                    <li v-for="(item,i) in category.childs" @click="changeCate1(i,item.attributeId)" :class="{active:i == index}" >
+                    <li v-for="(item, i) in category.childs"
+                        @click="changeCate1(i,item.attributeId)"
+                        :class="{active: i == index}"
+                    >
                         {{ item.attributeName }}{{category.categoryName}}
                     </li>
                 </ul>
