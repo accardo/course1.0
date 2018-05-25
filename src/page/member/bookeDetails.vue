@@ -129,8 +129,14 @@
                 })
             },
             changeCate1:function(index, cid){
+                let categoryId = (this.$route.query.categoryId == 'null' ||
+                    this.$route.query.categoryId == 'undefined') ? 0 : this.$route.query.categoryId || 0;
+                let contractId = (this.$route.query.contractId == 'null' ||
+                    this.$route.query.contractId == 'undefined') ? 0 : this.$route.query.contractId || 0;
+                let sellingCourseTypeId = (this.$route.query.sellingCourseTypeId == 'null' ||
+                    this.$route.query.sellingCourseTypeId == 'undefined') ? 0 : this.$route.query.sellingCourseTypeId || 0;
                 this.index = index;
-                let listUrl = `/daydaycook/server/offline/record/list.do?uid=${this.uid}&userPhone=${this.phone}&categoryId=${this.$route.query.categoryId || 0}&attributeId=${cid || 0}&contractId=${this.$route.query.contractId || 0}&sellingCourseType=${this.$route.query.sellingCourseTypeId || 0}`;
+                let listUrl = `/daydaycook/server/offline/record/list.do?uid=${this.uid}&userPhone=${this.phone}&categoryId=${categoryId}&attributeId=${cid || 0}&contractId=${contractId}&sellingCourseType=${sellingCourseTypeId}`;
                 this.ajaxDataFun('post', listUrl, (obj) => {
                     if(obj.code == '200'){
                         this.dataList = obj.data.maplist
@@ -144,7 +150,15 @@
              * Date: 2018/5/16
              */
             changeCate() {
-               let listUrl = `/daydaycook/server/offline/record/list.do?uid=${this.uid}&userPhone=${this.phone}&categoryId=${this.$route.query.categoryId || 0}&attributeId=${this.$route.query.attributeId || 0}&contractId=${this.$route.query.contractId || 0}&sellingCourseType=${this.$route.query.sellingCourseTypeId || 0}`;
+                let categoryId = (this.$route.query.categoryId == 'null' ||
+                    this.$route.query.categoryId == 'undefined') ? 0 : this.$route.query.categoryId || 0;
+                let attributeId = (this.$route.query.attributeId == 'null' ||
+                    this.$route.query.attributeId == 'undefined') ? 0 : this.$route.query.attributeId || 0;
+                let contractId = (this.$route.query.contractId == 'null' ||
+                    this.$route.query.contractId == 'undefined') ? 0 : this.$route.query.contractId || 0;
+                let sellingCourseTypeId = (this.$route.query.sellingCourseTypeId == 'null' ||
+                    this.$route.query.sellingCourseTypeId == 'undefined') ? 0 : this.$route.query.sellingCourseTypeId || 0;
+               let listUrl = `/daydaycook/server/offline/record/list.do?uid=${this.uid}&userPhone=${this.phone}&categoryId=${categoryId}&attributeId=${attributeId}&contractId=${contractId}&sellingCourseType=${sellingCourseTypeId}`;
                return new Promise((resolve) => {
                    this.ajaxDataFun('post', listUrl, (obj) => {
                        if(obj.code == '200'){

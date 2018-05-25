@@ -16,7 +16,7 @@
                         <span>可预约</span>
                     </div>
                     <div class="cast-list-num" v-for="(itemB, index) in itemA.childs">
-                        <router-link :to="'/bookeDetails?attributeId=' + itemB.attributeId + '&categoryId=' + itemA.categoryId + '&sellingCourseTypeId=' + item.sellingCourseTypeId + '&index=' + index">
+                        <router-link :to="'/bookeDetails?contractId='+ item.detail.contractId + '&attributeId=' + itemB.attributeId + '&categoryId=' + itemA.categoryId + '&sellingCourseTypeId=' + item.sellingCourseTypeId + '&index=' + index">
                             <div class="cast-dj">
                                 <span>{{ itemB.attributeName }}</span>
                                 <span><b>{{ itemB.retainCount - itemB.refundCount - itemB.endCount }}</b>次</span>
@@ -157,7 +157,9 @@
         z-index: -1;
     }
     .cast-title {
-        flex: 90px  1;
+        width: 70px;
+        float: left;
+        /*flex:1;*/
     }
     .cast-title span{
         display: block;
@@ -165,8 +167,9 @@
         color: #7f7f7f;
     }
     .cast-list-num {
-        width: 100%;
+        float: left;
         display: flex;
+        width: 20%;
         margin-left: 12px;
     }
     .cast-list-num a{
