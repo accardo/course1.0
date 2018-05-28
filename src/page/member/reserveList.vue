@@ -1,15 +1,15 @@
 <template>
 	<div class="reserveList">
-        <div class="reserve-wrap clearfix">
+        <div class="reserve-wrap clearfix" v-for="item in bookList">
             <!-- 不限次数-->
-            <div class="list-wrap no-limit-img no-limit-left" v-for="item in bookList" v-if="item.sellingCourseTypeId === '3'">
+            <div class="list-wrap no-limit-img no-limit-left" v-if="item.sellingCourseTypeId === '3'">
                 <router-link :to="'/bookeDetails?contractId=' + item.detail.contractId + '&sellingCourseTypeId='+ item.sellingCourseTypeId+ '&from=1'">
                     {{item.showText}}
                 </router-link>
                 <div class="reserve-icon"></div>
             </div>
             <!-- 分类 -->
-            <div v-if="item.sellingCourseTypeId === '1'"  v-for="item in bookList">
+            <div v-if="item.sellingCourseTypeId === '1'" >
                 <div class="list-cast" v-for="itemA in item.detail">
                     <div class="cast-title">
                         <span>{{ itemA.categoryName }}</span>
@@ -28,7 +28,7 @@
                 </div>
             </div>
             <!--不限分类-->
-            <div class="list-wrap no-limit-img no-limit-class" v-for="item in bookList" v-if="item.sellingCourseTypeId === '2'">
+            <div class="list-wrap no-limit-img no-limit-class" v-if="item.sellingCourseTypeId === '2'">
                 <div class="cast-title">
                     <span>{{ item.showText }}</span>
                     <span>可预约</span>
@@ -110,6 +110,7 @@
                 var numUrl = `/daydaycook/server/contract/queryAllCourseCountByUser.do?uid=${this.uid}&mobile=${this.phone}`;
                 this.ajaxDataFun('post', numUrl, (obj) => {
                     if(obj.code == '200'){
+                        console.log(obj.data)
                         this.bookList = obj.data
                     }
                 })
@@ -118,9 +119,6 @@
     }
 </script>
 <style scoped>
-    .reserve-wrap {
-        padding: 15px;
-    }
     .list-wrap {
         position: relative;
         width: 100%;
@@ -216,5 +214,8 @@
     .no-limit-img {
         background: url("data:image/png;base64,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") no-repeat;
         background-size: contain;
+    }
+    .reserveList {
+        padding: 15px;
     }
 </style>
