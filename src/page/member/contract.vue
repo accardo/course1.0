@@ -5,7 +5,7 @@
             <div class="leftIcon icon-icon_contract_left" v-show="conLen > 1"></div>
             <div class="rightIcon icon-icon_contract_left" v-show="conLen > 1"></div>
             <mt-swipe :show-indicators="false" :auto="0">
-                <mt-swipe-item v-for="(item,index) in conList">
+                <mt-swipe-item v-for="(item,index) in conList" :key="index">
                     <div class="silderCont">
                         <div class="top" v-if="item.state == 30">
                             <img src="../../../static/img/20.png" alt="">
@@ -44,7 +44,15 @@
                                 <span>{{ item.category.categoryName }}</span>
                                 <p>
                                     <i></i>
-                                    {{ item.category.useCount }}/{{ item.category.totalBuyCount }}次
+                                    <template v-if="item.category.categoryName === '不限次数'">
+                                        {{item.category.categoryName}}
+                                    </template>
+                                    <template v-else-if="item.category.categoryName === '不限分类' && item.category.totalBuyCount === '不限次数'">
+                                        {{ item.category.useCount }}/{{ item.category.totalBuyCount }}
+                                    </template>
+                                    <template v-else>
+                                        {{ item.category.useCount }}/{{ item.category.totalBuyCount }}次
+                                    </template>
                                 </p>
                             </div>
                         </template>
