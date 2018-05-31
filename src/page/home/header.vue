@@ -5,11 +5,11 @@
                 <div class="box left" @click="chooseFun">
                     <span class="icon icon-yk_icon_locate"></span>
                     <p>{{ addressTxt }}</p>
-                    <em v-show="addressLen > 2">[切换]</em> 
+                    <em v-show="addressLen > 2">[切换]</em>
                 </div>
                 <div class="box right" @click="changePhone = true">登出</div>
             </div>
-            <div class="tagList" :class="{three:isMember == 'true' && categoryCount > 1 && validContractCount != 0}"> 
+            <div class="tagList" :class="{three:isMember == 'true' && categoryCount > 1 && validContractCount != 0}">
                 <ul class="clearfix">
                     <li @click="chooseCate(0)" v-show="isMember != 'true' || (isMember == 'true' && categoryCount > 1) || validContractCount == 0">
                         <p>{{ categoryName }}</p>
@@ -31,47 +31,47 @@
             </div>
             <div class="tagContent" v-show="showCate">
                 <ul v-show="pIndex == '0'">
-                    <li @click="filterA(0,' ','全部分类')" :class="{active: categoryName == '全部分类'}"> 
-                        全部分类 
+                    <li @click="filterA(0,' ','全部分类')" :class="{active: categoryName == '全部分类'}">
+                        全部分类
                         <span class="icon-yk_icon_select"></span>
                     </li>
                     <li v-for="(item,index) in cateList" @click="filterA(index, item.id, item.categoryName)" :class="{active: categoryName == item.categoryName}">
-                        {{ item.categoryName }} 
+                        {{ item.categoryName }}
                         <span class="icon-yk_icon_select"></span>
                     </li>
                 </ul>
                  <ul v-show="pIndex == '1' && isMember == 'true' && validContractCount != 0">
                     <li @click="filterB(0, '全部课程')" :class="{active:courseStatusTxt == '全部课程'}">
-                        全部课程 
+                        全部课程
                         <span class="icon-yk_icon_select"></span>
                     </li>
                     <li @click="filterB(1, '可预约课程')" :class="{active:courseStatusTxt == '可预约课程'}">
                         可预约课程 <span class="icon-yk_icon_select"></span>
                     </li>
                     <li @click="filterB(2, '已预约课程')" :class="{active:courseStatusTxt == '已预约课程'}">
-                        已预约课程 
+                        已预约课程
                         <span class="icon-yk_icon_select"></span>
                     </li>
                 </ul>
                 <ul v-show="pIndex == '2'">
                     <li @click="filterC('', '全部时间')" :class="{active:startdayTxt == '全部时间'}">
-                        全部时间 
+                        全部时间
                         <span class="icon-yk_icon_select"></span>
                     </li>
                     <li @click="filterC(0, '最近7天')" :class="{active:startdayTxt == '最近7天'}">
-                        最近7天 
+                        最近7天
                         <span class="icon-yk_icon_select"></span>
                     </li>
                     <li @click="filterC(1, '最近14天')" :class="{active:startdayTxt == '最近14天'}">
-                        最近14天 
+                        最近14天
                         <span class="icon-yk_icon_select"></span>
                     </li>
                     <li @click="filterC(2, '最近30天')" :class="{active:startdayTxt == '最近30天'}">
-                        最近30天 
+                        最近30天
                         <span class="icon-yk_icon_select"></span>
                     </li>
                     <li @click="filterC(3, '只看周末')" :class="{active:startdayTxt == '只看周末'}">
-                        只看周末 
+                        只看周末
                         <span class="icon-yk_icon_select"></span>
                     </li>
                 </ul>
@@ -92,7 +92,7 @@
         <div class="popBg" v-show="showCate" @click="showCate=false"></div>
         <div class="popBg than" v-show="showChooseAdd" @click="closeAddPop"></div>
         <div class="popRed than" v-show="showChooseAdd">
-            <div class="img"> 
+            <div class="img">
                 <img src="../../../static/img/lesson.png" alt="" />
             </div>
             <div class="tip">选择您最近的上课门店</div>
@@ -138,7 +138,7 @@
                 courseStatus: this.$store.state.courseStatus,  //可预约  不可预约
                 courseStatusTxt: this.$store.state.courseStatusTxt,     //可预约  不可预约文本
                 startday: this.$store.state.startday,       //时间周期
-                startdayTxt: this.$store.state.startdayTxt,   //时间文本 
+                startdayTxt: this.$store.state.startdayTxt,   //时间文本
                 addressId: '',
                 addressTxt: this.$store.state.addressTxt,
                 addressLen: '2',
@@ -163,7 +163,7 @@
 
                 if(this.$store.state.listLoaded == true){ //是否有缓存数据
                     this.currentPage = this.$store.state.currentPage
-                    this.listData = this.$store.state.listData 
+                    this.listData = this.$store.state.listData
                     this.$store.state.loadingTxt = ''
                     this.firstLoadData = false
                     // console.log(this.listData)
@@ -177,16 +177,16 @@
         components: {
             listLay,
         },
-        methods: { 
+        methods: {
             initDate:function(){
                 var _this = this;
-                this.isMember = localStorage.getItem('isMember') || this.$store.state.isMember 
+                this.isMember = localStorage.getItem('isMember') || this.$store.state.isMember
 
                 this.categoryCount = this.$store.state.categoryCount || localStorage.getItem('categoryCount')
                 this.validContractCount = this.$store.state.validContractCount || localStorage.getItem('validContractCount')
 
-                this.categoryId = localStorage.getItem('categoryId') || this.$store.state.categoryId 
-                this.categoryName = localStorage.getItem('categoryName') || this.$store.state.categoryName 
+                this.categoryId = localStorage.getItem('categoryId') || this.$store.state.categoryId
+                this.categoryName = localStorage.getItem('categoryName') || this.$store.state.categoryName
 
                 if(this.isMember == false || this.isMember == 'false'){
                     this.courseStatus = 0
@@ -233,7 +233,7 @@
                 // console.log("==================================")
                 // console.log("courseStatus===> " + this.courseStatus)
                 // console.log("courseStatusTxt===> " + this.courseStatusTxt)
-            
+
                 // console.log("==================================")
                 // console.log("addressId===> " + this.addressId)
                 // console.log("addressTxt===> " + this.addressTxt)
@@ -255,8 +255,8 @@
                 this.courseStatus = iv
                 this.courseStatusTxt = txt
 
-                this.$store.state.courseStatus = iv 
-                this.$store.state.courseStatusTxt = txt 
+                this.$store.state.courseStatus = iv
+                this.$store.state.courseStatusTxt = txt
 
                 localStorage.setItem('courseStatus',iv)
                 localStorage.setItem('courseStatusTxt',txt)
@@ -267,7 +267,7 @@
                 this.startday = iv
                 this.startdayTxt = txt
 
-                this.$store.state.startday = iv 
+                this.$store.state.startday = iv
                 this.$store.state.startdayTxt = txt
 
                 localStorage.setItem('startday',iv)
@@ -288,7 +288,7 @@
             },
             chooseAddFun:function(id, txt){ //切换地址
                 this.showChooseAdd = false
-                
+
                 this.addressId = id
                 this.addressTxt = txt
 
@@ -361,7 +361,7 @@
                             _this.listData = obj.data.list
                             _this.categoryCount = obj.data.categoryCount
                         }
-                      
+
                         _this.$store.state.categoryCount = obj.data.categoryCount
                         localStorage.setItem('categoryCount', obj.data.categoryCount)
                     }
@@ -388,8 +388,7 @@
                             localStorage.setItem('addressTxt', obj.data[1].name)
                         }else{
                             // console.log(obj.data)
-                            _this.addListDate = obj.data.slice(1)
-
+                            _this.addListDate = obj.data
                             var isSelectAdd = localStorage.getItem('addressId')
                             if(!isSelectAdd){
                                 _this.showChooseAdd = true
@@ -454,8 +453,8 @@
         },
         mounted (){
             var _this = this;
-            let py = localStorage.getItem('newIndexPageY') 
-            
+            let py = localStorage.getItem('newIndexPageY')
+
             if(py){
                 window.scrollTo(0, py)
             }
@@ -507,7 +506,7 @@
                 this.$store.state.listLoaded = true  //有储存列表值
                 this.$store.state.currentPage = this.currentPage
                 this.$store.state.listData = this.listData
-                let l = this.listData 
+                let l = this.listData
                 let e = document.querySelector('.popNotWrap')
                 if(l == 0){
                     e.classList.add('show')

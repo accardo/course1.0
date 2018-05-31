@@ -2,7 +2,7 @@
 	<div class="reserveList">
         <div class="reserve-wrap clearfix" v-for="item in bookList">
             <!-- 不限次数-->
-            <div class="list-wrap no-limit-img no-limit-left" v-if="item.sellingCourseTypeId === '3'">
+            <div class="list-wrap no-limit-img no-limit-left" v-if="item.sellingCourseTypeId == '3'">
                 <router-link :to="'/bookeDetails?contractId=' + item.detail.contractId + '&sellingCourseTypeId='+ item.sellingCourseTypeId+ '&from=1'">
                     {{item.showText}}
                 </router-link>
@@ -16,7 +16,7 @@
                         <span>可预约</span>
                     </div>
                     <div class="cast-list-num" v-for="(itemB, index) in itemA.childs">
-                        <router-link :to="'/bookeDetails?contractId='+ item.detail.contractId + '&attributeId=' + itemB.attributeId + '&categoryId=' + itemA.categoryId + '&sellingCourseTypeId=' + item.sellingCourseTypeId + '&index=' + index">
+                        <router-link :to="'/bookeDetails?contractId='+ itemA.contractId + '&attributeId=' + itemB.attributeId + '&categoryId=' + itemA.categoryId + '&sellingCourseTypeId=' + item.sellingCourseTypeId + '&index=' + index">
                             <div class="cast-dj">
                                 <span>{{ itemB.attributeName }}</span>
                                 <span><b>{{ itemB.retainCount - itemB.refundCount - itemB.endCount }}</b>次</span>
