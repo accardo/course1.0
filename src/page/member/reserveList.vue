@@ -33,9 +33,11 @@
                     <span>{{ item.showText }}</span>
                     <span>可预约</span>
                 </div>
+                <div class="cast-list-num">
                 <router-link class="limit-class-num" :to="'/bookeDetails?contractId=' + item.detail.contractId + '&sellingCourseTypeId='+ item.sellingCourseTypeId + '&from=2'">
-                    <div><b>{{item.detail.reservableCount}}</b>次</div>
+                    <div class="limit-font"><b>{{item.detail.reservableCount}}</b>次</div>
                 </router-link>
+                </div>
                 <div class="reserve-icon"></div>
             </div>
             <!--<li class="no-limit-img" v-if="item.sellingCourseTypeId == '2'"></li>
@@ -194,7 +196,7 @@
         align-items: center;
     }
     .no-limit-class .cast-title {
-        flex: 100px 1;
+        /*flex: 100px 1;*/
     }
     .no-limit-class .limit-class-num {
         width: 100%;
@@ -217,5 +219,12 @@
     }
     .reserveList {
         padding: 15px;
+    }
+    .limit-font {
+        color: #7f7f7f;
+    }
+    .limit-font b{
+        color: #000;
+        font-size: 16px;
     }
 </style>
