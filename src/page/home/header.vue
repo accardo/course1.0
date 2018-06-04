@@ -387,7 +387,7 @@
                             localStorage.setItem('addressId', obj.data[1].id)
                             localStorage.setItem('addressTxt', obj.data[1].name)
                         }else{
-                            // console.log(obj.data)
+                             console.log(obj.data)
                             _this.addListDate = obj.data
                             var isSelectAdd = localStorage.getItem('addressId')
                             if(!isSelectAdd){
