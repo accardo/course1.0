@@ -128,9 +128,9 @@ export default{
     getUrl(){
         var domainAdd = window.location.protocol + "//" + window.location.host;
         if(domainAdd.indexOf('localhost') > -1 || domainAdd.indexOf('127') > -1 || domainAdd.indexOf('mobile-test') > -1 || domainAdd.indexOf('mobile-staging') > -1 || domainAdd.indexOf('test') > -1){
-            domainAdd = "http://test.daydaycook.com.cn";
+            domainAdd = "https://test.daydaycook.com.cn";
         }else{
-            domainAdd = "http://api.daydaycook.com.cn";
+            domainAdd = "https://api.daydaycook.com.cn";
         }
         return domainAdd
     },
@@ -145,7 +145,7 @@ export default{
 	    var _thisUrl = location.href.split('#')[0];
 	    var _shareTitle = title || '日日煮线下美食课程预约'
 	    var _shareDesc = desc || '生活就要极致'
-	    var _shareImg = img || 'http://api.daydaycook.com.cn/daydaycook/page/course/static/img/share.png'
+	    var _shareImg = img || 'https://api.daydaycook.com.cn/daydaycook/page/course/static/img/share.png'
 	    var _shareUrl = url || _thisUrl
 	    var _configUrl = this.getUrl()+"/daydaycook/wechat/getSignature.do?url=" + encodeURIComponent(location.href.split('#')[0]);
 
