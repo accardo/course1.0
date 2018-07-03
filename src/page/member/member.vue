@@ -139,8 +139,8 @@
         	},
         	getList:function(scroll){  //获取课程列表
                 var _this = this
-                var _listUrl = '/daydaycook/server/offline/reservationUser/offlineCourseList.do?type=2&mobile=' + this.phone + '&pageSize=5&currentPage=' + this.currentPage
-
+                var _listUrl = '/daydaycook/server/offline/reservationUser/offlineCourseList.do?type=2&mobile=' + this.phone + '&pageSize=5&currentPage=' + this.currentPage + '&uid=' + this.uid
+                console.log(_listUrl, '获取课程列表');
                 this.ajaxDataFun('post', _listUrl, function(obj){
                     if(obj.code == '200'){
                         if(scroll){

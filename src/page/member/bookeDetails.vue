@@ -4,22 +4,21 @@
         <div class="booked ">
             <div class="fixFilter"
                  :class="{ two: cateLen == '2'}"
-                 v-show="category.sellingCourseTypeId !== '3' && category.sellingCourseTypeId !== '2'"
+                 v-if="from != '1' || from != '2'"
             >
                 <ul class="clearfix">
-                    <li v-for="(item, i) in category.childs"
-                        @click="changeCate1(i,item.attributeId)"
-                        :class="{active: i == index}"
-                    >
-                        {{ item.attributeName }}{{category.categoryName}}
+                    <li v-for="(item) in category">
+                            <span v-for="(itemA, i) in item.childs" :class="{active: i == index}" @click="changeCate1(i,itemA.attributeId)">
+                                {{itemA.attributeName}}{{ item.categoryName }}
+                            </span>
                     </li>
                 </ul>
             </div>
             <div class="num" :class="{one:cateLen == 1}">
-                <div v-if="category.sellingCourseTypeId == '3'">
+                <div v-if="from == '1'">
                     不限制次数
                 </div>
-                <div v-if="category.sellingCourseTypeId !== '3'">
+                <div  v-if="from != '1'">
                     <template v-if="cateLen == 1">
                     <span v-if="category.childs"
                           v-for="(item,i) in category.childs"
@@ -40,7 +39,9 @@
                     <div class="tip" v-show="item.type != '2' && item.type != '3'">{{ item.content }} </div>
                     <div class="time"> {{ item.createDate | formatDateMore }} </div>
                     <div class="right" v-show="item.type == '1' || item.type == '3'">
-                        <em>+</em><span>{{ item.counts }} </span>次
+                        <template v-if="item.counts != null && item.counts != 0 ">
+                            <em>+</em><span>{{ item.counts }} </span>次
+                        </template>
                     </div>
                     <div class="right" v-show="item.type == '2' || item.type == '4' || item.type == '5'">
                         <em>-</em><span>{{ item.counts }} </span>次
@@ -92,7 +93,8 @@
                 this.from = this.$route.query.from;
                 this.getCate().then((data) => {
                     if (data.code == '200') {
-                        if (this.from == '1') {
+                        this.category = data.data;
+                        /*if (this.from == '1') {
                             this.category = data.data[2];
                         } else if (this.from == '2') {
                             this.category = data.data[1];
@@ -103,7 +105,7 @@
                                     this.cateLen = data.data[0].detail.length;
                                 }
                             })
-                        }
+                        }*/
                     }
                 })
                 this.changeCate().then((data) => {
@@ -119,7 +121,12 @@
              * Date: 2018/5/16
              */
             getCate() {
-                let cateUrl = `/daydaycook/server/contract/queryAllCourseCountByUser.do?uid=${this.uid}&userPhone=${this.phone}&categoryId=${this.$route.query.categoryId || ''}`;
+               // let cateUrl = `/daydaycook/server/contract/queryAllCourseCountByUser.do?uid=${this.uid}&userPhone=${this.phone}&categoryId=${this.$route.query.categoryId || ''}`;
+                let categoryId = (this.$route.query.categoryId == 'null' ||
+                    this.$route.query.categoryId == 'undefined') ? 0 : this.$route.query.categoryId || 0;
+                // let sellingCourseTypeId = (this.$route.query.sellingCourseTypeId == 'null' ||
+                //     this.$route.query.sellingCourseTypeId == 'undefined') ? 0 : this.$route.query.sellingCourseTypeId || 0;
+                let cateUrl = `/daydaycook/server/contract/queryAllCourseByUser.do?uid=${this.uid}&mobile=${this.phone}&categoryId=${categoryId}`;
                 return new Promise((resolve) => {
                     this.ajaxDataFun('post', cateUrl, (data) => {
                         if(data.code== '200'){
@@ -129,8 +136,14 @@
                 })
             },
             changeCate1:function(index, cid){
+                let categoryId = (this.$route.query.categoryId == 'null' ||
+                    this.$route.query.categoryId == 'undefined') ? 0 : this.$route.query.categoryId || 0;
+                let contractId = (this.$route.query.contractId == 'null' ||
+                    this.$route.query.contractId == 'undefined') ? 0 : this.$route.query.contractId || 0;
+                let sellingCourseTypeId = (this.$route.query.sellingCourseTypeId == 'null' ||
+                    this.$route.query.sellingCourseTypeId == 'undefined') ? 0 : this.$route.query.sellingCourseTypeId || 0;
                 this.index = index;
-                let listUrl = `/daydaycook/server/offline/record/list.do?uid=${this.uid}&userPhone=${this.phone}&categoryId=${this.$route.query.categoryId || 0}&attributeId=${cid || 0}&contractId=${this.$route.query.contractId || 0}&sellingCourseType=${this.$route.query.sellingCourseTypeId || 0}`;
+                let listUrl = `/daydaycook/server/offline/record/list.do?uid=${this.uid}&userPhone=${this.phone}&categoryId=${categoryId}&attributeId=${cid || 0}&contractId=${contractId}&sellingCourseType=${sellingCourseTypeId}`;
                 this.ajaxDataFun('post', listUrl, (obj) => {
                     if(obj.code == '200'){
                         this.dataList = obj.data.maplist
@@ -144,15 +157,51 @@
              * Date: 2018/5/16
              */
             changeCate() {
-               let listUrl = `/daydaycook/server/offline/record/list.do?uid=${this.uid}&userPhone=${this.phone}&categoryId=${this.$route.query.categoryId || 0}&attributeId=${this.$route.query.attributeId || 0}&contractId=${this.$route.query.contractId || 0}&sellingCourseType=${this.$route.query.sellingCourseTypeId || 0}`;
-               return new Promise((resolve) => {
+                let categoryId = (this.$route.query.categoryId == 'null' ||
+                    this.$route.query.categoryId == 'undefined') ? 0 : this.$route.query.categoryId || 0;
+                let attributeId = (this.$route.query.attributeId == 'null' ||
+                    this.$route.query.attributeId == 'undefined') ? 0 : this.$route.query.attributeId || 0;
+                let contractId = (this.$route.query.contractId == 'null' ||
+                    this.$route.query.contractId == 'undefined') ? 0 : this.$route.query.contractId || 0;
+                let sellingCourseTypeId = (this.$route.query.sellingCourseTypeId == 'null' ||
+                    this.$route.query.sellingCourseTypeId == 'undefined') ? 0 : this.$route.query.sellingCourseTypeId || 0;
+                let listUrl = `/daydaycook/server/offline/record/list.do?uid=${this.uid}&userPhone=${this.phone}&categoryId=${categoryId}&attributeId=${attributeId}&contractId=${contractId}&sellingCourseType=${sellingCourseTypeId}`;
+                return new Promise((resolve) => {
                    this.ajaxDataFun('post', listUrl, (obj) => {
                        if(obj.code == '200'){
                            resolve(obj);
                        }
                    })
-               })
+                })
             },
         },
     }
 </script>
+<style scoped>
+    .booked .fixFilter li {
+        width: 100%;
+        text-align: left;
+        float: none;
+        color: #fff !important;
+        opacity: 1;
+    }
+    .booked .fixFilter li span {
+        padding: 0 15px;
+        display: inline-block;
+        position: relative;
+        color: #fff !important;
+    }
+    .booked .fixFilter li span.active:after{
+        content: '';
+        width: 16px;
+        height: 2px;
+        display: inline-block;
+        background-color: #fff;
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        right: 0;
+        margin: auto;
+        color: #fff;
+    }
+</style>
