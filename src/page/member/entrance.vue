@@ -3,12 +3,11 @@
         <v-title>{{ pageTitle }}</v-title>
         <article class="entrance">
             <section class="entrance-user">
-                <img src="../../../static/img/profile.png" alt="">
-                <!-- <img src="../../../static/img/pic_touxiang.png" alt=""> -->
+                <img :src="userHeader" alt="">
                 <dl>
                     <dt>Arki爱厨艺</dt>
-                    <!-- <dd>剩余<strong>8</strong>次可预约，2021/11/22到期</dd> -->
-                    <dd>您尚未购买课程，暂无约课权限</dd>
+                    <dd v-if="buyCourseNum" >剩余<strong>{{buyCourseNum}}</strong>次可预约，2021/11/22到期</dd>
+                    <dd v-else>您尚未购买课程，暂无约课权限</dd>
                 </dl>
                 <div class="nologin">点击登录</div>
             </section>
@@ -24,7 +23,7 @@
                         <dd>9/23周六 15:00-17:00</dd>
                     </dl>
                 </div>
-                <img class="bespoke-bg" src="../../../static/img/pic_bear1.png" alt="">
+                <img class="bespoke-bg" src="../../../static/img/pic_bear1_1.png" alt="">
             </section>
             <!-- 最新课程 -->
             <section class="entrance-model">
@@ -136,7 +135,7 @@
                     <p>让“吃“相关的一切感官体验得到淋漓极致的享受</p>
                     <p>一起将美味传递给更多人的同时</p>
                     <p>也带来与众不同的生活方式和乐趣</p>
-                    <p class="mb20">辐射每一个平凡而闪亮的人</p>
+                    <p class="mb50">辐射每一个平凡而闪亮的人</p>
                </div>
             </section>
         </article>
@@ -154,6 +153,11 @@
         data () {
             return {
                 pageTitle:'线下课程',
+                currentPage: 1,
+                uid: '',
+                userLogin:'',     //是否登录
+                userHeader:'../../../static/img/pic_touxiang.png',  //用户头像 未登录
+                buyCourseNum:6, //用户购买课程数
                 bannerParam:{           //banner swiper 配置
                     auto:false,
                     swiperId:'aboutbanner',
@@ -164,27 +168,83 @@
                 swipeList: [
                     {
                         id:1,
-                        imageUrl:'http://img0.daydaycook.com.cn/p/lh/lheroqxzbg.jpg',
+                        imageUrl:'../../../static/img/pic_aboutus1.jpg',
                         pageId:1,
                     },
                     {
                         id:2,
-                        imageUrl:'http://img0.daydaycook.com.cn/p/lh/lheroqxzbg.jpg',
+                        imageUrl:'../../../static/img/pic_aboutus2.jpg',
                         pageId:2,
                     },
                     {
                         id:3,
-                        imageUrl:'http://img0.daydaycook.com.cn/p/lh/lheroqxzbg.jpg',
+                        imageUrl:'../../../static/img/pic_aboutus3.jpg',
                         pageId:3,
+                    },
+                    {
+                        id:4,
+                        imageUrl:'../../../static/img/pic_aboutus4.jpg',
+                        pageId:4,
+                    },
+                    {
+                        id:5,
+                        imageUrl:'../../../static/img/pic_aboutus5.jpg',
+                        pageId:5,
+                    },
+                    {
+                        id:6,
+                        imageUrl:'../../../static/img/pic_aboutus6.jpg',
+                        pageId:6,
                     }
                 ]
             }
         },
         created(){
-            this.getbanner();
+            this.init();
+            //this.getCourseList();
         },
         methods:{
-            getbanner(){
+            /* 初始化 */
+            init(){
+                let self = this;
+                if(typeof ddcApp == 'object'){
+                    //如果在app内
+                    ddcApp.shareBtn({
+                        title:'线下课程',
+                        desc:'线下课程分享信息描述',
+                        imgUrl:'https://mobile.daydaycook.com.cn/logo.png',
+                        linkUrl:window.location.href
+                    });  
+
+                }else{
+                    self.userLogin = self.$store.state.isLogin || localStorage.getItem('isLogin');    //用户是否登录
+                    if(self.userLogin == 'true' || self.userLogin == true){
+                        // 如果用户已登录    获取用户信息
+                        self.uid = localStorage.getItem('uid') || self.$store.state.uid;
+                        self.phone = localStorage.getItem('phone') || self.$store.state.phone;
+                        self.userHeader = '../../../static/img/profile.png';
+                    }else{
+                        //用户未登录  
+                       
+                    }
+                }
+            },
+
+            /* 获取课程列表 */
+            getCourseList(){
+                var _listUrl = '/daydaycook/server/offline/reservationUser/offlineCourseList.do?&reservationType=' + this.courseStatus + '&categoryId=' + this.categoryId + '&pageSize=5' + '&currentPage=' + this.currentPage + "&mobile=" + this.phone + "&type=1&uid=" + this.uid;
+                this.ajaxDataFun('post', _listUrl, function(obj){
+                    if(obj.code == '200'){
+                        console.log(obj.data.list);
+                        let objLen = obj.data.list.length;
+                        if(objLen){
+                            for(let j=0; j < objLen; j++){
+                                _this.listData.push(obj.data.list[j]);
+                            }
+                            _this.$set(_this.$data, 'listData', _this.listData);
+                        }
+                    }
+                })
             }
         },
         components: {
@@ -399,6 +459,9 @@
     }
    .mb20{
        margin-bottom: 20px;
+   }
+   .mb50{
+       margin-bottom: 50px;
    }
 
    .one-line {
