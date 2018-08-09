@@ -125,9 +125,6 @@
     }
 </script>
 <style scoped>
-    .courseList {
-        margin-top: 50px;
-    }
     .courseItem .title {
         font-size: 20px;
     }
