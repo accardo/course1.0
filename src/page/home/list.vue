@@ -9,7 +9,7 @@
                         已预约
                     </span>
                     <span v-if="myCourse == 'true' && item.reservationState == 0 && item.courseState == '未开始'">未开课</span>
-                    <span v-if="myCourse == 'true' && item.reservationState == 0 && item.courseState == '已结束' && myCourse=='true'" class="off">       
+                    <span v-if="myCourse == 'true' && item.reservationState == 0 && item.courseState == '已结束' && myCourse=='true'" class="off">
                         已结束
                     </span>
                     <span v-for="attribute in item.childs" v-if="item.childs.length">
@@ -32,7 +32,7 @@
                     </p>
                     <p v-if="item.reservationState == 3">未满足预约条件</p>
                 </template>
-                <p> 
+                <p>
                     <template v-if="item.appointState != 3">
                         {{ item.startTime | formatTimeOne }}-{{ item.endTime | formatTimeTwo }}
                     </template>
@@ -43,7 +43,7 @@
                 <p class="time" v-if="myCourse == 'false'">
                     剩余名额 <i>{{ item.totalCount - item.reservationCount }} </i>人
                 </p>
-                <p> 
+                <p>
                     <template v-if="item.appointState != 3">
                     {{ item.startTime | formatTimeOne }}-{{ item.endTime | formatTimeTwo }}
                     </template>
@@ -72,7 +72,7 @@
     import common from '@/components/common.js'
     export default {
         data () {
-            return {    
+            return {
                 pageTitle: '首页列表',
             }
         },
@@ -96,21 +96,21 @@
                 var mn = v.getMinutes()
 
                 var ww = v.getDay()
-                if (ww == 0) {  
-                    wstr = "日";  
-                } else if (ww == 1) {  
-                    wstr = "一";  
-                } else if (ww == 2) {  
-                    wstr = "二";  
-                } else if (ww == 3) {  
-                    wstr = "三";  
-                } else if (ww == 4) {  
-                    wstr = "四";  
-                } else if (ww == 5) {  
-                    wstr = "五";  
-                } else if (ww == 6) {  
-                    wstr = "六";  
-                }  
+                if (ww == 0) {
+                    wstr = "日";
+                } else if (ww == 1) {
+                    wstr = "一";
+                } else if (ww == 2) {
+                    wstr = "二";
+                } else if (ww == 3) {
+                    wstr = "三";
+                } else if (ww == 4) {
+                    wstr = "四";
+                } else if (ww == 5) {
+                    wstr = "五";
+                } else if (ww == 6) {
+                    wstr = "六";
+                }
                 // var w = v.getDay()      //天getDate.getDate()
                 return y + '年' + mt + '月' + d + '日 周' + wstr + ' ' + setv(h) + ':' + setv(mn)
             },
@@ -124,3 +124,11 @@
         }
     }
 </script>
+<style scoped>
+    .courseList {
+        margin-top: 50px;
+    }
+    .courseItem .title {
+        font-size: 20px;
+    }
+</style>

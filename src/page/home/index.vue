@@ -41,7 +41,7 @@
         //     isLogin:function(){
         //         if(this.isLogin == 'true' || this.isLogin == true){
         //             this.$store.state.isShowLogin = false
-        //         }else{ 
+        //         }else{
         //             this.$store.state.isShowLogin = true
         //         }
         //     }
@@ -51,7 +51,7 @@
             let isLogin = this.$store.state.isLogin || localStorage.getItem('isLogin')
             if(isLogin == 'true' || isLogin == true){
                 this.$store.state.isShowLogin = false
-            }else{ 
+            }else{
                 this.$store.state.isShowLogin = true
             }
         }

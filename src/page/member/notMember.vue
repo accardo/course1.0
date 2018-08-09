@@ -10,10 +10,11 @@
                 <div class="name inline">
                     <p v-if="lineUserName != 'null'">{{ lineUserName }}</p>
                     <p v-if="lineUserName == 'null'">{{ nickName }}</p>
-                    <span>普通用户</span>
-                    <div class="not"> 您尚未购买课程，暂无约课权限</div>
+                    <div class="not">普通用户</div>
+                   <!-- <div class="not"> 您尚未购买课程，暂无约课权限</div>-->
                 </div>
             </div>
+            <div class="login-out">登出</div>
         </div>
         <div class="notMemner"  v-html="notMemberData">
         </div>
@@ -111,3 +112,27 @@
         }
     }
 </script>
+<style scoped>
+    .member {
+        background: url("../../../static/img/grzx_pic_bg.jpg") no-repeat;
+        background-size: cover;
+    }
+    .member .top .name .not {
+        font-size: 16px;
+        opacity: 1;
+    }
+    .login-out {
+        width: 68px;
+        height: 26px;
+        background: rgba(255,255,255,0.3);
+        display: inline-block;
+        font-size: 14px;
+        color: #fff;
+        text-align: center;
+        box-shadow: 0 1px 10px 0 rgba(0,0,0,0.05);
+        border-radius: 100px;
+        line-height: 26px;
+        margin-right: 10px;
+        margin-bottom: 15px;
+    }
+</style>

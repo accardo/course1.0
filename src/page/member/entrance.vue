@@ -147,19 +147,37 @@
     import common from '@/components/common';
     import VTitle from '@/components/title'
     import swiperBanner from '@/components/swiper'
+    import classList from '@/components/classlist'
 
     export default {
         name:'entrance',
         data () {
             return {
                 pageTitle:'线下课程',
-                swipeList:[],   //banner 图片
                 bannerParam:{           //banner swiper 配置
                     auto:false,
                     swiperId:'aboutbanner',
                     showText:false,
-                    delay:5000
+                    delay:5000,
+                    switchOpen: 1,
                 },
+                swipeList: [
+                    {
+                        id:1,
+                        imageUrl:'http://img0.daydaycook.com.cn/p/lh/lheroqxzbg.jpg',
+                        pageId:1,
+                    },
+                    {
+                        id:2,
+                        imageUrl:'http://img0.daydaycook.com.cn/p/lh/lheroqxzbg.jpg',
+                        pageId:2,
+                    },
+                    {
+                        id:3,
+                        imageUrl:'http://img0.daydaycook.com.cn/p/lh/lheroqxzbg.jpg',
+                        pageId:3,
+                    }
+                ]
             }
         },
         created(){
@@ -167,21 +185,13 @@
         },
         methods:{
             getbanner(){
-                let swiperInfo = {
-                    id:21,
-                    imageUrl:'http://img0.daydaycook.com.cn/p/lh/lheroqxzbg.jpg',
-                    pageId:1,
-                }
-                for(var i=0;i<=3;i++){
-                    swiperInfo.id=i;
-                    this.swipeList.push(swiperInfo);
-                }
             }
         },
         components: {
         	common,
             VTitle,
-            swiperBanner
+            swiperBanner,
+            classList
         },
     }
 </script>
@@ -236,9 +246,9 @@
        margin: 0 20px;
        position: relative;
        background-image: linear-gradient(43deg,#FFB179 0%, #FF6580 100%);
-       border-radius: 8px; 
+       border-radius: 8px;
        padding: 10px;
-       -webkit-box-shadow:1px 10px 15px rgba(255,177,121,.3); 
+       -webkit-box-shadow:1px 10px 15px rgba(255,177,121,.3);
        box-shadow:1px 10px 15px rgba(255,177,121,.3);
    }
    .entrance-bespoke .bespoke-bg{
@@ -258,7 +268,7 @@
        font-size: 12px;
        font-weight: 600;
    }
-  
+
    .bespoke-time{
        display: flex;
        justify-content: space-between;
@@ -270,7 +280,7 @@
        border-radius: 2px;
        margin-right: 10px;
    }
-   
+
    .bespoke-time dl{
        flex: 2;
        margin-right: 20px;
@@ -332,12 +342,12 @@
        z-index: 11;
        transition: all .3s ease-in-out;
    }
-   
+
    .lesson-img > img{
        display: inline-block;
        width: 150px;
        height: 82px;
-       box-shadow: 1px 2px 3px rgba(0,0,0,.12); 
+       box-shadow: 1px 2px 3px rgba(0,0,0,.12);
    }
    .lesson-img > span{
        position: absolute;
@@ -402,9 +412,9 @@
     }
 
     .two-line {
-        display: -webkit-box;  
-        -webkit-line-clamp: 2;  
-        overflow: hidden;  
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
         /*! autoprefixer: off */
         -webkit-box-orient: vertical;
         /*! autoprefixer: on */

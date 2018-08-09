@@ -1,99 +1,56 @@
 <template>
-   <section>
+   <section :class='{"filter-fixed": pfShow.package || pfShow.filter}'> <!-- filter-fixed 当筛选时 固定屏幕-->
         <div id="top" :class="{fixed:fixedTop}">
             <div class="topBar justify">
                 <div class="box left" @click="chooseFun">
                     <span class="icon icon-yk_icon_locate"></span>
                     <p>{{ addressTxt }}</p>
-                    <em v-show="addressLen > 2">[切换]</em>
                 </div>
-                <div class="box right" @click="changePhone = true">登出</div>
-            </div>
-            <div class="tagList" :class="{three:isMember == 'true' && categoryCount > 1 && validContractCount != 0}">
-                <ul class="clearfix">
-                    <li @click="chooseCate(0)" v-show="isMember != 'true' || (isMember == 'true' && categoryCount > 1) || validContractCount == 0">
-                        <p>{{ categoryName }}</p>
-                        <span :class="{up:pIndex == '0' && showCate }"></span>
-                    </li>
-                    <li @click="chooseCate(1)" v-if="isMember == 'true' && validContractCount != 0">
-                        <p>{{ courseStatusTxt }}</p>
-                        <span :class="{up:pIndex == '1' && showCate}"></span>
-                    </li>
-                    <li @click="chooseCate(2)">
-                        <p>{{ startdayTxt }} </p>
-                        <span :class="{up:pIndex == '2' && showCate}"></span>
-                    </li>
-                    <li @click="chooseCate(3)" v-if="isMember == 'true'">
-                        <p>{{ teacherName }} </p>
-                        <span :class="{up:pIndex == '3' && showCate}"></span>
-                    </li>
-                </ul>
-            </div>
-            <div class="tagContent" v-show="showCate">
-                <ul v-show="pIndex == '0'">
-                    <li @click="filterA(0,' ','全部分类')" :class="{active: categoryName == '全部分类'}">
-                        全部分类
-                        <span class="icon-yk_icon_select"></span>
-                    </li>
-                    <li v-for="(item,index) in cateList" @click="filterA(index, item.id, item.categoryName)" :class="{active: categoryName == item.categoryName}">
-                        {{ item.categoryName }}
-                        <span class="icon-yk_icon_select"></span>
-                    </li>
-                </ul>
-                 <ul v-show="pIndex == '1' && isMember == 'true' && validContractCount != 0">
-                    <li @click="filterB(0, '全部课程')" :class="{active:courseStatusTxt == '全部课程'}">
-                        全部课程
-                        <span class="icon-yk_icon_select"></span>
-                    </li>
-                    <li @click="filterB(1, '可预约课程')" :class="{active:courseStatusTxt == '可预约课程'}">
-                        可预约课程 <span class="icon-yk_icon_select"></span>
-                    </li>
-                    <li @click="filterB(2, '已预约课程')" :class="{active:courseStatusTxt == '已预约课程'}">
-                        已预约课程
-                        <span class="icon-yk_icon_select"></span>
-                    </li>
-                </ul>
-                <ul v-show="pIndex == '2'">
-                    <li @click="filterC('', '全部时间')" :class="{active:startdayTxt == '全部时间'}">
-                        全部时间
-                        <span class="icon-yk_icon_select"></span>
-                    </li>
-                    <li @click="filterC(0, '最近7天')" :class="{active:startdayTxt == '最近7天'}">
-                        最近7天
-                        <span class="icon-yk_icon_select"></span>
-                    </li>
-                    <li @click="filterC(1, '最近14天')" :class="{active:startdayTxt == '最近14天'}">
-                        最近14天
-                        <span class="icon-yk_icon_select"></span>
-                    </li>
-                    <li @click="filterC(2, '最近30天')" :class="{active:startdayTxt == '最近30天'}">
-                        最近30天
-                        <span class="icon-yk_icon_select"></span>
-                    </li>
-                    <li @click="filterC(3, '只看周末')" :class="{active:startdayTxt == '只看周末'}">
-                        只看周末
-                        <span class="icon-yk_icon_select"></span>
-                    </li>
-                </ul>
-                <ul v-show="pIndex == '3'">
-                    <li v-for="(item,index) in teacherList" @click="filterD(index,item.id,item.name)" :class="{active:teacherName == item.name}">
-                        {{ item.name }}
-                        <span class="icon-yk_icon_select"></span>
-                    </li>
-                </ul>
             </div>
         </div>
-        <listLay :listData="listData" myCourse="false" :validContractCount="validContractCount" :class="{paddingMore:fixedTop}"></listLay>
+        <div class="classification"  :class="{fixed:fixedTop}">
+            <div class="fication-head">
+                <div class="fication-flex f-icon " :class='[pfShow.package ? "triangle" : "triangle-active"]'><!-- f-icon 筛选前， f-icon-active 筛选后 ； triangle 下三角，triangle-active 上三角-->
+                    <div v-if="false">无会员</div>
+                    <div v-else @click="()=> { pfShow.package = true; pfShow.filter = false;}">{{packageText}}<i></i></div>
+                    <div @click="()=> { pfShow.filter = true; pfShow.package = false;}"><b></b>筛选</div>
+                </div>
+                <div class="package-tip" :class='{"package-tip-active": tip}'>不同套餐点此切换</div>
+            </div>
+            <div class="fication-content">
+                <ul class="fication-package" v-show="pfShow.package" >
+                    <li v-for="(item, index) in listPackage "
+                        :class='{"active icon-yk_icon_select": index == listIndex}'
+                        @click="packgeList(item, index)"
+                    >{{item}}</li>
+                </ul>
+                <div class="fication-filter" v-show="pfShow.filter">
+                    <dl v-for="item in listFilter">
+                        <dt>{{item.title}}</dt>
+                        <dd v-for="itemA in item.list">{{itemA}}</dd>
+                    </dl>
+                    <div class="fication-button">
+                        <span>重置</span>
+                        <span>确定</span>
+                    </div>
+                </div>
+            </div>
+        </div>
 
+        <listLay :listData="listData" myCourse="false" :validContractCount="validContractCount" :class="{paddingMore:fixedTop}"></listLay>
         <div class="popNotWrap big">
             <img src="../../../static/img/not_1.png" alt="" />
-            <p>咦!?叔找不到哎!</p>
+            <p>咦!?找不到哎!</p>
         </div>
-        <div class="popBg" v-show="showCate" @click="showCate=false"></div>
+       <!-- 筛选遮罩层-->
+        <div class="popBg"
+             v-show="pfShow.package || pfShow.filter"
+             @click="()=> {pfShow.package = false; pfShow.filter = false}"
+        ></div>
         <div class="popBg than" v-show="showChooseAdd" @click="closeAddPop"></div>
         <div class="popRed than" v-show="showChooseAdd">
             <div class="img">
-                <img src="../../../static/img/lesson.png" alt="" />
+                <img src="../../../static/img/tc_icon_mendian.png" alt="" />
             </div>
             <div class="tip">选择您最近的上课门店</div>
             <div class="choose" :class="{min: addListDate.length < 4}">
@@ -151,7 +108,34 @@
                 firstLoadData: true,
                 teacherList:[],         //上课老师列表
                 teacherId:this.$store.state.teacherId,            //筛选老师ID
-                teacherName:this.$store.state.teacherName
+                teacherName:this.$store.state.teacherName,
+                pfShow: {
+                    package: false,
+                    filter: false
+                },
+                // 假数据
+                listPackage: ['日日煮精选套餐','日日煮精选精选套餐','日日煮精选日日煮精选套餐','日日煮精选日日煮精选套餐'],
+                listIndex: '',
+                packageText: '日日煮精选套餐',
+                tip: false,
+                listFilter: [
+                    {
+                        title: '条件',
+                        list: ['可预约课程', '不可预约课程']
+                    },
+                    {
+                        title: '分类',
+                        list: ['甜点', '面点', '料理', '常规', '季节限定', '亲子']
+                    },
+                    {
+                        title: '时间',
+                        list: ['最近7天', '最近14天', '最近30天', '只看周末']
+                    },
+                    {
+                        title: '老师',
+                        list: ['小鱼老师', '龙泽老师', '老坑老师']
+                    },
+                ]
             }
         },
         created () {
@@ -173,6 +157,7 @@
                     this.getAddList()    //获取地址列表
                 }
             }
+            this.tipShow();
         },
         components: {
             listLay,
@@ -449,6 +434,31 @@
                 localStorage.removeItem('phoneBack')
                 localStorage.removeItem('teacherId')
                 localStorage.removeItem('teacherName')
+            },
+            /*
+             * Description: 单选套餐
+             * Author: yanlichen <lichen.yan@daydaycook.com.cn>
+             * Date: 2018/8/8
+             */
+            packgeList(item, index) {
+                this.listIndex = index;
+                this.pfShow.package = false;
+                this.packageText = item
+            },
+            /*
+             * Description: 第一次进入显示气泡
+             * Author: yanlichen <lichen.yan@daydaycook.com.cn>
+             * Date: 2018/8/8
+             */
+            tipShow() {
+                let tip = localStorage.getItem('tip');
+                if (!tip) {
+                    this.tip = true
+                    setTimeout(()=> {
+                        this.tip = false
+                        localStorage.setItem('tip', true);
+                    }, 5000)
+                }
             }
         },
         mounted (){
@@ -485,7 +495,7 @@
         computed: {
             isLogin:function(){
                 return this.$store.state.isLogin || localStorage.getItem('isLogin')
-            }
+            },
         },
         watch: {
             isLogin:function(){
@@ -517,6 +527,218 @@
         }
     }
 </script>
-<style type="text/css">
+<style type="text/css" scoped>
     html{ height:100%; }
+    .popRed {
+        width: 72%;
+        background: #FFFFFF;
+        border-radius: 8px;
+        height: 390px;
+    }
+    .popRed .img{
+        box-shadow: 0 3px 8px 0 rgba(255,82,105,0.30);
+    }
+    .popRed .tip {
+        font-size: 16px;
+        color: #1A1A1A;
+        line-height: 16px;
+    }
+    .popRed .choose p {
+        background: #F8F8F8;
+        border-radius: 100px;
+        color: #1A1A1A;
+        border: none;
+    }
+    .popRed .choose p.active {
+        background-image: linear-gradient(45deg, #393939 0%, #2F2F2F 100%);
+        box-shadow: 0 2px 8px 0 rgba(0,0,0,0.20);
+        border-radius: 100px;
+        color: #fff;
+    }
+    .topBar {
+        line-height: inherit;
+        height: auto;
+        padding: 8px 10px;
+    }
+    .topBar .left {
+        background: #F8F8F8;
+        border-radius: 100px;
+        padding: 6px 12px;
+    }
+    /*筛选功能重写*/
+    .mask-pop {
+        position: fixed;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0, 0.5);
+        overflow: hidden;
+        z-index: 800;
+    }
+    .filter-fixed {
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        overflow: hidden;
+    }
+    .classification {
+        width: 100%;
+        position: absolute;
+        z-index: 1001;
+    }
+    .fication-head {
+        background: #fff;
+        position: relative;
+    }
+    .package-tip {
+        display: none;
+        background: url("../../../static/img/kclb_pic_tishi.png") no-repeat;
+        background-size: cover;
+        width: 116px;
+        height: 30px;
+        font-size: 12px;
+        color: #fff;
+        line-height: 34px;
+        text-align: center;
+        position: absolute;
+        left: 10px;
+        top: 35px;
+        z-index: 1;
+    }
+    .package-tip-active {
+        display: block;
+    }
+    .fication-flex {
+        padding: 12px 10px;
+        display: -webkit-flex;
+        display: flex;
+        -webkit-align-content: space-between;
+        justify-content: space-between;;
+        -webkit-align-items: center;
+        align-items: center;
+    }
+    .fication-flex i {
+        display: inline-block;
+        width: 0;
+        height: 0;
+        vertical-align: middle;
+        margin-left: 4px;
+    }
+    .triangle i{
+        border-left: 3px solid transparent;
+        border-right: 3px solid transparent;
+        border-top: 4px solid #474747;
+    }
+    .triangle-active i{
+        border-left: 3px solid transparent;
+        border-right: 3px solid transparent;
+        border-bottom: 4px solid #474747;
+    }
+    .fication-flex b{
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        vertical-align: middle;
+    }
+    .f-icon div:last-of-type {
+        color: #474747;
+    }
+    .f-icon-active div:last-of-type {
+        color: #FF5269;
+    }
+    .f-icon b {
+        background: url("../../../static/img/kclb_icon_shaixuan_black.png") no-repeat;
+        background-size: cover;
+        margin-right: 4px;
+    }
+    .f-icon-active b{
+        background: url("../../../static/img/kclb_icon_shaixuan_red.png") no-repeat;
+        background-size: cover;
+        margin-right: 4px;
+    }
+    .fication-content {
+        max-height: 388px;
+        overflow-x: auto;
+    }
+    .fication-package {
+        border-top: #eee solid 1px;
+        background: #fff;
+        animation-duration: 2s;
+    }
+    .fication-package li{
+        position: relative;
+        margin-left: 10px;
+        border-top: #eee solid 1px;
+        height: 44px;
+        line-height: 44px;
+    }
+    .fication-package li:first-of-type {
+        border: 0;
+    }
+    .fication-package li.active{
+        color: #FF5269;
+    }
+    .fication-package li.active:before {
+        position: absolute;
+        right: 14px;
+        top: 0px;
+    }
+    .fication-filter {
+        background: #fff;
+    }
+    .fication-filter dl {
+        padding: 20px 20px 0 20px;
+        color: #474747;
+    }
+    .fication-filter dl dt {
+        display: block;
+        font-weight: bold;
+    }
+    .fication-filter dl dd {
+        display: inline-block;
+        margin: 5px;
+        width: 30%;
+        height: 30px;
+        background: #f8f8f8;
+        border-radius: 100px;
+        text-align: center;
+        line-height: 30px;
+        cursor: pointer;
+    }
+    .fication-filter dl dd.active {
+        background: #FFF6F7;
+        color: #FF5269;
+    }
+    .fication-button {
+        display: -webkit-flex;
+        display: flex;
+        height: 45px;
+        margin-top: 20px;
+        -webkit-justify-content: center;
+        justify-content: center;
+        -webkit-align-items: center;
+        align-items: center;
+    }
+    .fication-button span {
+        margin: 0 5px;
+        display: inline-block;
+        width: 105px;
+        height: 30px;
+        text-align: center;
+        line-height: 30px;
+        border-radius: 100px;
+    }
+    .fication-button span:first-of-type {
+        border: 1px solid #7F7F7F;
+        background: #fff;
+        color: #1A1A1A;
+    }
+    .fication-button span:last-of-type {
+        background-image: linear-gradient(45deg, #393939 0%, #2F2F2F 100%);
+        box-shadow: 0 2px 8px 0 rgba(0,0,0,0.20);
+        color: #fff;
+    }
 </style>

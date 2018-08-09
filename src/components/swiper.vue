@@ -1,14 +1,25 @@
 <template>
-    <div  class="swiper-container  img-swiper" :id="this.swiperId" :ref="this.swiperId">
-        <div class="swiper-wrapper">
-            <div class="swiper-slide" v-for="item in swipelist" :key="item.id">
-                <a v-if="item.link" :href="item.link">
-                    <img :src="item.imageUrl || item.thumb" />
-                </a>
-                <img v-if="!item.link" :src="item.imageUrl || item.thumb" />
+    <div>
+        <div class="swiper-container  img-swiper" :id="swiperId" :ref="swiperId" v-if="param.switchOpen == 1">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide" v-for="item in swipelist" :key="item.id">
+                    <a v-if="item.link" :href="item.link">
+                        <img :src="item.imageUrl || item.thumb" />
+                    </a>
+                    <img v-if="!item.link" :src="item.imageUrl || item.thumb" />
+                </div>
+            </div>
+            <div class="swiper-pagination"></div>
+        </div>
+        <div class="swiper-member" :id="swiperId" :ref="swiperId"  v-if="param.switchOpen == 2">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide" v-for="item in swipelist" :key="">
+                    <strong class="member-title">{{item.title}}</strong>
+                    <div class="member-date">{{item.date | formatDate }}到期</div>
+                    <div class="member-num">剩余<b>{{item.num}}</b>次可预约</div>
+                </div>
             </div>
         </div>
-        <div class="swiper-pagination"></div>
     </div>
 </template>
 <script>
@@ -34,7 +45,6 @@
             setImglist() {
                 //根据参数 设置swiper 展示方式
                 let { param = {}, swipelist = [] } = this.$props;
-                let self = this;
                 this.swiperId = param.swiperId; //实例化swiper 的配置参数  id为  indexseckill || infospaceswiper 时显示title
                 let pagination = (this.swiperId.indexOf('infospaceswiper') > -1 || this.swiperId == 'indexseckill') ? '' : '.swiper-pagination';
                 this.$nextTick(() => {
@@ -144,5 +154,49 @@
     .img-swiper .swiper-pagination-bullet-active {
         background-color: #fff !important;
         border: 1px solid #7A7A7C;
+    }
+    /* 会员 样式 */
+    .swiper-member {
+        margin-top: -20px;
+    }
+    .swiper-member .swiper-slide {
+        padding: 20px;
+        width: 90%;
+        height: 107px;
+        background: #fff;
+        box-shadow: 1px 1px 5px 0 rgba(0,0,0,0.05);
+        border-radius: 8px;
+    }
+    .swiper-member .swiper-slide:after {
+        content: '';
+        background: url("../../static/img/pic_bear1.png") no-repeat;
+        background-size: cover;
+        width: 83px;
+        height: 64px;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        z-index: 1;
+    }
+    .swiper-member .member-title {
+        display: block;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        font-size: 16px;
+        color: #1a1a1a;
+    }
+    .swiper-member .member-date {
+        font-size: 12px;
+        color: #A5A4A4;
+    }
+    .swiper-member .member-num {
+        margin-top: 10px;
+        font-size: 12px;
+        color: #A5A4A4;
+    }
+    .swiper-member .member-num b{
+        font-size: 16px;
+        color: #000;
     }
 </style>
