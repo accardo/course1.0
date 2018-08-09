@@ -1,5 +1,5 @@
 <template>
-   <section> <!-- filter-fixed 当筛选时 固定屏幕-->
+   <section :class='{"filter-fixed": pfShow.package || pfShow.filter}'> <!-- filter-fixed 当筛选时 固定屏幕-->
         <div id="top" :class="{fixed:fixedTop}">
             <div class="topBar justify">
                 <div class="box left" @click="chooseFun">
@@ -10,39 +10,24 @@
         </div>
         <div class="classification">
             <div class="fication-head">
-                <div class="fication-flex f-icon triangle"><!-- f-icon 筛选前， f-icon-active 筛选后 ； triangle 下三角，triangle-active 上三角-->
-                    <div>日日煮精选套餐 <i></i></div>
-                    <div><b></b>筛选</div>
+                <div class="fication-flex f-icon " :class='[pfShow.package ? "triangle" : "triangle-active"]'><!-- f-icon 筛选前， f-icon-active 筛选后 ； triangle 下三角，triangle-active 上三角-->
+                    <div v-if="false">无会员</div>
+                    <div v-else @click="()=> { pfShow.package = true; pfShow.filter = false;}">{{packageText}}<i></i></div>
+                    <div @click="()=> { pfShow.filter = true; pfShow.package = false;}"><b></b>筛选</div>
                 </div>
-                <div class="package-tip">不同套餐点此切换</div>
+                <div class="package-tip" :class='{"package-tip-active": tip}'>不同套餐点此切换</div>
             </div>
             <div class="fication-content">
-                <ul class="fication-package" style="display: none;">
-                    <li>日日煮精选套餐</li>
-                    <li class="active icon-yk_icon_select">日日煮精选精选套餐</li>
-                    <li>日日煮精选日日煮精选套餐</li>
+                <ul class="fication-package" v-show="pfShow.package" >
+                    <li v-for="(item, index) in listPackage "
+                        :class='{"active icon-yk_icon_select": index == listIndex}'
+                        @click="packgeList(item, index)"
+                    >{{item}}</li>
                 </ul>
-                <div class="fication-filter" style="display: none;">
-                    <dl>
-                        <dt>条件</dt>
-                        <dd class="active">可预约课程</dd>
-                        <dd>可预约课程</dd>
-                    </dl>
-                    <dl>
-                        <dt>分类</dt>
-                        <dd class="active">甜点</dd>
-                        <dd>面点</dd>
-                        <dd>料理</dd>
-                        <dd>常规</dd>
-                        <dd>季节限定</dd>
-                        <dd>亲子</dd>
-                    </dl>
-                    <dl>
-                        <dt>时间</dt>
-                        <dd class="active">最近7天</dd>
-                        <dd>最近14天</dd>
-                        <dd>最近30天</dd>
-                        <dd>只看周末</dd>
+                <div class="fication-filter" v-show="pfShow.filter">
+                    <dl v-for="item in listFilter">
+                        <dt>{{item.title}}</dt>
+                        <dd v-for="itemA in item.list">{{itemA}}</dd>
                     </dl>
                     <div class="fication-button">
                         <span>重置</span>
@@ -51,13 +36,17 @@
                 </div>
             </div>
         </div>
-        <div class="mask-pop" style="display: none;"></div>
+
         <listLay :listData="listData" myCourse="false" :validContractCount="validContractCount" :class="{paddingMore:fixedTop}"></listLay>
         <div class="popNotWrap big">
             <img src="../../../static/img/not_1.png" alt="" />
-            <p>咦!?叔找不到哎!</p>
+            <p>咦!?找不到哎!</p>
         </div>
-        <div class="popBg" v-show="showCate" @click="showCate=false"></div>
+       <!-- 筛选遮罩层-->
+        <div class="popBg"
+             v-show="pfShow.package || pfShow.filter"
+             @click="()=> {pfShow.package = false; pfShow.filter = false}"
+        ></div>
         <div class="popBg than" v-show="showChooseAdd" @click="closeAddPop"></div>
         <div class="popRed than" v-show="showChooseAdd">
             <div class="img">
@@ -119,7 +108,34 @@
                 firstLoadData: true,
                 teacherList:[],         //上课老师列表
                 teacherId:this.$store.state.teacherId,            //筛选老师ID
-                teacherName:this.$store.state.teacherName
+                teacherName:this.$store.state.teacherName,
+                pfShow: {
+                    package: false,
+                    filter: false
+                },
+                // 假数据
+                listPackage: ['日日煮精选套餐','日日煮精选精选套餐','日日煮精选日日煮精选套餐','日日煮精选日日煮精选套餐'],
+                listIndex: '',
+                packageText: '日日煮精选套餐',
+                tip: false,
+                listFilter: [
+                    {
+                        title: '条件',
+                        list: ['可预约课程', '不可预约课程']
+                    },
+                    {
+                        title: '分类',
+                        list: ['甜点', '面点', '料理', '常规', '季节限定', '亲子']
+                    },
+                    {
+                        title: '时间',
+                        list: ['最近7天', '最近14天', '最近30天', '只看周末']
+                    },
+                    {
+                        title: '老师',
+                        list: ['小鱼老师', '龙泽老师', '老坑老师']
+                    },
+                ]
             }
         },
         created () {
@@ -141,6 +157,7 @@
                     this.getAddList()    //获取地址列表
                 }
             }
+            this.tipShow();
         },
         components: {
             listLay,
@@ -417,6 +434,31 @@
                 localStorage.removeItem('phoneBack')
                 localStorage.removeItem('teacherId')
                 localStorage.removeItem('teacherName')
+            },
+            /*
+             * Description: 单选套餐
+             * Author: yanlichen <lichen.yan@daydaycook.com.cn>
+             * Date: 2018/8/8
+             */
+            packgeList(item, index) {
+                this.listIndex = index;
+                this.pfShow.package = false;
+                this.packageText = item
+            },
+            /*
+             * Description: 第一次进入显示气泡
+             * Author: yanlichen <lichen.yan@daydaycook.com.cn>
+             * Date: 2018/8/8
+             */
+            tipShow() {
+                let tip = localStorage.getItem('tip');
+                if (!tip) {
+                    this.tip = true
+                    setTimeout(()=> {
+                        this.tip = false
+                        localStorage.setItem('tip', true);
+                    }, 5000)
+                }
             }
         },
         mounted (){
@@ -453,7 +495,7 @@
         computed: {
             isLogin:function(){
                 return this.$store.state.isLogin || localStorage.getItem('isLogin')
-            }
+            },
         },
         watch: {
             isLogin:function(){
@@ -543,8 +585,9 @@
         overflow: hidden;
     }
     .classification {
-        position: relative;
-        z-index: 801;
+        width: 100%;
+        position: absolute;
+        z-index: 1001;
     }
     .fication-head {
         background: #fff;
@@ -563,6 +606,10 @@
         position: absolute;
         left: 10px;
         top: 35px;
+        z-index: 1;
+    }
+    .package-tip-active {
+        display: block;
     }
     .fication-flex {
         padding: 12px 10px;
@@ -578,6 +625,7 @@
         width: 0;
         height: 0;
         vertical-align: middle;
+        margin-left: 4px;
     }
     .triangle i{
         border-left: 3px solid transparent;
@@ -651,8 +699,8 @@
     }
     .fication-filter dl dd {
         display: inline-block;
-        margin-top: 10px;
-        width: 32%;
+        margin: 5px;
+        width: 30%;
         height: 30px;
         background: #f8f8f8;
         border-radius: 100px;

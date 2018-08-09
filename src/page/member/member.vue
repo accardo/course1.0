@@ -11,16 +11,17 @@
 	               	<div class="name">
                      <p v-if="lineUserName != 'null'">{{ lineUserName }}</p>
                      <p v-if="lineUserName == 'null'">{{ nickName }}</p>
-	                   <span>日日煮厨艺学员</span>
+                        <div class="not">课程会员</div>
 	               	</div>
 	           </router-link>
            </div>
-           <div class="contract box" v-show="isHaveContract">
+           <div class="login-out">登出</div>
+           <!--<div class="contract box" v-show="isHaveContract">
            		<router-link to="/contract">
                		<p>{{ contractEndTime | formatDate }}到期</p>
                		<span class="icon-arrow icon-icon_contract_left rotate"></span>
            		</router-link>
-           </div>
+           </div>-->
        </div>
        <reserveList></reserveList>
        <div class="colList">
@@ -192,3 +193,30 @@
         }
     }
 </script>
+<style scoped>
+    .member {
+        background: url("../../../static/img/grzx_pic_bg.jpg") no-repeat;
+        background-size: cover;
+    }
+    .member .top .name .not {
+        font-size: 16px;
+        opacity: 1;
+    }
+    .member .top .name p {
+        margin-bottom: 0;
+    }
+    .login-out {
+        width: 68px;
+        height: 26px;
+        background: rgba(255,255,255,0.3);
+        display: inline-block;
+        font-size: 14px;
+        color: #fff;
+        text-align: center;
+        box-shadow: 0 1px 10px 0 rgba(0,0,0,0.05);
+        border-radius: 100px;
+        line-height: 26px;
+        margin-right: 10px;
+        margin-bottom: 15px;
+    }
+</style>
