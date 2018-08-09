@@ -13,6 +13,9 @@ const notice = r => require.ensure([], () => r(require('../page/member/notice'))
 
 const notMember = r => require.ensure([], () => r(require('../page/member/notMember')), 'notMember')
 
+const entrance = r => require.ensure([], () => r(require('../page/member/entrance')), 'entrance')
+
+
 Vue.use(Router)
 
 export default new Router({
@@ -78,6 +81,15 @@ export default new Router({
                requireAuth: true, 
             },
             component: notice
+        },
+        {
+            path: '/entrance',
+            name: 'entrance',
+            meta: {
+               requireAuth: true, 
+            },
+            component: entrance
         }
+        
 	]
 })
