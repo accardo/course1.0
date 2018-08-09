@@ -8,7 +8,7 @@
                 </div>
             </div>
         </div>
-        <div class="classification">
+        <div class="classification"  :class="{fixed:fixedTop}">
             <div class="fication-head">
                 <div class="fication-flex f-icon " :class='[pfShow.package ? "triangle" : "triangle-active"]'><!-- f-icon 筛选前， f-icon-active 筛选后 ； triangle 下三角，triangle-active 上三角-->
                     <div v-if="false">无会员</div>

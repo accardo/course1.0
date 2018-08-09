@@ -1,6 +1,6 @@
 <template>
    <div id="container">
-     	<v-title>{{ pageTitle }}</v-title>
+       <v-title>{{ pageTitle }}</v-title>
        <div class="member justify">
            <div class="top box">
 	           	<router-link to="/myInfo">
@@ -23,10 +23,13 @@
            		</router-link>
            </div>-->
        </div>
-       <reserveList></reserveList>
-       <div class="colList">
+       <!--<reserveList></reserveList>-->
+       <div class="swiper-box">
+           <swiper-banner :swipelist="swipeList" :param = "bannerParam"></swiper-banner>
+       </div>
+      <!-- <div class="colList">
            <ul>
-               <li>
+              <li>
 	               	<router-link to="/notice">
 	                   <img src="../../../static/img/xiaoxi.png" alt="" />
 	                   <p> 消息通知 </p>
@@ -41,10 +44,16 @@
                    <p>我的预约</p>
                </li>
            </ul>
+       </div>-->
+       <!--<listLay :coursefrom="1" :listData="listData" v-if="listData.length"></listLay>-->
+       <div class="make-appointment">
+           <h4>我得预约</h4>
+           <div class="make-list">
+               <class-list :list-data="listData1" :list-type="listType"></class-list>
+           </div>
        </div>
-       <listLay :coursefrom="1" :listData="listData" v-if="listData.length"></listLay>
        <div class="popNotWrap">
-           <img src="../../../static/img/not_2.png" alt="" />
+           <img src="../../../static/img/not_1.png" alt="" />
            <p>还没有预约过课程，快去瞅瞅吧</p>
        </div>
        <footerLay v-bind:position="position"></footerLay>
@@ -55,9 +64,10 @@
     import footerLay from '@/components/footer'
     import common from '@/components/common'
     import listLay from '../home/list'
-    import reserveList from './reserveList'
+    // import reserveList from './reserveList'
     import VTitle from '@/components/title'
-
+    import swiperBanner from '@/components/swiper'
+    import classList from '@/components/classlist'
     export default {
         data () {
             return {
@@ -69,11 +79,61 @@
                 lineUserName: '',
                 unreadCount: '',
                 currentPage: 1,
-                listData: '',
                 isHaveContract: '',
                 endListen: false,
                 position:2,
-                contractEndTime: '' // 到期日期
+                contractEndTime: '', // 到期日期
+                bannerParam:{           //banner swiper 配置
+                    auto:false,
+                    swiperId:'aboutbanner',
+                    showText:false,
+                    delay:5000,
+                    switchOpen: 2,
+                },
+                swipeList: [
+                    {
+                        title: '日日煮精选套餐',
+                        date: '2018-12-23',
+                        num: 8,
+                    },
+                    {
+                        title: '日日煮精',
+                        date: '2018-11-23',
+                        num: 5,
+                    },
+                    {
+                        title: '日日煮精选套餐日日煮精选套餐日日煮精选套餐',
+                        date: '2018-8-21',
+                        num: 4,
+                    }
+                ],
+                listType: 2, // 2 -> mermber页面
+                listData1: [
+                    {
+                        img: '../../static/img/c_shop0.jpg',
+                        tip: '未开课',
+                        title: '巧克力甜甜圈体验课',
+                        startTime: 1534230000000,
+                        endTime: 1534230300000,
+                        teacher: '小鱼老师',
+                        num: '3',
+                        seIs: true,
+                        address: '上海K11体验店',
+                        name: '张学世'
+                    },
+                    {
+                        img: '../../static/img/c_shop0.jpg',
+                        tip: '已结束',
+                        title: '巧克力甜甜圈体验课',
+                        startTime: 1534230000000,
+                        endTime: 1534230300000,
+                        teacher: '老坑老师',
+                        num: '3',
+                        seIs: false,
+                        address: '上海K11体验店',
+                        name: '张学世'
+                    }
+                ]
             }
         },
         created () {
@@ -88,8 +148,10 @@
         	listLay,
         	common,
         	VTitle,
-        	reserveList,
+        	// reserveList,
         	footerLay,
+            swiperBanner,
+            classList,
         },
         methods: {
             /**
@@ -204,6 +266,18 @@
     }
     .member .top .name p {
         margin-bottom: 0;
+    }
+    .make-appointment {
+        margin: 20px;
+    }
+    .make-appointment h4{
+        padding: 16px 0 14px 0;
+        font-size: 22px;
+        color: #1a1a1a;
+        font-weight: 100;
+    }
+    .make-list {
+
     }
     .login-out {
         width: 68px;
