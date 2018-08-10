@@ -15,7 +15,7 @@
 	               	</div>
 	           </router-link>
            </div>
-           <div class="login-out">登出</div>
+           <div class="login-out" @click="changeLogin">登出</div>
            <!--<div class="contract box" v-show="isHaveContract">
            		<router-link to="/contract">
                		<p>{{ contractEndTime | formatDate }}到期</p>
@@ -64,6 +64,7 @@
     import footerLay from '@/components/footer'
     import common from '@/components/common'
     import listLay from '../home/list'
+    import { loginOut } from  '@/utils/utils'
     // import reserveList from './reserveList'
     import VTitle from '@/components/title'
     import swiperBanner from '@/components/swiper'
@@ -169,6 +170,15 @@
                         }
                     });
                 });
+            },
+            /*
+             * Description: 退出登录
+             * Author: yanlichen <lichen.yan@daydaycook.com.cn>
+             * Date: 2018/8/10
+             */
+            changeLogin() {
+                console.log(this);
+                loginOut(this);
             },
         	initUserInfo(){
         		this.avar = this.$store.state.avar || localStorage.getItem('avar')

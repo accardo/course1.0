@@ -1,5 +1,5 @@
 <template>
-   <section :class='{"filter-fixed": pfShow.package || pfShow.filter}'> <!-- filter-fixed 当筛选时 固定屏幕-->
+   <section> <!-- filter-fixed 当筛选时 固定屏幕-->
         <div id="top">
             <div class="topBar justify">
                 <div class="box left" @click="chooseFun">
@@ -8,7 +8,7 @@
                 </div>
             </div>
         </div>
-        <div class="classification"  :class='{"fixed-fication":fixedTop}'>
+        <div class="classification"  :class='{"filter-fixed":fixedTop}'>
             <div class="fication-head">
                 <div class="fication-flex f-icon " :class='[pfShow.package ? "triangle" : "triangle-active"]'><!-- f-icon 筛选前， f-icon-active 筛选后 ； triangle 下三角，triangle-active 上三角-->
                     <div v-if="false">无会员</div>
@@ -156,8 +156,8 @@
                     this.watchChange()
                     this.getAddList()    //获取地址列表
                 }
+                this.tipShow();
             }
-            this.tipShow();
         },
         components: {
             listLay,
@@ -578,23 +578,24 @@
         overflow: hidden;
         z-index: 800;
     }
-    .filter-fixed {
-        width: 100%;
-        height: 100%;
-        position: fixed;
-        overflow: hidden;
-    }
+
     .classification {
         width: 100%;
         position: absolute;
-        z-index: 1001;
+        z-index: 1002;
+        margin-top: -1px;
     }
     .fixed-fication {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
-        z-index: 1001;
+        z-index: 1002;
+    }
+    .filter-fixed {
+          position: fixed;
+          top: 0;
+          z-index: 1002;
     }
     .fication-head {
         background: #fff;
@@ -619,6 +620,7 @@
         display: block;
     }
     .fication-flex {
+        border-bottom: #eee solid 1px;
         padding: 12px 10px;
         display: -webkit-flex;
         display: flex;
@@ -667,6 +669,7 @@
         margin-right: 4px;
     }
     .fication-content {
+        margin-top: -1px;
         max-height: 388px;
         overflow-x: auto;
     }

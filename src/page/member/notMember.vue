@@ -14,7 +14,7 @@
                    <!-- <div class="not"> 您尚未购买课程，暂无约课权限</div>-->
                 </div>
             </div>
-            <div class="login-out">登出</div>
+            <div class="login-out"  @click="changeLogin">登出</div>
         </div>
         <div class="notMemner"  v-html="notMemberData">
         </div>
@@ -67,6 +67,7 @@
 <script>
     import VTitle from '@/components/title'
     import footerLay from '@/components/footer'
+    import { loginOut } from  '@/utils/utils'
 
     export default {
         data () {
@@ -108,7 +109,16 @@
                         this.notMemberData = obj.data;
                     }
                 })
-            }
+            },
+            /*
+            * Description: 退出登录
+            * Author: yanlichen <lichen.yan@daydaycook.com.cn>
+            * Date: 2018/8/10
+            */
+            changeLogin() {
+                console.log(this);
+                loginOut(this);
+            },
         }
     }
 </script>
