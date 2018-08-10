@@ -15,7 +15,7 @@
 	               	</div>
 	           </router-link>
            </div>
-           <div class="login-out" @click="changeLogin">登出</div>
+           <div class="login-out" @click="loginOutShow = true">登出</div>
            <!--<div class="contract box" v-show="isHaveContract">
            		<router-link to="/contract">
                		<p>{{ contractEndTime | formatDate }}到期</p>
@@ -56,6 +56,7 @@
            <img src="../../../static/img/not_1.png" alt="" />
            <p>还没有预约过课程，快去瞅瞅吧</p>
        </div>
+       <login-out :login-out-show.sync="loginOutShow" v-if="loginOutShow"></login-out>
        <footerLay v-bind:position="position"></footerLay>
    </div>
 </template>
@@ -64,11 +65,12 @@
     import footerLay from '@/components/footer'
     import common from '@/components/common'
     import listLay from '../home/list'
-    import { loginOut } from  '@/utils/utils'
     // import reserveList from './reserveList'
     import VTitle from '@/components/title'
     import swiperBanner from '@/components/swiper'
     import classList from '@/components/classlist'
+    import loginOut from '@/components/loginOut'
+
     export default {
         data () {
             return {
@@ -81,6 +83,7 @@
                 unreadCount: '',
                 currentPage: 1,
                 isHaveContract: '',
+                loginOutShow: false,
                 endListen: false,
                 position:2,
                 contractEndTime: '', // 到期日期
@@ -153,6 +156,7 @@
         	footerLay,
             swiperBanner,
             classList,
+            loginOut
         },
         methods: {
             /**
@@ -170,15 +174,6 @@
                         }
                     });
                 });
-            },
-            /*
-             * Description: 退出登录
-             * Author: yanlichen <lichen.yan@daydaycook.com.cn>
-             * Date: 2018/8/10
-             */
-            changeLogin() {
-                console.log(this);
-                loginOut(this);
             },
         	initUserInfo(){
         		this.avar = this.$store.state.avar || localStorage.getItem('avar')

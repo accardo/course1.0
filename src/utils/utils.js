@@ -27,44 +27,8 @@ export function timeStamp(time) {
 	}
 }
 
-/*
- * Description: 退出账号
- * Author: yanlichen <lichen.yan@daydaycook.com.cn>
- * Date: 2018/8/10
- */
-export function loginOut(_self) {
-	_self.$router.push({
-		name: 'index',
-	});
-	_self.changePhone = false
-	_self.$store.state.isShowLogin = true
-	document.body.className = 'overflow'
-	localStorage.removeItem('isLogin')
-	localStorage.removeItem('isMember')
-	// localStorage.removeItem('uid')  //有可能刷新页面不能清除uid
-	localStorage.removeItem('avar')
-	localStorage.removeItem('phone')
-	localStorage.removeItem('addressId')
-	localStorage.removeItem('addressTxt')
-	localStorage.removeItem('categoryId')
-	localStorage.removeItem('categoryName')
-	localStorage.removeItem('courseStatus')
-	localStorage.removeItem('courseStatusTxt')
-	localStorage.removeItem('startday')
-	localStorage.removeItem('startdayTxt')
-	localStorage.removeItem('nickName')
-	localStorage.removeItem('lineUserName')
-	localStorage.removeItem('indexPageY')
-	localStorage.removeItem('newIndexPageY')
-	localStorage.removeItem('validContractCount')
-	localStorage.removeItem('categoryCount')
-	localStorage.removeItem('phoneBack')
-	localStorage.removeItem('teacherId')
-	localStorage.removeItem('teacherName')
-}
 export default {
 	isWeChatFun,
 	timeStamp,
-	loginOut,
 };
 

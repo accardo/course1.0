@@ -61,14 +61,6 @@
             </div>
             <div class="close icon-yk_btn_clear" v-show="addressId" @click="closeAddPop"></div>
         </div>
-        <div class="popBg than" v-show="changePhone" @click="changePhone = false"></div>
-        <div class="popOr" v-show="changePhone">
-            <div class="tip">确认退出当前帐号吗？</div>
-            <div class="clearfix">
-                <div class="fleft btn" @click="changePhone = false">取消</div>
-                <div class="fright btn" @click="changeLogin()">确认</div>
-            </div>
-        </div>
     </section>
 </template>
 
@@ -101,7 +93,6 @@
                 addressLen: '2',
                 uid: '',
                 categoryCount: '',
-                changePhone: false,
                 isMember: false,
                 validContractCount: '',
                 endListen: false,
@@ -142,6 +133,7 @@
             var isLogin = this.$store.state.isLogin || localStorage.getItem('isLogin')
 
             if(isLogin == 'true' || isLogin == true){
+                console.log(this.showChooseAdd, 'showChooseAdd')
                 this.initDate()      //获取全局数据
                 this.getCateList()   //获取分类列表
 
@@ -407,33 +399,6 @@
                         }
                     }
                 })
-            },
-            changeLogin:function(){
-                this.changePhone = false
-                this.$store.state.isShowLogin = true
-                document.body.className = 'overflow'
-                localStorage.removeItem('isLogin')
-                localStorage.removeItem('isMember')
-                // localStorage.removeItem('uid')  //有可能刷新页面不能清除uid
-                localStorage.removeItem('avar')
-                localStorage.removeItem('phone')
-                localStorage.removeItem('addressId')
-                localStorage.removeItem('addressTxt')
-                localStorage.removeItem('categoryId')
-                localStorage.removeItem('categoryName')
-                localStorage.removeItem('courseStatus')
-                localStorage.removeItem('courseStatusTxt')
-                localStorage.removeItem('startday')
-                localStorage.removeItem('startdayTxt')
-                localStorage.removeItem('nickName')
-                localStorage.removeItem('lineUserName')
-                localStorage.removeItem('indexPageY')
-                localStorage.removeItem('newIndexPageY')
-                localStorage.removeItem('validContractCount')
-                localStorage.removeItem('categoryCount')
-                localStorage.removeItem('phoneBack')
-                localStorage.removeItem('teacherId')
-                localStorage.removeItem('teacherName')
             },
             /*
              * Description: 单选套餐
