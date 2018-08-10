@@ -4,14 +4,14 @@
         <article class="entrance">
             <section class="entrance-user">
                 <img :src="userHeader" alt="">
-                <dl>
-                    <dt>Arki爱厨艺</dt>
+                <dl v-if="userLogin=='true'">
+                    <dt>{{lineUserName}}</dt>
                     <dd v-if="buyCourseNum" >剩余<strong>{{buyCourseNum}}</strong>次可预约，2021/11/22到期</dd>
                     <dd v-else>您尚未购买课程，暂无约课权限</dd>
                 </dl>
-                <div class="nologin">点击登录</div>
+                <div v-else @click="showLogin" class="nologin">点击登录</div>
             </section>
-            <section class="entrance-bespoke">
+            <section class="entrance-bespoke" v-if="isShowMake">
                 <div class="lately-bespoke">
                     <span>最近预约</span>
                     <p><span>上海K11体验店</span><span> | 张学世</span></p>
@@ -29,10 +29,11 @@
             <section class="entrance-model">
                 <div class="entrance-tit">
                     <strong>最新课程</strong>
-                    <span>查看更多</span>
+                    <router-link to="/" tag="span"> 查看更多 </router-link>
                 </div>
                 <div class="lesson-list">
-                    <div class="lesson-item">
+                    <class-list :list-data="listData1" :list-type="listType"></class-list>
+                    <!-- <div class="lesson-item">
                         <div class="lesson-img">
                             <img src="../../../static/img/c_shop0.jpg" alt="">
                             <span>体验课</span>
@@ -43,43 +44,7 @@
                             <p class="lesson-p">9/23周六 15:00-17:00</p>
                             <p class="lesson-p">俞斌老师 | 剩余名额<strong>3</strong>人</p>
                         </div>
-                    </div>
-                    <div class="lesson-item">
-                        <div class="lesson-img">
-                            <img src="../../../static/img/c_shop0.jpg" alt="">
-                            <span>体验课</span>
-                            <div class="layer-box"></div>
-                        </div>
-                        <div class="lesson-info">
-                            <p class="tit two-line">巧克力甜甜圈体验课巧克力甜甜圈体验课甜甜圈体验课</p>
-                            <p class="lesson-p">9/23周六 15:00-17:00</p>
-                            <p class="lesson-p">俞斌老师 | 剩余名额<strong>3</strong>人</p>
-                        </div>
-                    </div>
-                    <div class="lesson-item">
-                        <div class="lesson-img">
-                            <img src="../../../static/img/c_shop0.jpg" alt="">
-                            <span>体验课</span>
-                            <div class="layer-box"></div>
-                        </div>
-                        <div class="lesson-info">
-                            <p class="tit two-line">巧克力甜甜圈体验课巧克力甜甜圈体验课甜甜圈体验课</p>
-                            <p class="lesson-p">9/23周六 15:00-17:00</p>
-                            <p class="lesson-p">俞斌老师 | 剩余名额<strong>3</strong>人</p>
-                        </div>
-                    </div>
-                    <div class="lesson-item">
-                        <div class="lesson-img">
-                            <img src="../../../static/img/c_shop0.jpg" alt="">
-                            <span>体验课</span>
-                            <div class="layer-box"></div>
-                        </div>
-                        <div class="lesson-info">
-                            <p class="tit two-line">巧克力甜甜圈体验课巧克力甜甜圈体验课甜甜圈体验课</p>
-                            <p class="lesson-p">9/23周六 15:00-17:00</p>
-                            <p class="lesson-p">俞斌老师 | 剩余名额<strong>3</strong>人</p>
-                        </div>
-                    </div>
+                    </div> -->
                 </div>
             </section>
             <!-- 门店导航 -->
@@ -139,6 +104,8 @@
                </div>
             </section>
         </article>
+        <!-- 登录 -->
+        <login-lay v-show="isShowLogin"></login-lay>
     </div>
 </template>
 
@@ -146,6 +113,7 @@
     import common from '@/components/common';
     import VTitle from '@/components/title'
     import swiperBanner from '@/components/swiper'
+    import LoginLay from '@/components/login'
     import classList from '@/components/classlist'
 
     export default {
@@ -155,6 +123,9 @@
                 pageTitle:'线下课程',
                 currentPage: 1,
                 uid: '',
+                isShowLogin:'', //是否显示登录弹窗
+                isShowMake:'',  //是否显示预约 课程
+                lineUserName:'',    //用户名称
                 userLogin:'',     //是否登录
                 userHeader:'../../../static/img/pic_touxiang.png',  //用户头像 未登录
                 buyCourseNum:6, //用户购买课程数
@@ -196,6 +167,45 @@
                         imageUrl:'../../../static/img/pic_aboutus6.jpg',
                         pageId:6,
                     }
+                ],
+                listType: 1, // 
+                listData1: [
+                    {
+                        img: '../../static/img/c_shop0.jpg',
+                        tip: '体验课',
+                        title: '巧克力甜甜圈体验课',
+                        startTime: 1534230000000,
+                        endTime: 1534230300000,
+                        teacher: '小鱼老师',
+                        num: '3',
+                        seIs: true,
+                        address: '上海K11体验店',
+                        name: '张学世'
+                    },
+                    {
+                        img: '../../static/img/c_shop0.jpg',
+                        tip: '体验课',
+                        title: '巧克力甜甜圈体验课',
+                        startTime: 1534230000000,
+                        endTime: 1534230300000,
+                        teacher: '老坑老师',
+                        num: '3',
+                        seIs: false,
+                        address: '上海K11体验店',
+                        name: '张学世'
+                    },{
+                        img: '../../static/img/c_shop0.jpg',
+                        tip: '初级甜点',
+                        title: '巧克力甜甜圈体验课名称超出隐藏显示省略号威风威风威风我',
+                        startTime: 1534230000000,
+                        endTime: 1534230300000,
+                        teacher: '老坑老师',
+                        num: '2',
+                        seIs: false,
+                        address: '上海K11体验店',
+                        name: '张学世'
+                    },
+                    
                 ]
             }
         },
@@ -208,26 +218,44 @@
             init(){
                 let self = this;
                 if(typeof ddcApp == 'object'){
-                    //如果在app内
+                    //如果在app内 显示分享按钮
                     ddcApp.shareBtn({
                         title:'线下课程',
                         desc:'线下课程分享信息描述',
                         imgUrl:'https://mobile.daydaycook.com.cn/logo.png',
                         linkUrl:window.location.href
                     });  
-
                 }else{
                     self.userLogin = self.$store.state.isLogin || localStorage.getItem('isLogin');    //用户是否登录
                     if(self.userLogin == 'true' || self.userLogin == true){
                         // 如果用户已登录    获取用户信息
                         self.uid = localStorage.getItem('uid') || self.$store.state.uid;
+                        self.getUserByUid(self.uid).then(res => {
+                            console.log('获取的用户信息',res);
+                            self.userHeader = res.img ? res.img : '../../../static/img/profile.png';
+                            self.lineUserName = res.lineUserName;
+                        })
                         self.phone = localStorage.getItem('phone') || self.$store.state.phone;
-                        self.userHeader = '../../../static/img/profile.png';
-                    }else{
-                        //用户未登录  
-                       
+                        self.isShowMake = true;
                     }
                 }
+            },
+
+            /* 根据用户uid 获取用户信息 */
+            getUserByUid(uid){ 
+                let infoUrl = `/daydaycook/server/contract/userInfo.do?uid=${uid}`;
+                return new Promise((resolve) => {
+                    this.ajaxDataFun('post', infoUrl, (obj) => {
+                        if(obj.code == '200'){
+                            return resolve(obj.userContract);
+                        }
+                    });
+                });
+            },
+
+            /* 显示登录弹窗 */
+            showLogin(){
+                this.isShowLogin =!this.userLogin;
             },
 
             /* 获取课程列表 */
@@ -251,7 +279,8 @@
         	common,
             VTitle,
             swiperBanner,
-            classList
+            LoginLay,
+            classList,
         },
     }
 </script>
@@ -263,7 +292,7 @@
    }
    .entrance-user{
        display:flex;
-       padding: 30px 20px;
+       padding: 30px 20px 10px;
        flex-wrap: nowrap;
        align-items: center;
        box-sizing: border-box;
@@ -284,9 +313,6 @@
        font-weight: bold;
        color: #1a1a1a;
    }
-   .entrance-user .nologin{
-       display: none;
-   }
    .entrance-user > dl > dd{
        font-size: 12px;
        color: #a5a4a4;
@@ -303,7 +329,7 @@
       font-weight: bold;
     }
    .entrance-bespoke{
-       margin: 0 20px;
+       margin: 20px 20px 10px;
        position: relative;
        background-image: linear-gradient(43deg,#FFB179 0%, #FF6580 100%);
        border-radius: 8px;
@@ -357,7 +383,7 @@
        opacity: .8;
    }
    .entrance-model{
-       padding: 40px 20px 0;
+       padding: 20px 20px 0;
        box-sizing: border-box;
 
    }
@@ -405,8 +431,6 @@
 
    .lesson-img > img{
        display: inline-block;
-       width: 150px;
-       height: 82px;
        box-shadow: 1px 2px 3px rgba(0,0,0,.12);
    }
    .lesson-img > span{

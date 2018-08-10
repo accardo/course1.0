@@ -303,7 +303,7 @@
                 }else{
                     this.ajaxDataFun('post', _loginPwdUrl, function(obj){ 
                         if(obj.code == '200'){
-                            _this.loginSuccess(obj.data)
+                            _this.loginSuccess(obj.data,1)
                             console.log('密码登录成功')
                         }else if(obj.code == '405'){
                             _this.loginPwd = false
