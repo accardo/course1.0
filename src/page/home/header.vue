@@ -27,7 +27,7 @@
                 <div class="fication-filter" v-show="pfShow.filter">
                     <dl v-for="item in listFilter">
                         <dt>{{item.title}}</dt>
-                        <dd v-for="itemA in item.list">{{itemA}}</dd>
+                        <dd v-for="itemA in item.list" @click="filterList(itemA, item.pick)">{{itemA}}</dd>
                     </dl>
                     <div class="fication-button">
                         <span>重置</span>
@@ -111,18 +111,22 @@
                 tip: false,
                 listFilter: [
                     {
+                        pick: 1,
                         title: '条件',
                         list: ['可预约课程', '不可预约课程']
                     },
                     {
+                        pick: 2,
                         title: '分类',
                         list: ['甜点', '面点', '料理', '常规', '季节限定', '亲子']
                     },
                     {
+                        pick: 1,
                         title: '时间',
                         list: ['最近7天', '最近14天', '最近30天', '只看周末']
                     },
                     {
+                        pick: 2,
                         title: '老师',
                         list: ['小鱼老师', '龙泽老师', '老坑老师']
                     },
@@ -424,6 +428,18 @@
                         localStorage.setItem('tip', true);
                     }, 5000)
                 }
+            },
+            /*
+             * Description: 选择
+             * Author: yanlichen <lichen.yan@daydaycook.com.cn>
+             * Date: 2018/8/13
+             */
+            filterList(item, pick) {
+                if (pick === 1) { // 单选
+                    
+                } else if(pick === 2){ // 多选
+
+                }
             }
         },
         mounted (){
@@ -545,8 +561,8 @@
     }
 
     .classification {
+        position: relative;
         width: 100%;
-        position: absolute;
         z-index: 1002;
         margin-top: -1px;
     }
@@ -558,9 +574,9 @@
         z-index: 1002;
     }
     .filter-fixed {
-          position: fixed;
-          top: 0;
-          z-index: 1002;
+        position: fixed;
+        top: 0;
+        z-index: 1002;
     }
     .fication-head {
         background: #fff;

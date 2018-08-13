@@ -15,6 +15,7 @@ const notMember = r => require.ensure([], () => r(require('../page/member/notMem
 
 const entrance = r => require.ensure([], () => r(require('../page/member/entrance')), 'entrance')
 const AMap = r => require.ensure([], () => r(require('../page/map/AMap')), 'AMap')
+const expShop = r => require.ensure([], () => r(require('../page/member/expShop')), 'expShop')
 
 
 Vue.use(Router)
@@ -98,6 +99,14 @@ export default new Router({
                requireAuth: true,
             },
             component: AMap
+        },
+		{
+            path: '/expShop',
+            name: 'expShop',
+            meta: {
+               requireAuth: true,
+            },
+            component: expShop
         }
 	]
 })

@@ -24,6 +24,7 @@
                             <p>已核销</p>
                         </div>
                         <ul>
+                            <li>合同套餐:</li>
                             <li>合同编号：{{ item.contractNo }}</li>
                             <li>生效日期：{{ item.startTime | formatDate}}</li>
                             <li>结束日期：{{ item.endTime | formatDate}}</li>
@@ -110,6 +111,10 @@
         }
     }
 </script>
-<style type="text/css">
+<style>
     html{ height:100%; }
+    .contractPage {
+        background: url("../../../static/img/htxq-_bg.jpg") no-repeat;
+        background-size: cover;
+    }
 </style>
