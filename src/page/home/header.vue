@@ -176,7 +176,9 @@
 
                 this.phone = localStorage.getItem('phone') || this.$store.state.phone
                 this.uid = localStorage.getItem('uid') || this.$store.state.uid
-
+                this.ajaxDataFun('get', `/daydaycook/server/newCourse/getAddressInfoByUid.do?uid=${this.uid}`, (data) => {
+                    console.log(data, '去掉加密');
+                })
                 this.memberClass();
                 this.getAddList();
             },
