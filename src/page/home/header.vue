@@ -8,9 +8,9 @@
                 </div>
             </div>
         </div>
-        <div class="classification"  :class='{"filter-fixed":fixedTop}'>
+        <div class="classification" :class='{"filter-fixed":fixedTop}'>
             <div class="fication-head">
-                <div class="fication-flex f-icon " :class='[pfShow.package ? "triangle" : "triangle-active"]'><!-- f-icon 筛选前， f-icon-active 筛选后 ； triangle 下三角，triangle-active 上三角-->
+                <div class="fication-flex f-icon" :class='[pfShow.package ? "triangle" : "triangle-active"]'><!-- f-icon 筛选前， f-icon-active 筛选后 ； triangle 下三角，triangle-active 上三角-->
                     <div v-if="false">无会员</div>
                     <div v-else @click="()=> { pfShow.package = true; pfShow.filter = false;}">{{packageText}}<i></i></div>
                     <div @click="()=> { pfShow.filter = true; pfShow.package = false;}"><b></b>筛选</div>
@@ -25,7 +25,7 @@
                     >{{item}}</li>
                 </ul>
                 <div class="fication-filter" v-show="pfShow.filter">
-                    <dl v-for="(item) in listFilter">
+                    <dl v-for="(item) in listFilter" :class="{fold: item.title === '老师', 'fold-active': foldIs}">
                         <dt>{{item.title}}</dt>
                         <dd v-for="(itemA, indexA) in item.list"
                             :class="{active: itemA.isActive}"
@@ -38,6 +38,9 @@
                                 {{itemA.name}}
                             </template>
                         </dd>
+                        <div class="fold-button" v-if='item.title === "老师"'>
+                            <button @click="() => {foldIs = !foldIs}">{{foldIs ? '收起' : '展开'}}</button>
+                        </div>
                     </dl>
                     <div class="fication-button">
                         <span>重置</span>
@@ -121,6 +124,7 @@
                 packageText: '日日煮精选套餐',
                 tip: false,
                 listFilter: [],
+                foldIs: false,
 
             }
         },
@@ -176,9 +180,9 @@
 
                 this.phone = localStorage.getItem('phone') || this.$store.state.phone
                 this.uid = localStorage.getItem('uid') || this.$store.state.uid
-                this.ajaxDataFun('get', `/daydaycook/server/newCourse/getAddressInfoByUid.do?uid=${this.uid}`, (data) => {
+              /*  this.ajaxDataFun('get', `/daydaycook/server/newCourse/getAddressInfoByUid.do?uid=${this.uid}`, (data) => {
                     console.log(data, '去掉加密');
-                })
+                })*/
                 this.memberClass();
                 this.getAddList();
             },
@@ -478,7 +482,7 @@
                 } else if(pick === 2){ // 多选 互斥
                     dataA.isActive = !isActive
                 }
-            }
+            },
         },
         mounted (){
             var _this = this;
@@ -719,7 +723,7 @@
         background: #fff;
     }
     .fication-filter dl {
-        padding: 20px 20px 0 20px;
+        padding: 20px 20px 20px 20px;
         color: #474747;
     }
     .fication-filter dl dt {
@@ -740,6 +744,26 @@
     .fication-filter dl dd.active {
         background: #FFF6F7;
         color: #FF5269;
+    }
+    .fication-filter dl.fold {
+        height: 141px;
+        overflow: hidden;
+        position: relative;
+    }
+    .fication-filter dl.fold-active {
+        height: auto;
+    }
+    .fication-filter dl.fold .fold-button {
+        width: 100%;
+        background: #fff;
+        text-align: center;
+        position: absolute;
+        bottom: -2px;
+        margin-left: -25px;
+    }
+    fold-active
+    .fication-filter dl.fold .fold-button button {
+        padding: 5px;
     }
     .fication-button {
         display: -webkit-flex;
