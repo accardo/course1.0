@@ -11,11 +11,12 @@ import Common from './common'
 
 var domainAdd = window.location.protocol + "//" + window.location.host;
 if(domainAdd.indexOf('localhost') > -1 || domainAdd.indexOf('127') > -1 || domainAdd.indexOf('mobile-test') > -1 || domainAdd.indexOf('mobile-staging') > -1 || domainAdd.indexOf('test') > -1){
-    domainAdd = "https://test.daydaycook.com.cn";
+	domainAdd = "https://test.daydaycook.com.cn";
+
 }else{
     domainAdd = "//api.daydaycook.com.cn";
 }
-
+domainAdd = "http://192.168.18.226:8080";
 var nowBrush = Date.parse(new Date());
 var tokenBrush = "FB5A1FF3D574DF222E51B6AB862067A246049A01" + nowBrush;
 tokenBrush = _hex_md5(tokenBrush).toUpperCase();

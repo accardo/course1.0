@@ -19,32 +19,30 @@
             </div>
             <div class="fication-content">
                 <ul class="fication-package" v-show="pfShow.package" >
-                    <li v-for="(item, index) in listPackage "
+                    <li v-for="(item, index) in listFilter.packageList "
                         :class='{"active icon-yk_icon_select": index == listIndex}'
                         @click="packgeList(item, index)"
-                    >{{item}}</li>
+                    >{{item.packageName}}</li>
                 </ul>
                 <div class="fication-filter" v-show="pfShow.filter">
-                    <dl v-for="(item) in listFilter" :class="{fold: item.title === '老师', 'fold-active': foldIs}">
+                    <dl v-for="(item) in listFilter.selectList"
+                        :class="{fold: item.title === '教师', 'fold-active': foldIs}"
+                        v-if="item.list.length > 0"
+                    >
                         <dt>{{item.title}}</dt>
                         <dd v-for="(itemA, indexA) in item.list"
                             :class="{active: itemA.isActive}"
-                            @click="filterList(item, item.pick, itemA, itemA.isActive, indexA)"
+                            @click="filterList(item, itemA, itemA.isActive, indexA)"
                         >
-                            <template v-if="itemA.categoryName">
-                                {{itemA.categoryName}}
-                            </template>
-                            <template v-else>
-                                {{itemA.name}}
-                            </template>
+                            {{itemA.name}}
                         </dd>
-                        <div class="fold-button" v-if='item.title === "老师"'>
+                        <div class="fold-button" v-if='item.title === "教师" && item.list.length > 6'>
                             <button @click="() => {foldIs = !foldIs}">{{foldIs ? '收起' : '展开'}}</button>
                         </div>
                     </dl>
                     <div class="fication-button">
-                        <span>重置</span>
-                        <span>确定</span>
+                        <span @click="filterClear">重置</span>
+                        <span @click="filterSub">确定</span>
                     </div>
                 </div>
             </div>
@@ -123,9 +121,15 @@
                 listIndex: '',
                 packageText: '日日煮精选套餐',
                 tip: false,
-                listFilter: [],
+               // listFilter: [],
                 foldIs: false,
-
+                listFilter: {},
+                filterSubData: {
+                    categoryId: [],
+                    reservationType: 0,
+                    startDay: 0,
+                    teacherId: [],
+                },
             }
         },
         created () {
@@ -192,52 +196,17 @@
              * Date: 2018/8/13
              */
             memberClass() {
-                if (this.isMember == true || this.isMember == 'true') { // 会员顺序排列 条件 -> 分类 -> 时间 -> 老师
-                    this.listFilter.push(dict.course); // 非会员 字典 条件列表
-                    this.ajaxCategory().then((data)=> { // 会员 获取分类列表
-                        if (data.data.length > 0) {
-                            data.data.forEach((item) => {
-                                item.isActive = false
-                            })
-                            this.listFilter.push({pick: 2, title: '分类', list: data.data});
+                this.ajaxCategory().then(({data}) => {
+                    data.selectList.forEach((item) => {
+                        item.pick = 2
+                        if (item.title =='条件' || item.title == '时间') {
+                            item.pick = 1
                         }
-                    }).then(()=> {
-                        this.listFilter.push(dict.time); // 非会员 字典 时间列表
-                        this.ajaxTeacher().then((data)=> { // 会员 获取老师列表
-                            if (data.data.length > 0) {
-                                data.data.forEach((item) => {
-                                    item.isActive = false
-                                })
-                                this.listFilter.push({pick: 2, title: '老师', list: data.data})
-                            }
+                        item.list.forEach((itemA) => {
+                            this.$set(itemA, 'isActive', false)
                         })
                     })
-                } else {
-                    this.ajaxCategory().then((data) => { // 非会员排序
-                        if (data.data.length > 0) {
-                            data.data.forEach((item) => {
-                                item.isActive = false
-                            })
-                            this.listFilter.push({pick: 2, title: '分类', list: data.data});
-                        }
-                    }).then(() => {
-                        this.listFilter.push(dict.time); // 非会员 字典 时间列表
-                    })
-                }
-            },
-            /*
-             * Description: 获取老师列表
-             * Author: yanlichen <lichen.yan@daydaycook.com.cn>
-             * Date: 2018/8/13
-             */
-            ajaxTeacher() {
-                let _listUrl = `/daydaycook/server/offline/reservationUser/teacherList.do?addressId=${this.addressId}`;
-                return new Promise((resolve) => {
-                    this.ajaxDataFun('post', _listUrl, (data) => {
-                        if(data.code = '200') {
-                            return resolve(data);
-                        }
-                    })
+                    this.listFilter = data;
                 })
             },
             /*
@@ -246,7 +215,8 @@
              * Date: 2018/8/13
              */
             ajaxCategory() {
-                let _cateUrl = `/daydaycook/server/offline/webcourse/categorylist.do?userId=${this.uid}`;
+                let _cateUrl = `/daydaycook/server/offline/webcourse/filterList.do?userId=11&addressId=2`;
+               // let _cateUrl = `/daydaycook/server/offline/webcourse/filterList.do?userId=${this.uid}&addressId=${this.addressId}`
                 return new Promise((resolve) => {
                     this.ajaxDataFun('post', _cateUrl, (data) => {
                         if(data.code = '200') {
@@ -470,19 +440,57 @@
              * Author: yanlichen <lichen.yan@daydaycook.com.cn>
              * Date: 2018/8/13
              */
-            filterList(data, pick, dataA, isActive, indexA) {
-                if (pick === 1) { // 单选 互斥
+            filterList(data, dataA, isActive, indexA) {
+                console.log(data, dataA, dataA.isActive, indexA)
+                if (data.pick === 1) { // 单选 互斥
                     data.list.map((item, index) => {
                         item.isActive = false
                         if (index == indexA) {
                             item.isActive = true
                         }
-                        data.list[indexA].isActive = !isActive
+                       // data.list[indexA].isActive = !isActive
                     })
-                } else if(pick === 2){ // 多选 互斥
+                } else if(data.pick === 2){ // 多选 互斥
                     dataA.isActive = !isActive
                 }
+
+                if (data.title === '条件') {
+                    this.filterSubData.reservationType = dataA.id
+                }else if(data.title === '时间') {
+                    this.filterSubData.startDay = dataA.id
+                }else if(data.title === '分类') {
+                    if (dataA.isActive) {
+                        this.filterSubData.categoryId.push(dataA.id);
+                    } else {
+                        this.filterSubData.categoryId.forEach((itemB, indexB) => {
+                            if (itemB == dataA.id) {
+                                this.filterSubData.categoryId.splice(indexB, 1)
+                            }
+                        })
+                    }
+                } else if (data.title === '教师') {
+                    if (dataA.isActive) {
+                        this.filterSubData.teacherId.push(dataA.id);
+                    } else {
+                        this.filterSubData.teacherId.forEach((itemB, indexB) => {
+                            if (itemB == dataA.id) {
+                                this.filterSubData.teacherId.splice(indexB, 1)
+                            }
+                        })
+                    }
+                }
             },
+            /*
+             * Description: 提交筛选数据
+             * Author: yanlichen <lichen.yan@daydaycook.com.cn>
+             * Date: 2018/8/15
+             */
+            filterSub() {
+
+            },
+            filterClear() {
+
+            }
         },
         mounted (){
             var _this = this;
