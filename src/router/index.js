@@ -88,7 +88,7 @@ export default new Router({
             path: '/entrance',
             name: 'entrance',
             meta: {
-               requireAuth: true,
+               requireAuth: false,
             },
             component: entrance
         },
