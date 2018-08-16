@@ -171,7 +171,13 @@ function getPubFunction(){
 Vue.prototype.ajaxDataFun = function(method,url,callSuccess,jsonM){
     var _method = method
     newHeader();
-    var thisUrl = domainAdd + filterUrl(url);
+    var thisUrl ='';
+    if(url && url.indexOf('getAddressInfoByUid') >-1){
+        thisUrl = 'http://192.168.18.222:8080' + filterUrl(url);
+    }else{
+        thisUrl = domainAdd + filterUrl(url);
+    }
+    //var thisUrl = domainAdd + filterUrl(url);
     _axios({
         method:_method,
         url:thisUrl,
