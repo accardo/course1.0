@@ -1,6 +1,9 @@
 <template>
     <div id="container">
         <v-title>{{ pageTitle }}</v-title>
+        <div id="loading" v-show="!showAll">
+            <img src="../../../static/img/profile.png" alt="loading">
+        </div>
         <article class="entrance">
             <section class="entrance-user">
                 <img :src="userHeader" alt="">
@@ -11,6 +14,7 @@
                 </dl>
                 <div v-else @click="showLogin" class="nologin">点击登录</div>
             </section>
+            <!-- 最近预约 -->
             <section class="entrance-bespoke" v-if="isShowMake">
                 <div class="lately-bespoke">
                     <span>最近预约</span>
@@ -48,39 +52,18 @@
                 </div>
             </section>
             <!-- 门店导航 -->
-            <section class="entrance-model">
+            <section class="entrance-model" v-if="shopList.length > 0">
                 <div class="entrance-tit">
                     <strong>门店导航</strong>
                 </div>
                 <div class="store-list">
-                    <div class="lesson-item">
+                    <div class="lesson-item" v-for="(item,index) in shopList" :key="index">
                         <div class="lesson-img">
-                            <img src="../../../static/img/c_shop0.jpg" alt="">
-                            <div class="layer-box"></div>
+                            <img :src="item.image" alt="">
                         </div>
                         <div class="store-info lesson-info">
-                            <p class="tit one-line">上海K11体验店</p>
-                            <p class="lesson-p two-line">上海市淮海中路300号K11购物艺术中心B2层-11商铺 </p>
-                        </div>
-                    </div>
-                    <div class="lesson-item">
-                        <div class="lesson-img">
-                            <img src="../../../static/img/c_shop0.jpg" alt="">
-                            <div class="layer-box"></div>
-                        </div>
-                        <div class="store-info lesson-info">
-                            <p class="tit one-line">上海K11体验店</p>
-                            <p class="lesson-p two-line">上海市淮海中路300号K11购物艺术中心B2层-11商铺 </p>
-                        </div>
-                    </div>
-                    <div class="lesson-item">
-                        <div class="lesson-img">
-                            <img src="../../../static/img/c_shop0.jpg" alt="">
-                            <div class="layer-box"></div>
-                        </div>
-                        <div class="store-info lesson-info">
-                            <p class="tit one-line">上海K11体验店</p>
-                            <p class="lesson-p two-line">上海市淮海中路300号K11购物艺术中心B2层-11商铺 </p>
+                            <p class="tit one-line" >{{item.name}}</p>
+                            <p class="lesson-p two-line">{{item.address}}</p>
                         </div>
                     </div>
                 </div>
@@ -104,6 +87,7 @@
                </div>
             </section>
         </article>
+        <div  id="map_gaode"></div>
         <!-- 登录 -->
         <login-lay v-show="isShowLogin"></login-lay>
     </div>
@@ -114,6 +98,7 @@
     import VTitle from '@/components/title'
     import swiperBanner from '@/components/swiper'
     import LoginLay from '@/components/login'
+    import AMap from 'AMap'
     import classList from '@/components/classlist'
 
     export default {
@@ -126,9 +111,14 @@
                 isShowLogin:'', //是否显示登录弹窗
                 isShowMake:'',  //是否显示预约 课程
                 lineUserName:'',    //用户名称
+                showAll:false,
                 userLogin:'',     //是否登录
                 userHeader:'../../../static/img/pic_touxiang.png',  //用户头像 未登录
                 buyCourseNum:6, //用户购买课程数
+                positionData:{
+                    O:31.188968,
+                    P:121.439106,
+                },
                 bannerParam:{           //banner swiper 配置
                     auto:false,
                     swiperId:'aboutbanner',
@@ -136,6 +126,7 @@
                     delay:5000,
                     switchOpen: 1,
                 },
+                shopList:[],        //店铺信息
                 swipeList: [
                     {
                         id:1,
@@ -211,6 +202,7 @@
         },
         created(){
             this.init();
+            this.getUserGps();
             //this.getCourseList();
         },
         methods:{
@@ -225,6 +217,7 @@
                         imgUrl:'https://mobile.daydaycook.com.cn/logo.png',
                         linkUrl:window.location.href
                     });  
+                    self.showAll = true;
                 }else{
                     self.userLogin = self.$store.state.isLogin || localStorage.getItem('isLogin');    //用户是否登录
                     if(self.userLogin == 'true' || self.userLogin == true){
@@ -234,12 +227,46 @@
                             console.log('获取的用户信息',res);
                             self.userHeader = res.img ? res.img : '../../../static/img/profile.png';
                             self.lineUserName = res.lineUserName;
+                            self.showAll = true;
                         })
                         self.phone = localStorage.getItem('phone') || self.$store.state.phone;
                         self.isShowMake = true;
+                        
                     }
                 }
+               
+                 this.getShopInfoByUid();
             },
+
+            /* 获取用户gps */
+            getUserGps(){
+                let self =this;
+                let map = new AMap.Map("map_gaode", {
+                    resizeEnable: true,
+                    center: [121.439106,31.188968],// 地图中心点
+                    zoom: 13 // 地图显示的缩放级别
+                });
+                map.plugin('AMap.Geolocation', function() {
+                   let geolocation = new AMap.Geolocation({
+                        timeout: 10000,          //超过10秒后停止定位，默认：无穷大
+                        buttonOffset: new AMap.Pixel(10, 20),//定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
+                        zoomToAccuracy: true,      //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
+                        buttonPosition:'RB'
+                    });
+                    map.addControl(geolocation);
+                    geolocation.getCurrentPosition();
+                    //返回定位信息
+                    
+                    AMap.event.addListener(geolocation, 'complete', function(data){
+                        if(data.position){
+                            self.positionData.O = data.position.O;
+                            self.positionData.P = data.position.P;
+                            console.log(self.positionData);
+                        }
+                    });
+                });
+            },
+           
 
             /* 根据用户uid 获取用户信息 */
             getUserByUid(uid){ 
@@ -253,6 +280,23 @@
                 });
             },
 
+            /* 根据Uid 获取店铺信息 */
+            getShopInfoByUid(){
+                let self = this;
+                let _listUrl = '/daydaycook/server/newCourse/getAddressInfoByUid.do?uid=';
+                this.ajaxDataFun('get',_listUrl, function(res){
+                    if(res.code =='200'){
+                        let listdata = res.list;
+                        if(listdata && listdata.length >0){
+                            listdata.map(item => {
+                                item.image = (item.image.indexOf('.jpg') > -1) ? item.image : '../../../static/img/pic_aboutus6.jpg'
+                            })
+                        }
+                        self.shopList = listdata;
+                    }
+                })
+            },
+
             /* 显示登录弹窗 */
             showLogin(){
                 this.isShowLogin =!this.userLogin;
@@ -260,17 +304,12 @@
 
             /* 获取课程列表 */
             getCourseList(){
-                var _listUrl = '/daydaycook/server/offline/reservationUser/offlineCourseList.do?&reservationType=' + this.courseStatus + '&categoryId=' + this.categoryId + '&pageSize=5' + '&currentPage=' + this.currentPage + "&mobile=" + this.phone + "&type=1&uid=" + this.uid;
+                var _listUrl = '/daydaycook/server/offline/reservationUser/offlineCourseList.do?pageSize=5' + '&currentPage=' + this.currentPage + "&uid=" + this.uid;
                 this.ajaxDataFun('post', _listUrl, function(obj){
                     if(obj.code == '200'){
                         console.log(obj.data.list);
                         let objLen = obj.data.list.length;
-                        if(objLen){
-                            for(let j=0; j < objLen; j++){
-                                _this.listData.push(obj.data.list[j]);
-                            }
-                            _this.$set(_this.$data, 'listData', _this.listData);
-                        }
+                        
                     }
                 })
             }
