@@ -16,7 +16,7 @@
                               filterSubData.startDay !== null ||
                               filterSubData.categoryId.length > 0 ||
                               filterSubData.teacherId.length > 0)}'><!-- f-icon 筛选前， f-icon-active 筛选后 ； triangle 下三角，triangle-active 上三角-->
-                    <div v-if="isMember == 'false'">非会员</div>
+                    <div v-if="listFilter.packageList && listFilter.packageList.length == 0">无套餐</div>
                     <div v-else @click="()=> { pfShow.package = true; pfShow.filter = false;}">{{packageText}}<i></i></div>
                     <div @click="()=> { pfShow.filter = true; pfShow.package = false;}"><b></b>筛选</div>
                 </div>
@@ -140,9 +140,9 @@
             }
         },
         created () {
-            var isLogin = this.$store.state.isLogin || localStorage.getItem('isLogin')
+          //  var isLogin = this.$store.state.isLogin || localStorage.getItem('isLogin')
 
-            if(isLogin == 'true' || isLogin == true){
+           // if(isLogin == 'true' || isLogin == true){
                 console.log(this.showChooseAdd, 'showChooseAdd')
                 this.initDate()      //获取全局数据
                 this.getCateList()   //获取分类列表
@@ -158,7 +158,7 @@
                     this.watchChange()
                     this.getAddList()    //获取地址列表
                 }
-            }
+          //  }
         },
         components: {
             listLay,
@@ -200,8 +200,8 @@
              * Date: 2018/8/13
              */
             memberClass() {
-                // let _cateUrl = `/daydaycook/server/offline/webcourse/filterList.do?userId=${this.uid}&addressId=${this.addressId}`
-                let _cateUrl = '/daydaycook/server/offline/webcourse/filterList.do?userId=11&addressId=2';
+                let _cateUrl = `/daydaycook/server/offline/webcourse/filterList.do?userId=${this.uid}&addressId=${this.addressId}`
+                //let _cateUrl = '/daydaycook/server/offline/webcourse/filterList.do?userId=11&addressId=2';
                 logic.ajaxGetData(_cateUrl).then(({data}) => {
                     data.selectList.forEach((item) => {
                         item.pick = 2

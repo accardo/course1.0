@@ -14,13 +14,13 @@ export class Logic {
 	 * Author: yanlichen <lichen.yan@daydaycook.com.cn>
 	 * Date: 2018/8/15
 	 */
-	ajaxGetData(url, ajaxData) {
+	ajaxGetData(url) {
 		return new Promise((resolve) => {
 			Vue.prototype.ajaxDataFun('get', url, (data) => {
 				if (data.code == '200') {
 					return resolve(data);
 				}
-			}, ajaxData)
+			})
 		})
 	}
 }

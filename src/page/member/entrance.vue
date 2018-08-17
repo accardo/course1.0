@@ -58,13 +58,15 @@
                 </div>
                 <div class="store-list">
                     <div class="lesson-item" v-for="(item,index) in shopList" :key="index">
-                        <div class="lesson-img">
-                            <img :src="item.image" alt="">
-                        </div>
-                        <div class="store-info lesson-info">
-                            <p class="tit one-line" >{{item.name}}</p>
-                            <p class="lesson-p two-line">{{item.address}}</p>
-                        </div>
+                        <router-link :to="{ name: 'expShop' }">
+                            <div class="lesson-img">
+                                <img :src="item.image" alt="">
+                            </div>
+                            <div class="store-info lesson-info">
+                                <p class="tit one-line" >{{item.name}}</p>
+                                <p class="lesson-p two-line">{{item.address}}</p>
+                            </div>
+                        </router-link>
                     </div>
                 </div>
             </section>
@@ -159,7 +161,7 @@
                         pageId:6,
                     }
                 ],
-                listType: 1, // 
+                listType: 1, //
                 listData1: [
                     {
                         img: '../../static/img/c_shop0.jpg',
@@ -196,7 +198,7 @@
                         address: '上海K11体验店',
                         name: '张学世'
                     },
-                    
+
                 ]
             }
         },
@@ -216,7 +218,7 @@
                         desc:'线下课程分享信息描述',
                         imgUrl:'https://mobile.daydaycook.com.cn/logo.png',
                         linkUrl:window.location.href
-                    });  
+                    });
                     self.showAll = true;
                 }else{
                     self.userLogin = self.$store.state.isLogin || localStorage.getItem('isLogin');    //用户是否登录
@@ -231,10 +233,10 @@
                         })
                         self.phone = localStorage.getItem('phone') || self.$store.state.phone;
                         self.isShowMake = true;
-                        
+
                     }
                 }
-               
+
                  this.getShopInfoByUid();
             },
 
@@ -256,7 +258,7 @@
                     map.addControl(geolocation);
                     geolocation.getCurrentPosition();
                     //返回定位信息
-                    
+
                     AMap.event.addListener(geolocation, 'complete', function(data){
                         if(data.position){
                             self.positionData.O = data.position.O;
@@ -266,10 +268,10 @@
                     });
                 });
             },
-           
+
 
             /* 根据用户uid 获取用户信息 */
-            getUserByUid(uid){ 
+            getUserByUid(uid){
                 let infoUrl = `/daydaycook/server/contract/userInfo.do?uid=${uid}`;
                 return new Promise((resolve) => {
                     this.ajaxDataFun('post', infoUrl, (obj) => {
@@ -309,7 +311,7 @@
                     if(obj.code == '200'){
                         console.log(obj.data.list);
                         let objLen = obj.data.list.length;
-                        
+
                     }
                 })
             }
@@ -323,7 +325,10 @@
         },
     }
 </script>
-<style>
+<style scoped>
+    a{
+        display: inherit;
+    }
    .entrance{
        width: 100%;
        height: auto;

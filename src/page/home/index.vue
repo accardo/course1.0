@@ -3,7 +3,7 @@
         <VTitle>{{ pageTitle }} </VTitle>
         <HeaderLay></HeaderLay>
         <FooterLay v-bind:position="position"></FooterLay>
-        <LoginLay v-show="$store.state.isShowLogin == true"></LoginLay>
+        <!--<LoginLay v-show="$store.state.isShowLogin == true"></LoginLay>-->
     </div>
 </template>
 
@@ -12,7 +12,7 @@
     import VTitle from '@/components/title'
     import HeaderLay from './header'
     import FooterLay from '@/components/footer'
-    import LoginLay from '@/components/login'
+    // import LoginLay from '@/components/login'
 
     export default {
         name: 'login',
@@ -29,7 +29,7 @@
             HeaderLay,
             FooterLay,
             VTitle,
-            LoginLay,
+           // LoginLay,
         },
         methods: {},
         // computed: {
