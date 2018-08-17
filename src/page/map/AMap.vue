@@ -1,0 +1,199 @@
+<template>
+    <div class="main-content">
+        <div id="container"></div>
+    </div>
+</template>
+
+<script>
+    import AMap from 'AMap';   //在页面中引入高德地图
+	export default {
+        data () {
+            return {}
+        },
+        mounted (){
+            this.Amap()
+        },
+        methods: {
+            Amap() {
+                var map = new AMap.Map("container", {
+                    resizeEnable: true,
+                    center: [121.439106,31.188968],// 地图中心点
+                    zoom: 13 // 地图显示的缩放级别
+                });
+                new AMap.Marker({ // 添加自定义点标记
+                    map: map,
+                    position: [121.436983,31.189669], //基点位置
+                    offset: new AMap.Pixel(-17, -42), //相对于基点的偏移位置
+                    draggable: false,  //是否可拖动
+                    content: '<div class="marker-route">\
+									<div class="marker-left"><p>日日煮美食生活体验馆日日煮美食生活体验馆</p><p>上海市徐汇区xxxxxxx上海市徐汇区xxxxxxx</p></div>\
+									<div class="marker-right"><i></i>导航</div>\
+								</div>'  //自定义点标记覆盖物内容
+                });
+            }
+        }
+	}
+</script>
+<style scoped>
+    html, body {
+        margin: 0;
+        height: 100%;
+        width: 100%;
+        position: absolute;
+    }
+    #container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .button-group {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        font-size: 12px;
+        padding: 10px;
+    }
+
+    .button-group .button {
+        height: 28px;
+        line-height: 28px;
+        background-color: #0D9BF2;
+        color: #FFF;
+        border: 0;
+        outline: none;
+        padding-left: 5px;
+        padding-right: 5px;
+        border-radius: 3px;
+        margin-bottom: 4px;
+        cursor: pointer;
+    }
+    .button-group .inputtext {
+        height: 26px;
+        line-height: 26px;
+        border: 1px;
+        outline: none;
+        padding-left: 5px;
+        padding-right: 5px;
+        border-radius: 3px;
+        margin-bottom: 4px;
+        cursor: pointer;
+    }
+    #tip {
+        background-color: #fff;
+        padding-left: 10px;
+        padding-right: 10px;
+        position: absolute;
+        font-size: 12px;
+        right: 10px;
+        top: 20px;
+        border-radius: 3px;
+        border: 1px solid #ccc;
+        line-height: 30px;
+    }
+    #myPageTop {
+        position: absolute;
+        top: 5px;
+        right: 10px;
+        background: #fff none repeat scroll 0 0;
+        border: 1px solid #ccc;
+        margin: 10px auto;
+        padding:6px;
+        font-family: "Microsoft Yahei", "微软雅黑", "Pinghei";
+        font-size: 14px;
+    }
+    #myPageTop label {
+        margin: 0 20px 0 0;
+        color: #666666;
+        font-weight: normal;
+    }
+    #myPageTop input {
+        width: 170px;
+    }
+    #myPageTop .column2{
+        padding-left: 25px;
+    }
+</style>
+<style>
+    .marker-route {
+        position: absolute;
+        left: -60px;
+        top: -60px;
+        width: 240px;
+        height: 60px;
+        background: #fff;
+        border: #f0f0f0 solid 1px;
+        border-radius: 4px;
+    }
+    .marker-route:before {
+        display: block;
+        position: absolute;
+        content: ' ';
+        left: 70px;
+        bottom: -8px;
+        z-index: 2;
+        width: 0;
+        height: 0;
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+        border-top: 8px solid #fff;
+    }
+    .marker-route:after {
+        display: block;
+        position: absolute;
+        content: ' ';
+        left: 69px;
+        bottom: -9px;
+        z-index: 1;
+        width: 0;
+        height: 0;
+        border-left: 7px solid transparent;
+        border-right: 7px solid transparent;
+        border-top: 9px solid #ededed;
+    }
+    .marker-left {
+        padding: 6px 0 6px 10px;
+        float: left;
+        width: 65%;
+    }
+    .marker-left p {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+    .marker-left p:first-of-type {
+        font-size: 16px;
+        color: #333;
+    }
+    .marker-left p:last-of-type{
+        color: #666666;
+        font-size: 10px;
+    }
+    .marker-right{
+        float: right;
+        width: 25%;
+        padding: 0 3px;
+        height: 100%;
+        background-image: linear-gradient(45deg, #393939 0%, #2F2F2F 100%);
+        border-radius: 0 4px 4px 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 14px;
+        cursor: pointer;
+    }
+    .marker-right i{
+        display: inline-block;
+        background: url("../../../static/img/dh.png") no-repeat;
+        width: 12px;
+        height: 14px;
+        background-size: contain;
+        margin-right: 2px;
+        vertical-align: middle;
+    }
+</style>

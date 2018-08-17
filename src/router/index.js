@@ -14,6 +14,8 @@ const notice = r => require.ensure([], () => r(require('../page/member/notice'))
 const notMember = r => require.ensure([], () => r(require('../page/member/notMember')), 'notMember')
 
 const entrance = r => require.ensure([], () => r(require('../page/member/entrance')), 'entrance')
+const AMap = r => require.ensure([], () => r(require('../page/map/AMap')), 'AMap')
+const expShop = r => require.ensure([], () => r(require('../page/member/expShop')), 'expShop')
 
 
 Vue.use(Router)
@@ -41,7 +43,7 @@ export default new Router({
             path: '/member',
             name: 'member',
             meta: {
-               requireAuth: true, 
+               requireAuth: true,
             },
             component: member
         },
@@ -54,7 +56,7 @@ export default new Router({
             path: '/myInfo',
             name: 'myInfo',
             meta: {
-               requireAuth: true, 
+               requireAuth: true,
             },
             component: myInfo
         },
@@ -62,7 +64,7 @@ export default new Router({
             path: '/bookeDetails',
             name: 'bookeDetails',
             meta: {
-               requireAuth: true, 
+               requireAuth: true,
             },
             component: bookeDetails
         },
@@ -70,7 +72,7 @@ export default new Router({
             path: '/contract',
             name: 'contract',
             meta: {
-               requireAuth: true, 
+               requireAuth: true,
             },
             component: contract
         },
@@ -78,7 +80,7 @@ export default new Router({
             path: '/notice',
             name: 'notice',
             meta: {
-               requireAuth: true, 
+               requireAuth: true,
             },
             component: notice
         },
@@ -86,10 +88,25 @@ export default new Router({
             path: '/entrance',
             name: 'entrance',
             meta: {
-               requireAuth: false, 
+               requireAuth: false,
             },
             component: entrance
+        },
+		{
+            path: '/AMap',
+            name: 'AMap',
+            meta: {
+               requireAuth: true,
+            },
+            component: AMap
+        },
+		{
+            path: '/expShop',
+            name: 'expShop',
+            meta: {
+               requireAuth: true,
+            },
+            component: expShop
         }
-        
 	]
 })

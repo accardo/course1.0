@@ -21,32 +21,32 @@
                 </div>
             </div>
             <div class="title">{{ item.title }} </div>
-            <div class="teacher"><span>{{ item.teacherName }}</span></div>
+            <!--<div class="teacher"><span>{{ item.teacherName }}</span></div>-->
             <div class="info" v-if="$store.state.isMember == true">
-                <template v-if="myCourse == 'false'">
-                    <p class="time" v-if="item.reservationState == 1">
-                        剩余名额<i>{{ item.totalCount-item.reservationCount }}</i>人
-                    </p>
-                    <p class="time" v-if="item.reservationState == 2">
-                        剩余名额<i>0</i>人
-                    </p>
-                    <p v-if="item.reservationState == 3">未满足预约条件</p>
-                </template>
                 <p>
                     <template v-if="item.appointState != 3">
                         {{ item.startTime | formatTimeOne }}-{{ item.endTime | formatTimeTwo }}
                     </template>
                 </p>
+                <template v-if="myCourse == 'false'">
+                    <p class="time" v-if="item.reservationState == 1">
+                        <span>{{ item.teacherName }}</span> |  剩余名额<i>{{ item.totalCount-item.reservationCount }}</i>人
+                    </p>
+                    <p class="time" v-if="item.reservationState == 2">
+                        <span>{{ item.teacherName }}</span> | 剩余名额<i>0</i>人
+                    </p>
+                    <p v-if="item.reservationState == 3">未满足预约条件</p>
+                </template>
                 <span v-if="myCourse == 'true'">{{ item.address }}</span>
             </div>
             <div class="info" v-if="$store.state.isMember != true">
-                <p class="time" v-if="myCourse == 'false'">
-                    剩余名额 <i>{{ item.totalCount - item.reservationCount }} </i>人
-                </p>
                 <p>
                     <template v-if="item.appointState != 3">
-                    {{ item.startTime | formatTimeOne }}-{{ item.endTime | formatTimeTwo }}
+                        {{ item.startTime | formatTimeOne }}-{{ item.endTime | formatTimeTwo }}
                     </template>
+                </p>
+                <p class="time" v-if="myCourse == 'false'">
+                    <span>{{ item.teacherName }}</span> | 剩余名额 <i>{{ item.totalCount - item.reservationCount }} </i>人
                 </p>
                 <span v-if="myCourse =='true'">{{ item.addressName }}</span>
             </div>
@@ -125,10 +125,23 @@
     }
 </script>
 <style scoped>
-    .courseList {
-        margin-top: 50px;
-    }
     .courseItem .title {
         font-size: 20px;
+    }
+    .courseItem .info {
+        padding-top: 10px;
+    }
+    .courseItem .info p {
+        color: #A5A4A4;
+    }
+    .courseItem .button {
+        width: 76px;
+    }
+    .courseItem .button.active {
+        background-image: linear-gradient(45deg, #393939 0%, #2F2F2F 100%);
+        box-shadow: 0 2px 8px 0 rgba(0,0,0,0.20);
+        border-radius: 100px;
+        color: #fff;
+        border: none;
     }
 </style>

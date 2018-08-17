@@ -29,6 +29,7 @@
                 <p>{{ allData.addressName }} </p>
             </div>
             <div class="infoItem" v-html="allData.introduction"></div>
+            <div class="exp-shop-bg">
             <template v-if="!isMember && canMake">
                 <div class="btButton active 1" v-if="!isLogin" @click="needLogin=true"> 立即预约 </div>
                 <div class="btButton active 2" v-if="isLogin && allData.reservationState != 5" @click="showNotMPop=true">
@@ -57,11 +58,11 @@
                     即将开课，无法预约
                 </div>
             </template>
-
+            </div>
             <div class="popBg" v-show="showNotMPop" @click="showNotMPop=false"></div>
             <div class="popRed" v-show="showNotMPop">
                 <div class="img">
-                    <img src="../../../static/img/clock.png" alt="" />
+                    <img src="../../../static/img/tc_icon_yuyue.png" alt="" />
                 </div>
                 <div class="tip">无法预约</div>
                 <div class="des">
@@ -84,7 +85,7 @@
             <div class="popBg" v-show="RSuccess" @click="RSuccess = false"></div>
             <div class="popRed" v-show="RSuccess">
                 <div class="img">
-                    <img src="../../../static/img/clock.png" alt="" />
+                    <img src="../../../static/img/tc_icon_yuyue.png" alt="" />
                 </div>
                 <div class="tip">确定预约课程吗？</div>
                 <div class="des">
@@ -103,7 +104,7 @@
             <div class="popBg" v-show="CSuccess" @click="CSuccess = false"></div>
             <div class="popRed" v-show="CSuccess">
                 <div class="img">
-                    <img src="../../../static/img/clock.png" alt="" />
+                    <img src="../../../static/img/tc_icon_yuyue.png" alt="" />
                 </div>
                 <template v-if="cancelCount < 3">
                     <div class="tip" >确定取消预约吗？</div>
@@ -336,5 +337,55 @@
         -o-filter: grayscale(100%);
         filter: grayscale(100%);
         filter: gray;
+    }
+    .details .infoBox {
+        border-radius: 4px;
+    }
+    .details .infoBox .title {
+        font-size: 20px;
+    }
+    .details .btButton.active {
+        background-image: linear-gradient(45deg, #393939 0%, #2F2F2F 100%);
+        box-shadow: 0 2px 8px 0 rgba(0,0,0,0.20);
+        border-radius: 100px;
+    }
+    .popRed {
+        background: #fff;
+        border-radius: 8px;
+    }
+    .popRed .tip {
+        color: #000;
+        font-size: 16px;
+    }
+    .popRed .des, .popRed p {
+        color: #474747;
+        font-size: 14px;
+    }
+    .popRed .button {
+        background-image: linear-gradient(45deg, #393939 0%, #2F2F2F 100%);
+        box-shadow: 0 2px 8px 0 rgba(0,0,0,0.20);
+        border-radius: 100px;
+        color: #fff;
+        font-size: 16px;
+    }
+    .popRed .img {
+        padding: 0;
+        -webkit-box-shadow: 0 3px 8px 0 rgba(255,82,105,0.30);
+        box-shadow: 0 3px 8px 0 rgba(255,82,105,0.30);
+    }
+    .exp-shop-bg {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100px;
+        background: url("../../../static/img/bottombar_mengceng@3x.png") no-repeat;
+        background-size: cover;
+        display: -webkit-flex;
+        display: flex;
+        -webkit-justify-content: center;
+        justify-content: center;
+        -webkit-align-items: center;
+        align-items: center;
     }
 </style>

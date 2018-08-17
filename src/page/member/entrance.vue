@@ -36,19 +36,18 @@
                     <router-link to="/" tag="span"> 查看更多 </router-link>
                 </div>
                 <div class="lesson-list">
-                    <class-list :list-data="listData1" :list-type="listType"></class-list>
-                    <!-- <div class="lesson-item">
+                    <!-- <class-list :list-data="listData1" :list-type="listType"></class-list> -->
+                    <div class="lesson-item" v-for="(item,index) in coursesData" :key="index">
                         <div class="lesson-img">
-                            <img src="../../../static/img/c_shop0.jpg" alt="">
-                            <span>体验课</span>
-                            <div class="layer-box"></div>
+                            <img :src="item.courseImage" alt="">
+                            <span>{{item.categoryName}}</span>
                         </div>
                         <div class="lesson-info">
-                            <p class="tit two-line">巧克力甜甜圈体验课巧克力甜甜圈体验课甜甜圈体验课</p>
-                            <p class="lesson-p">9/23周六 15:00-17:00</p>
-                            <p class="lesson-p">俞斌老师 | 剩余名额<strong>3</strong>人</p>
+                            <p class="tit two-line">{{item.courseTitle}}</p>
+                            <p class="lesson-p">{{item.startTime}}</p>
+                            <p class="lesson-p">{{item.teacherName }} | 剩余名额<strong>{{item.reservationCount}}</strong>人</p>
                         </div>
-                    </div> -->
+                    </div>
                 </div>
             </section>
             <!-- 门店导航 -->
@@ -58,13 +57,15 @@
                 </div>
                 <div class="store-list">
                     <div class="lesson-item" v-for="(item,index) in shopList" :key="index">
-                        <div class="lesson-img">
-                            <img :src="item.image" alt="">
-                        </div>
-                        <div class="store-info lesson-info">
-                            <p class="tit one-line" >{{item.name}}</p>
-                            <p class="lesson-p two-line">{{item.address}}</p>
-                        </div>
+                        <router-link :to="{ name: 'expShop' }">
+                            <div class="lesson-img">
+                                <img :src="item.image" alt="">
+                            </div>
+                            <div class="store-info lesson-info">
+                                <p class="tit one-line" >{{item.name}}</p>
+                                <p class="lesson-p two-line">{{item.address}}</p>
+                            </div>
+                        </router-link>
                     </div>
                 </div>
             </section>
@@ -100,6 +101,7 @@
     import LoginLay from '@/components/login'
     import AMap from 'AMap'
     import classList from '@/components/classlist'
+    import * as util from '@/utils/utils.js'
 
     export default {
         name:'entrance',
@@ -127,6 +129,7 @@
                     switchOpen: 1,
                 },
                 shopList:[],        //店铺信息
+                coursesData:[],     //最新课程
                 swipeList: [
                     {
                         id:1,
@@ -159,51 +162,13 @@
                         pageId:6,
                     }
                 ],
-                listType: 1, // 
-                listData1: [
-                    {
-                        img: '../../static/img/c_shop0.jpg',
-                        tip: '体验课',
-                        title: '巧克力甜甜圈体验课',
-                        startTime: 1534230000000,
-                        endTime: 1534230300000,
-                        teacher: '小鱼老师',
-                        num: '3',
-                        seIs: true,
-                        address: '上海K11体验店',
-                        name: '张学世'
-                    },
-                    {
-                        img: '../../static/img/c_shop0.jpg',
-                        tip: '体验课',
-                        title: '巧克力甜甜圈体验课',
-                        startTime: 1534230000000,
-                        endTime: 1534230300000,
-                        teacher: '老坑老师',
-                        num: '3',
-                        seIs: false,
-                        address: '上海K11体验店',
-                        name: '张学世'
-                    },{
-                        img: '../../static/img/c_shop0.jpg',
-                        tip: '初级甜点',
-                        title: '巧克力甜甜圈体验课名称超出隐藏显示省略号威风威风威风我',
-                        startTime: 1534230000000,
-                        endTime: 1534230300000,
-                        teacher: '老坑老师',
-                        num: '2',
-                        seIs: false,
-                        address: '上海K11体验店',
-                        name: '张学世'
-                    },
-                    
-                ]
+                listType: 1, //
             }
         },
         created(){
             this.init();
             this.getUserGps();
-            //this.getCourseList();
+            this.getCourseList();
         },
         methods:{
             /* 初始化 */
@@ -216,7 +181,7 @@
                         desc:'线下课程分享信息描述',
                         imgUrl:'https://mobile.daydaycook.com.cn/logo.png',
                         linkUrl:window.location.href
-                    });  
+                    });
                     self.showAll = true;
                 }else{
                     self.userLogin = self.$store.state.isLogin || localStorage.getItem('isLogin');    //用户是否登录
@@ -231,10 +196,10 @@
                         })
                         self.phone = localStorage.getItem('phone') || self.$store.state.phone;
                         self.isShowMake = true;
-                        
+
                     }
                 }
-               
+
                  this.getShopInfoByUid();
             },
 
@@ -256,7 +221,7 @@
                     map.addControl(geolocation);
                     geolocation.getCurrentPosition();
                     //返回定位信息
-                    
+
                     AMap.event.addListener(geolocation, 'complete', function(data){
                         if(data.position){
                             self.positionData.O = data.position.O;
@@ -266,10 +231,10 @@
                     });
                 });
             },
-           
+
 
             /* 根据用户uid 获取用户信息 */
-            getUserByUid(uid){ 
+            getUserByUid(uid){
                 let infoUrl = `/daydaycook/server/contract/userInfo.do?uid=${uid}`;
                 return new Promise((resolve) => {
                     this.ajaxDataFun('post', infoUrl, (obj) => {
@@ -279,6 +244,7 @@
                     });
                 });
             },
+
 
             /* 根据Uid 获取店铺信息 */
             getShopInfoByUid(){
@@ -304,12 +270,17 @@
 
             /* 获取课程列表 */
             getCourseList(){
-                var _listUrl = '/daydaycook/server/offline/reservationUser/offlineCourseList.do?pageSize=5' + '&currentPage=' + this.currentPage + "&uid=" + this.uid;
+                let self = this;
+                var _listUrl = '/daydaycook/server/newCourse/getAddressCourseInfo.do?uid=' + this.uid;
                 this.ajaxDataFun('post', _listUrl, function(obj){
                     if(obj.code == '200'){
-                        console.log(obj.data.list);
-                        let objLen = obj.data.list.length;
-                        
+                        if(obj.list && obj.list.length >0){
+                            let coursesList =  obj.list;
+                            coursesList.map(item => {
+                                item.startTime = item.startTime ? util.formatTime(item.startTime) : '';
+                            })
+                            self.coursesData =  coursesList;
+                        }
                     }
                 })
             }
@@ -323,7 +294,10 @@
         },
     }
 </script>
-<style>
+<style scoped>
+    a{
+        display: inherit;
+    }
    .entrance{
        width: 100%;
        height: auto;
