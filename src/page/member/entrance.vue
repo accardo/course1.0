@@ -226,7 +226,7 @@
                     AMap.event.addListener(geolocation, 'complete', function(data){
                         if(data.position){
                             self.positionData =  data.position.O +','+data.position.P;
-                            self.getCourseList(self.positionData);
+                           // self.getCourseList(self.positionData);
                         }
                     });
                 });
@@ -267,7 +267,8 @@
             /* 根据Uid 获取店铺信息 */
             getShopInfoByUid(){
                 let self = this;
-                let _listUrl = '/daydaycook/server/newCourse/getAddressInfoByUid.do?uid='+self.uid;
+                let _listUrl = '/server/offline/webcourse/filterList.do';
+                console.log(_listUrl)
                 this.ajaxDataFun('get',_listUrl, function(res){
                     if(res &&  res.code =='200'){
                         let listdata = res.list;
