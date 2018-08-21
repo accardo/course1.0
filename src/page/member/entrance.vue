@@ -21,7 +21,7 @@
                     <p><span>{{courseData.addressName}}</span><span> | {{courseData.teacherName}}</span></p>
                 </div>
                 <div class="bespoke-time">
-                    <img class="bespoke-img"  src="../../../static/img/c_shop0.jpg" alt="">
+                    <img class="bespoke-img"  :src="courseData.imageUrl" alt="">
                     <dl>
                         <dt class="one-line">{{courseData.courseName}}</dt>
                         <dd>{{courseData.startTime}}-{{courseData.endTime}}</dd>
@@ -189,6 +189,7 @@
                     if(self.userLogin == 'true' || self.userLogin == true){
                         // 如果用户已登录    获取用户信息
                         self.uid = localStorage.getItem('uid') || self.$store.state.uid;
+                        self.userphone = localStorage.getItem('phone') || self.$store.state.phone;
                         self.getUserByUid(self.uid).then(res => {
                             console.log('获取的用户信息',res);
                             self.userInfo['userHeader'] = res.img ? res.img : '../../../static/img/profile.png';
@@ -197,8 +198,7 @@
                             let endtime = res.endTime ? self.getTimeArray(res.endTime) : '';
                             self.userInfo.endtime = endtime ? `${endtime[0]}/${endtime[1]}/${endtime[2]}` : '';
                         })
-                        self.phone = localStorage.getItem('phone') || self.$store.state.phone;
-                        self.getLastCourseByuid();
+                        self.getLastCourseByuid(self.userphone);
                     }
                 }
                 self.showAll = true;
@@ -226,7 +226,7 @@
                     AMap.event.addListener(geolocation, 'complete', function(data){
                         if(data.position){
                             self.positionData =  data.position.O +','+data.position.P;
-                           // self.getCourseList(self.positionData);
+                            self.getCourseList(self.positionData);
                         }
                     });
                 });
@@ -249,10 +249,9 @@
             },
 
             // 获取最近预约课程
-            getLastCourseByuid(){
+            getLastCourseByuid(userphone){
                 let self = this;
-                this.userInfo.userphone = this.$store.state.phone || localStorage.getItem('phone');
-                let _listUrl = '/daydaycook/server/offline/reservationUser/theLastTimeRes.do?mobile='+this.userInfo.userphone;
+                let _listUrl = '/daydaycook/server/offline/reservationUser/theLastTimeRes.do?mobile='+userphone;
                 this.ajaxDataFun('get',_listUrl, function(res){
                     if(res.code =='200'){
                         self.courseData = res.data;
@@ -267,16 +266,10 @@
             /* 根据Uid 获取店铺信息 */
             getShopInfoByUid(){
                 let self = this;
-                let _listUrl = '/server/offline/webcourse/filterList.do';
-                console.log(_listUrl)
+                let _listUrl = 'http://101.37.81.46/daydaycook/server/offline/webcourse/filterList.do';
                 this.ajaxDataFun('get',_listUrl, function(res){
                     if(res &&  res.code =='200'){
                         let listdata = res.list;
-                        // if(listdata && listdata.length >0){
-                        //     listdata.map(item => {
-                        //         item.image = (item.image.indexOf('.jpg') > -1) ? item.image : '../../../static/img/pic_aboutus6.jpg'
-                        //     })
-                        // }
                         self.shopList = listdata;
                     }
                 })
