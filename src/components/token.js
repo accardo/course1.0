@@ -16,7 +16,7 @@ if(domainAdd.indexOf('localhost') > -1 || domainAdd.indexOf('127') > -1 || domai
 }else{
     domainAdd = "//api.daydaycook.com.cn";
 }
-	//domainAdd = "http://192.168.18.226:8080";
+	domainAdd = "http://101.37.81.46";
 var nowBrush = Date.parse(new Date());
 var tokenBrush = "FB5A1FF3D574DF222E51B6AB862067A246049A01" + nowBrush;
 tokenBrush = _hex_md5(tokenBrush).toUpperCase();
@@ -171,13 +171,7 @@ function getPubFunction(){
 Vue.prototype.ajaxDataFun = function(method,url,callSuccess,jsonM){
     var _method = method
     newHeader();
-    var thisUrl ='';
-    if(url && url.indexOf('getAddressInfoByUid') >-1 || url.indexOf('getAddressCourseInfo') > -1){
-        thisUrl = 'http://192.168.18.222:8080' + filterUrl(url);
-    }else{
-        thisUrl = domainAdd + filterUrl(url);
-    }
-    // var thisUrl = domainAdd + filterUrl(url);
+    var thisUrl = domainAdd + filterUrl(url);
     _axios({
         method:_method,
         url:thisUrl,

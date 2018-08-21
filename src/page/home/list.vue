@@ -1,89 +1,105 @@
 <template>
-     <div class="courseList">
-        <div class="courseItem" v-for="item in listData">
-            <router-link :to="'/details?id=' + item.offlineCourseId">
-            <div class="img">
-                <img :src="item.imageUrl + '?x-oss-process=image/resize,w_640'" alt="">
-                <div class="tip">
-                    <span v-if="myCourse == 'false' && item.reservationState == 0">
-                        已预约
-                    </span>
-                    <span v-if="myCourse == 'true' && item.reservationState == 0 && item.courseState == '未开始'">未开课</span>
-                    <span v-if="myCourse == 'true' && item.reservationState == 0 && item.courseState == '已结束' && myCourse=='true'" class="off">
-                        已结束
-                    </span>
-                    <span v-for="attribute in item.childs" v-if="item.childs.length">
-                        {{ attribute.attributeName }}{{ item.categoryName }}
-                    </span>
-                    <span v-if="!item.childs.length">
-                        {{ item.categoryName }}
-                    </span>
+     <div id="mescroll" class="courseList mescroll" >
+         <div>
+            <div class="courseItem" v-for="item in listData">
+                <router-link :to="'/details?id=' + item.offlineCourseId">
+                <div class="list-img">
+                    <img :src="item.imageUrl" alt="">
+                    <div class="tip">
+                        <span>{{ item.cateAttr }}</span>
+                    </div>
+                    <div class="list-content">
+                        <div>
+                            <strong>{{item.courseName}}</strong>
+                            <div class="list-time">{{item.startTime | formatTimeOne }} - {{ item.endTime | formatTimeTwo}}</div>
+                            <div class="list-teacher">{{item.teacherName}}老师 |
+                                <template v-if="item.reservationState == 2 || item.reservationState === 1 || item.reservationState == 4">
+                                    剩余名额<b>{{item.surplusCount}}</b>人
+                                </template>
+                                <template v-else-if="item.reservationState == 0">
+                                    暂未开放预约
+                                </template>
+                                <template v-else-if="item.reservationState == 1">
+                                    不可预约
+                                </template>
+                                <template v-else-if="item.reservationState == 3">
+                                    未满足预约条件
+                                </template>
+                                <template v-else-if="item.reservationState == 5">
+                                    已超过预约截止时间
+                                </template>
+                                <template v-else-if="item.reservationState == 6">
+                                    超出同一时间预约课程数限制
+                                </template>
+                            </div>
+                        </div>
+                        <div>
+                            <button v-if="item.reservationState === 0" class="list-disabled">敬请期待</button>
+                            <button v-if="item.reservationState === 1">查看</button>
+                            <button v-if="item.reservationState === 2">预约</button>
+                            <button v-if="item.reservationState === 3 || item.reservationState === 4 || item.reservationState === 6"
+                                    class="list-disabled"
+                            >预约</button>
+                            <button v-if="item.reservationState === 5" class="list-disabled">已截止</button>
+                        </div>
+                    </div>
                 </div>
+                </router-link>
             </div>
-            <div class="title">{{ item.title }} </div>
-            <!--<div class="teacher"><span>{{ item.teacherName }}</span></div>-->
-            <div class="info" v-if="$store.state.isMember == true">
-                <p>
-                    <template v-if="item.appointState != 3">
-                        {{ item.startTime | formatTimeOne }}-{{ item.endTime | formatTimeTwo }}
-                    </template>
-                </p>
-                <template v-if="myCourse == 'false'">
-                    <p class="time" v-if="item.reservationState == 1">
-                        <span>{{ item.teacherName }}</span> |  剩余名额<i>{{ item.totalCount-item.reservationCount }}</i>人
-                    </p>
-                    <p class="time" v-if="item.reservationState == 2">
-                        <span>{{ item.teacherName }}</span> | 剩余名额<i>0</i>人
-                    </p>
-                    <p v-if="item.reservationState == 3">未满足预约条件</p>
-                </template>
-                <span v-if="myCourse == 'true'">{{ item.address }}</span>
-            </div>
-            <div class="info" v-if="$store.state.isMember != true">
-                <p>
-                    <template v-if="item.appointState != 3">
-                        {{ item.startTime | formatTimeOne }}-{{ item.endTime | formatTimeTwo }}
-                    </template>
-                </p>
-                <p class="time" v-if="myCourse == 'false'">
-                    <span>{{ item.teacherName }}</span> | 剩余名额 <i>{{ item.totalCount - item.reservationCount }} </i>人
-                </p>
-                <span v-if="myCourse =='true'">{{ item.addressName }}</span>
-            </div>
-            <div class="address" v-show="coursefrom">{{item.address}}</div>
-            <!-- reservationState 0 已约 1可约 2约满 3不能约-->
-            <template v-if="$store.state.isMember != true || validContractCount == 0">
-                <div class="button" :class="{active:item.reservationState != 2 && item.appointState != 3}">
-                    预约
-                </div>
-            </template>
-            <template v-if="$store.state.isMember == true && validContractCount != 0">
-                <div class="button" v-if="item.reservationState == 2 || item.reservationState == 3"> 预约</div>
-                <div class="button active" v-if="item.reservationState == 1">预约</div>
-                <div class="button active" v-if="item.reservationState == 0 ">查看</div>
-            </template>
-            </router-link>
-        </div>
-        <p class="isLoading"> {{ $store.state.loadingTxt }} </p>
+         </div>
     </div>
 </template>
 
 <script>
     import common from '@/components/common.js'
+    //引入mescroll.min.js和mescroll.min.css
+    import MeScroll from 'mescroll.js'
+    import 'mescroll.js/mescroll.min.css'
     export default {
+        props: {
+            getData: {
+                type: Object,
+                default: {}
+            }
+        },
         data () {
             return {
                 pageTitle: '首页列表',
+                listData: []
             }
         },
-        created () {
-            // console.log(this.from)
+        mounted () {
+            //创建MeScroll对象
+            this.mescroll = new MeScroll("mescroll", { //在vue的mounted生命周期初始化mescroll,确保此处配置的id能够被找到
+                up: {
+                    callback: this.upCallback,
+                    isBounce: false,
+                    onScroll: (mescroll, y, isUp) => {
+                        console.log(mescroll, y)
+                        this.$emit('scroll-y', y);
+                    }
+                }
+             });
+            this.mescroll.lockDownScroll(true);
         },
         components: {
-
         },
-        props:['listData', 'myCourse', 'validContractCount','coursefrom'],
-        methods: { },
+        methods: {
+            upCallback(page) {
+                let _listUrl = `/daydaycook/server/offline/reservationUser/offlineCourseList.do?timeScope=${this.getData.filterSubData.timeScope}&reservationType=${this.getData.filterSubData.reservationType}&categoryId=${this.getData.filterSubData.categoryId}&mobile=${this.getData.phone}&uid=${this.getData.uid}&addressId=${this.getData.addressId}&packageId=${this.getData.packageId}&teacherId=${this.getData.filterSubData.teacherId}&pageSize=${page.size = 7}&currentPage=${page.num}`;
+                console.log(page, _listUrl)
+                this.ajaxDataFun('post', _listUrl, (res) => {
+                    if(res.code == '200') {
+                        if (page.num == 1) this.listData = [];
+                        this.listData = this.listData.concat(res.data);
+                        this.$nextTick(() => {
+                            this.mescroll.endSuccess(res.data.length);
+                        })
+                        console.log(res.data,  'upCallback');
+                    }
+                })
+            },
+        },
         filters:{
             formatTimeOne:function(str){
                 function setv(v){v = v < 10?'0' + v : v; return v; }
@@ -143,5 +159,65 @@
         border-radius: 100px;
         color: #fff;
         border: none;
+    }
+    .list-content{
+        display: flex;
+        display: -webkit-flex;
+        padding: 2px 14px 0;
+        -webkit-justify-content: space-between;
+        justify-content: space-between;
+        -webkit-align-items: center;
+        align-items: center;
+
+    }
+    .list-content .list-time, .list-teacher {
+        font-size: 12px;
+        color: #A5A4A4;
+    }
+    .list-teacher b{
+        color: #000;
+        font-size: 14px;
+        padding: 0 2px;
+    }
+
+    .list-content strong {
+        font-size: 20px;
+        color: #000;
+    }
+    .list-content div:last-of-type button {
+        padding: 6px 24px;
+        background-image: linear-gradient(45deg, #393939 0%, #2F2F2F 100%);
+        box-shadow: 0 2px 8px 0 rgba(0,0,0,0.20);
+        border-radius: 100px;
+        font-size: 14px;
+        color: #FFFFFF;
+        text-align: center;
+    }
+    .list-content div:last-of-type button.list-disabled {
+        background: #C4C4C4;
+        box-shadow: 0 2px 8px 0 rgba(0,0,0,0.10);
+        border-radius: 100px;
+    }
+    .tip {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+    }
+    .list-img .tip span {
+        background-color: #000;
+        color: #fff;
+        font-size: 10px;
+        margin-left: 2px;
+        padding: 2px 7px;
+        border-radius: 2px;
+        display: inline-block;
+        line-height: normal;
+    }
+    /*通过fixed固定mescroll的高度*/
+    .mescroll {
+        position: fixed;
+        top: 44px;
+        bottom: 0;
+        height: auto;
     }
 </style>
