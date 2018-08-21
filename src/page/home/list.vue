@@ -1,6 +1,6 @@
 <template>
      <div id="mescroll" class="courseList mescroll" >
-         <div>
+         <div id="dataList">
             <div class="courseItem" v-for="item in listData">
                 <router-link :to="'/details?id=' + item.offlineCourseId">
                 <div class="list-img">
@@ -65,7 +65,8 @@
         data () {
             return {
                 pageTitle: '首页列表',
-                listData: []
+                listData: [],
+                mescroll: null, //mescroll实例对象
             }
         },
         mounted () {
@@ -74,10 +75,18 @@
                 up: {
                     callback: this.upCallback,
                     isBounce: false,
+                    auto: true,
                     onScroll: (mescroll, y, isUp) => {
-                        console.log(mescroll, y)
                         this.$emit('scroll-y', y);
-                    }
+                    },
+                    warpId: null,
+                    empty: {
+                        warpId: "dataList",
+                        //列表第一页无任何数据时,显示的空提示布局; 需配置warpId或clearEmptyId才生效;
+                        icon: '/static/img/not_1.png',
+                        tip: "咦!?找不到哎!", //提示
+                    },
+                    htmlNodata: '<p class="upwarp-nodata">-- 我也是有底线的 --</p>', //无数据的布局
                 }
              });
             this.mescroll.lockDownScroll(true);
@@ -219,5 +228,8 @@
         top: 44px;
         bottom: 0;
         height: auto;
+    }
+    .mescroll-empty {
+        padding-top: 180px;
     }
 </style>

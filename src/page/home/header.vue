@@ -135,7 +135,6 @@
                 },
                 packageId: '',
                 pageSize: 10,
-                mescroll: null, //mescroll实例对象
                 phone: '',
                 getData: {
                 },
@@ -233,6 +232,7 @@
                 this.showChooseAdd = false
 
                 this.addressId = id
+                this.getData.addressId = id
                 this.addressTxt = txt
 
                 this.$store.state.addressId = id
@@ -241,7 +241,8 @@
                 localStorage.setItem('addressId', id)
                 localStorage.setItem('addressTxt', txt)
                 this.tipShow();
-                this.watchChange()
+                this.watchChange();
+                this.$refs.listRefresh.mescroll.resetUpScroll()
             },
             chooseFun:function(){
                 if(this.addressLen == '2'){
@@ -260,7 +261,7 @@
                 this.endListen = false
                 this.currentPage = 1
                 this.showCate = false
-               // this.getList('')
+                // this.getList('')
             },
             chooseCate:function(i){
                 this.pIndex = i
@@ -355,7 +356,7 @@
                 if (data.isActive) {
                     this.filterSubData[key] = data.id;
                 } else {
-                    this.filterSubData[key] = null;
+                    this.filterSubData[key] = '';
                 }
             },
             /*
