@@ -16,7 +16,7 @@ if(domainAdd.indexOf('localhost') > -1 || domainAdd.indexOf('127') > -1 || domai
 }else{
     domainAdd = "//api.daydaycook.com.cn";
 }
-	domainAdd = "http://101.37.81.46";
+	domainAdd = "http://101.37.81.46"
 var nowBrush = Date.parse(new Date());
 var tokenBrush = "FB5A1FF3D574DF222E51B6AB862067A246049A01" + nowBrush;
 tokenBrush = _hex_md5(tokenBrush).toUpperCase();
