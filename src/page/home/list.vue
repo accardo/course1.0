@@ -65,7 +65,8 @@
         data () {
             return {
                 pageTitle: '首页列表',
-                listData: []
+                listData: [],
+                mescroll: null, //mescroll实例对象
             }
         },
         mounted () {
@@ -74,6 +75,7 @@
                 up: {
                     callback: this.upCallback,
                     isBounce: false,
+                    auto: true,
                     onScroll: (mescroll, y, isUp) => {
                         console.log(mescroll, y)
                         this.$emit('scroll-y', y);
