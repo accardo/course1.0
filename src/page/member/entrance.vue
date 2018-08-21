@@ -264,7 +264,7 @@
             /* 根据Uid 获取店铺信息 */
             getShopInfoByUid(){
                 let self = this;
-                let _listUrl = 'http://101.37.81.46/daydaycook/server/offline/webcourse/filterList.do';
+                let _listUrl = '/daydaycook/server/newCourse/getAddressInfoByUid.do?uid='+ self.uis;
                 this.ajaxDataFun('get',_listUrl, function(res){
                     if(res &&  res.code =='200'){
                         let listdata = res.list;
