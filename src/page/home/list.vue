@@ -60,6 +60,10 @@
             getData: {
                 type: Object,
                 default: {}
+            },
+            isRefresh: {
+                type: Boolean,
+                default: false
             }
         },
         data () {
@@ -96,18 +100,27 @@
         methods: {
             upCallback(page) {
                 let _listUrl = `/daydaycook/server/offline/reservationUser/offlineCourseList.do?timeScope=${this.getData.filterSubData.timeScope}&reservationType=${this.getData.filterSubData.reservationType}&categoryId=${this.getData.filterSubData.categoryId}&mobile=${this.getData.phone}&uid=${this.getData.uid}&addressId=${this.getData.addressId}&packageId=${this.getData.packageId}&teacherId=${this.getData.filterSubData.teacherId}&pageSize=${page.size = 7}&currentPage=${page.num}`;
-                console.log(page, _listUrl)
+                console.log(_listUrl, '子层')
                 this.ajaxDataFun('post', _listUrl, (res) => {
                     if(res.code == '200') {
                         if (page.num == 1) this.listData = [];
                         this.listData = this.listData.concat(res.data);
+                        this.$emit('update:isRefresh', false);
                         this.$nextTick(() => {
                             this.mescroll.endSuccess(res.data.length);
                         })
-                        console.log(res.data,  'upCallback');
+                        console.log(res.data, 'upCallback');
                     }
                 })
             },
+        },
+        watch: {
+            isRefresh(val) {
+                console.log(val, '加载...')
+                if (val) {
+                    this.mescroll.resetUpScroll(true);
+                }
+            }
         },
         filters:{
             formatTimeOne:function(str){
@@ -229,7 +242,9 @@
         bottom: 0;
         height: auto;
     }
-    .mescroll-empty {
+</style>
+<style>
+    #dataList .mescroll-empty {
         padding-top: 180px;
     }
 </style>
