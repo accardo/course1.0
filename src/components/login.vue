@@ -18,7 +18,7 @@
                     <button class="getCode active" @click="getCodeFun()" v-show="reSend && (!loginPwd || forgetPwd)">
                         重新发送
                     </button>
-                    <span class="clearTel clear" v-show="phoneVal" @click="phoneVal = ''" 
+                    <span class="clearTel clear" v-show="phoneVal" @click="phoneVal = ''"
                     :class="{right:loginPwd && !forgetPwd }">
                         <img src="../../static/img/cha.png" alt="" />
                     </span>
@@ -38,7 +38,7 @@
                         <img class="big" src="../../static/img/icon_yingcang.png" alt="" v-show="!showPass" @click="showPass = !showPass" />
                     </span>
                 </li>
-                
+
                 <!-- 重新设置密码 -->
                 <li class="second" v-show="setPwd">
                     <input class="input" type="password" name="relPassword" v-model="relPassword" @keyup.enter="loginFun()"  placeholder="请输入6-20位密码" />
@@ -53,14 +53,14 @@
                         <img src="../../static/img/cha.png" alt=""  @click="relPasswordTwo = ''" v-show="relPasswordTwo"/>
                     </span>
                 </li>
-                
+
                 <li class="justify loginType" v-show="forgetPwd" @click="backLoginCode">
                     <p class="box"></p>
                     <p class="box">又想起来了?</p>
                 </li>
 
                 <li class="justify loginType" v-show="!setPwd && !forgetPwd">
-                    <p class="box" @click="forgetPwdFun"> 
+                    <p class="box" @click="forgetPwdFun">
                         <span style="color:#7F7F7F;" v-show="loginPwd">
                             忘记密码
                         </span>
@@ -68,7 +68,7 @@
                     <p class="box" @click="changeLoginPwd">{{ loginTypeTxt }}</p>
                 </li>
                 <div class="loginButton" :class="{active: isActive}" @click="loginFun()" >
-                    {{ loginTxt }} 
+                    {{ loginTxt }}
                 </div>
             </ul>
         </div>
@@ -116,7 +116,7 @@
         },
         components: {},
         props: ['isFrom'],
-        methods: { 
+        methods: {
             forgetPwdFun:function(){
                 this.forgetPwd = true
                 this.resetPwd =  false
@@ -138,14 +138,14 @@
                     this.loginTypeTxt = '切换密码登录'
                 }
             },
-            isWeChatFun: function (){ 
+            isWeChatFun: function (){
                 var _this = this
-                var ua = window.navigator.userAgent.toLowerCase(); 
-                if(ua.match(/MicroMessenger/i) == 'micromessenger'){ 
+                var ua = window.navigator.userAgent.toLowerCase();
+                if(ua.match(/MicroMessenger/i) == 'micromessenger'){
                     this.isWeChat = true
-                }else{ 
+                }else{
                     this.isWeChat = false
-                } 
+                }
                 console.log("_this.isWeChat ______" + this.isWeChat )
             },
             getLoginType:function(){
@@ -229,7 +229,7 @@
                 }else if(_this.isgetCode && !_this.rightCode){
                     popMin.show("icon-yk_icon_warning","请填写正确的验证码")
                 }else{
-                    this.ajaxDataFun('post', _checkCodeUrl, function(obj){ 
+                    this.ajaxDataFun('post', _checkCodeUrl, function(obj){
                         if(obj.code == '200'){
                             _this.forgetPwd = false
                             _this.resetPwd = true   //重新设置密码
@@ -271,7 +271,7 @@
                     popMin.show("icon-yk_icon_warning","2次输入密码不同，请检查")
                     _this.loginTxt = '确定'
                 }else{
-                    this.ajaxDataFun('post', _resPwdUrl, function(obj){ 
+                    this.ajaxDataFun('post', _resPwdUrl, function(obj){
                         if(obj.code == '200'){
                             if(_this.noPassword){
                                 popMin.show("icon-yk_icon_success","登录密码设置成功")
@@ -281,7 +281,7 @@
                             _this.loginPwdFun()
                         }
                     })
-                }        
+                }
                 console.log('设置新密码')
             },
             loginPwdFun:function(){
@@ -289,7 +289,7 @@
                 console.log('用密码登录...')
                 var _this = this
                 var _loginPwdUrl = '/daydaycook/server/user/login.do?userName=' + this.phoneVal + '&password=' + _hex_md5(this.password) + '&dynamicLogin=0&code='
-        
+
                 if(_this.resetPwd){
                     _loginPwdUrl = '/daydaycook/server/user/login.do?userName=' + this.phoneVal + '&password=' + _hex_md5(this.relPassword) + '&dynamicLogin=0&code='
                 }
@@ -301,7 +301,7 @@
                     popMin.show("icon-yk_icon_warning","请填写密码")
                     _this.loginTxt = "登录"
                 }else{
-                    this.ajaxDataFun('post', _loginPwdUrl, function(obj){ 
+                    this.ajaxDataFun('post', _loginPwdUrl, function(obj){
                         if(obj.code == '200'){
                             _this.loginSuccess(obj.data)
                             console.log('密码登录成功')
@@ -334,7 +334,7 @@
 
                     var _bindUrl = '/daydaycook/server/user/registeredByPhone.do?uid=' + uid + '&userName=' + _this.phoneVal + '&password=&type=' + _this.loginType
 
-                    this.ajaxDataFun('post', _checkCodeUrl, function(obj){ 
+                    this.ajaxDataFun('post', _checkCodeUrl, function(obj){
                         if(obj.code == '200'){
                             _this.ajaxDataFun('post', _checkPhone, function(obj){
                                 if(obj.code == '200' || obj.code == '414'){  //414 已注册未绑定 200未注册未绑定
@@ -420,7 +420,7 @@
 
                 this.$store.state.uid = data.id
                 localStorage.setItem('uid', data.id)
-                    
+
                 this.$store.state.avar = data.image
                 localStorage.setItem('avar', data.image)
 
@@ -429,7 +429,7 @@
 
                 this.$store.state.lineUserName = data.lineUserName
                 localStorage.setItem('lineUserName', data.lineUserName)
-                
+
                 this.$store.state.phone = this.phoneVal
                 localStorage.setItem('phone', this.phoneVal)
 
@@ -447,11 +447,11 @@
                 this.setPwd = false
                 this.loginPwd = false  //用密码登录
                 this.forgetPwd = false  //忘记密码
-                this.resetPwd = false 
-                this.noPassword = false 
+                this.resetPwd = false
+                this.noPassword = false
                 this.loginTxt = '登录'
-                this.pageTitle = '' 
-                this.loginTypeTxt = '切换密码登录' 
+                this.pageTitle = ''
+                this.loginTypeTxt = '切换密码登录'
 
                 this.phoneVal = ''
                 this.codeVal = ''
@@ -465,12 +465,12 @@
             },
             isMemberFun:function(id){
                 var _this = this
-                var _isMenberUrl = '/daydaycook/server/offline/reservationUser/isBuyCourse.do?uid=' + id 
+                var _isMenberUrl = '/daydaycook/server/offline/reservationUser/isBuyCourse.do?uid=' + id
                 this.ajaxDataFun('post',_isMenberUrl,function(obj){
                     if(obj.code == '200'){
                         _this.$store.state.isMember = obj.data
                         localStorage.setItem('isMember', obj.data)
-                        
+
                         localStorage.setItem('isLogin', true)
                         _this.$store.state.isLogin = true
                     }
@@ -506,7 +506,7 @@
         },
         watch:{
             phoneVal:function(){
-                let phonTest = (/^1[34578]\d{9}$/.test(this.phoneVal));
+                let phonTest = (/^1[345789]\d{9}$/.test(this.phoneVal));
                 if(phonTest){
                     this.rightPhone = true
                 }else{
