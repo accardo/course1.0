@@ -232,7 +232,6 @@
                 });
             },
 
-
             /* 根据用户uid 获取用户信息 */
             getUserByUid(uid){
                 let infoUrl = `/daydaycook/server/contract/userInfo.do?uid=${uid}`;
@@ -261,7 +260,6 @@
                     }
                 })
             },
-
 
             /* 根据Uid 获取店铺信息 */
             getShopInfoByUid(){
