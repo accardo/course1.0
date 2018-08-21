@@ -6,10 +6,10 @@
         </div>
         <article class="entrance">
             <section class="entrance-user">
-                <img :src="userHeader" alt="">
+                <img :src="userInfo.userHeader" alt="">
                 <dl v-if="userLogin=='true'">
-                    <dt>{{lineUserName}}</dt>
-                    <dd v-if="buyCourseNum" >剩余<strong>{{buyCourseNum}}</strong>次可预约，2021/11/22到期</dd>
+                    <dt>{{userInfo.lineUserName}}</dt>
+                    <dd v-if="userInfo.buyCourseNum" >剩余<strong>{{userInfo.buyCourseNum}}</strong>次可预约，{{userInfo.endtime}}到期</dd>
                     <dd v-else>您尚未购买课程，暂无约课权限</dd>
                 </dl>
                 <div v-else @click="showLogin" class="nologin">点击登录</div>
@@ -18,19 +18,19 @@
             <section class="entrance-bespoke" v-if="isShowMake">
                 <div class="lately-bespoke">
                     <span>最近预约</span>
-                    <p><span>上海K11体验店</span><span> | 张学世</span></p>
+                    <p><span>{{courseData.addressName}}</span><span> | {{courseData.teacherName}}</span></p>
                 </div>
                 <div class="bespoke-time">
                     <img class="bespoke-img"  src="../../../static/img/c_shop0.jpg" alt="">
                     <dl>
-                        <dt class="one-line">健康时蔬双色蛋糕卷蔬双色蛋糕双色蛋蛋糕双色蛋</dt>
-                        <dd>9/23周六 15:00-17:00</dd>
+                        <dt class="one-line">{{courseData.courseName}}</dt>
+                        <dd>{{courseData.startTime}}-{{courseData.endTime}}</dd>
                     </dl>
                 </div>
                 <img class="bespoke-bg" src="../../../static/img/pic_bear1_1.png" alt="">
             </section>
             <!-- 最新课程 -->
-            <section class="entrance-model">
+            <section class="entrance-model" v-if="coursesData && coursesData.length > 0">
                 <div class="entrance-tit">
                     <strong>最新课程</strong>
                     <router-link to="/" tag="span"> 查看更多 </router-link>
@@ -40,12 +40,12 @@
                     <div class="lesson-item" v-for="(item,index) in coursesData" :key="index">
                         <div class="lesson-img">
                             <img :src="item.courseImage" alt="">
-                            <span>{{item.categoryName}}</span>
+                            <span>{{item.courseCategoryName}}</span>
                         </div>
                         <div class="lesson-info">
                             <p class="tit two-line">{{item.courseTitle}}</p>
                             <p class="lesson-p">{{item.startTime}}</p>
-                            <p class="lesson-p">{{item.teacherName }} | 剩余名额<strong>{{item.reservationCount}}</strong>人</p>
+                            <p class="lesson-p">{{item.courseTeacherName }} | 剩余名额<strong>{{item.courseReservationCount}}</strong>人</p>
                         </div>
                     </div>
                 </div>
@@ -112,15 +112,17 @@
                 uid: '',
                 isShowLogin:'', //是否显示登录弹窗
                 isShowMake:'',  //是否显示预约 课程
-                lineUserName:'',    //用户名称
                 showAll:false,
                 userLogin:'',     //是否登录
-                userHeader:'../../../static/img/pic_touxiang.png',  //用户头像 未登录
-                buyCourseNum:6, //用户购买课程数
-                positionData:{
-                    O:31.188968,
-                    P:121.439106,
-                },
+                userInfo:{
+                    userHeader:'../../../static/img/pic_touxiang.png',//用户头像 未登录
+                    userphone:'', //用户手机号
+                    lineUserName:'',
+                    buyCourseNum:0,
+                },    //用户信息
+                courseData:{},      //最近预约课程信息
+                positionData:'',     //用户 gps 地址
+                getTimeArray:util.formatTimeArray(),    
                 bannerParam:{           //banner swiper 配置
                     auto:false,
                     swiperId:'aboutbanner',
@@ -168,7 +170,6 @@
         created(){
             this.init();
             this.getUserGps();
-            this.getCourseList();
         },
         methods:{
             /* 初始化 */
@@ -190,17 +191,18 @@
                         self.uid = localStorage.getItem('uid') || self.$store.state.uid;
                         self.getUserByUid(self.uid).then(res => {
                             console.log('获取的用户信息',res);
-                            self.userHeader = res.img ? res.img : '../../../static/img/profile.png';
-                            self.lineUserName = res.lineUserName;
-                            self.showAll = true;
+                            self.userInfo['userHeader'] = res.img ? res.img : '../../../static/img/profile.png';
+                            self.userInfo['lineUserName'] = res.lineUserName;
+                            self.userInfo['buyCourseNum'] = res.refundCount;
+                            let endtime = res.endTime ? self.getTimeArray(res.endTime) : '';
+                            self.userInfo.endtime = endtime ? `${endtime[0]}/${endtime[1]}/${endtime[2]}` : '';
                         })
                         self.phone = localStorage.getItem('phone') || self.$store.state.phone;
-                        self.isShowMake = true;
-
+                        self.getLastCourseByuid();
                     }
                 }
-
-                 this.getShopInfoByUid();
+                self.showAll = true;
+                self.getShopInfoByUid();
             },
 
             /* 获取用户gps */
@@ -221,12 +223,10 @@
                     map.addControl(geolocation);
                     geolocation.getCurrentPosition();
                     //返回定位信息
-
                     AMap.event.addListener(geolocation, 'complete', function(data){
                         if(data.position){
-                            self.positionData.O = data.position.O;
-                            self.positionData.P = data.position.P;
-                            console.log(self.positionData);
+                            self.positionData =  data.position.O +','+data.position.P;
+                            self.getCourseList(self.positionData);
                         }
                     });
                 });
@@ -236,28 +236,46 @@
             /* 根据用户uid 获取用户信息 */
             getUserByUid(uid){
                 let infoUrl = `/daydaycook/server/contract/userInfo.do?uid=${uid}`;
-                return new Promise((resolve) => {
+                return new Promise((resolve,reject) => {
                     this.ajaxDataFun('post', infoUrl, (obj) => {
                         if(obj.code == '200'){
-                            return resolve(obj.userContract);
+                            resolve(obj.userContract);
+                        }else{
+                            this.showAll = true;
+                            this.userLogin = false;
                         }
                     });
                 });
+            },
+
+            // 获取最近预约课程
+            getLastCourseByuid(){
+                let self = this;
+                this.userInfo.userphone = this.$store.state.phone || localStorage.getItem('phone');
+                let _listUrl = '/daydaycook/server/offline/reservationUser/theLastTimeRes.do?mobile='+this.userInfo.userphone;
+                this.ajaxDataFun('get',_listUrl, function(res){
+                    if(res.code =='200'){
+                        self.courseData = res.data;
+                        self.courseData['startTime'] = res.data.startTime ? util.formatTime(res.data.startTime) : '';
+                        self.courseData['endTime'] = res.data.endTime ? util.formatTimeTwo(res.data.endTime) : '';
+                        self.isShowMake = true;
+                    }
+                })
             },
 
 
             /* 根据Uid 获取店铺信息 */
             getShopInfoByUid(){
                 let self = this;
-                let _listUrl = '/daydaycook/server/newCourse/getAddressInfoByUid.do?uid=';
+                let _listUrl = '/daydaycook/server/newCourse/getAddressInfoByUid.do?uid='+self.uid;
                 this.ajaxDataFun('get',_listUrl, function(res){
-                    if(res.code =='200'){
+                    if(res &&  res.code =='200'){
                         let listdata = res.list;
-                        if(listdata && listdata.length >0){
-                            listdata.map(item => {
-                                item.image = (item.image.indexOf('.jpg') > -1) ? item.image : '../../../static/img/pic_aboutus6.jpg'
-                            })
-                        }
+                        // if(listdata && listdata.length >0){
+                        //     listdata.map(item => {
+                        //         item.image = (item.image.indexOf('.jpg') > -1) ? item.image : '../../../static/img/pic_aboutus6.jpg'
+                        //     })
+                        // }
                         self.shopList = listdata;
                     }
                 })
@@ -269,15 +287,15 @@
             },
 
             /* 获取课程列表 */
-            getCourseList(){
+            getCourseList(gps){
                 let self = this;
-                var _listUrl = '/daydaycook/server/newCourse/getAddressCourseInfo.do?uid=' + this.uid;
+                var _listUrl = '/daydaycook/server/newCourse/getAddressCourseInfo.do?uid=' + this.uid + '&gps='+gps;
                 this.ajaxDataFun('post', _listUrl, function(obj){
                     if(obj.code == '200'){
                         if(obj.list && obj.list.length >0){
                             let coursesList =  obj.list;
                             coursesList.map(item => {
-                                item.startTime = item.startTime ? util.formatTime(item.startTime) : '';
+                                item.startTime = item.courseStartTime ? util.formatTime(item.courseStartTime) : '';
                             })
                             self.coursesData =  coursesList;
                         }
