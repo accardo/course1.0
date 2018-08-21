@@ -12,11 +12,11 @@
             <div class="fication-head">
                 <div class="fication-flex triangle f-icon"
                      :class='{"triangle-active": pfShow.package,
-                              "f-icon-active": (filterSubData.reservationType !== null ||
-                              filterSubData.startDay !== null ||
+                              "f-icon-active": (filterSubData.reservationType !== "" ||
+                              filterSubData.timeScope !== "" ||
                               filterSubData.categoryId.length > 0 ||
                               filterSubData.teacherId.length > 0)}'><!-- f-icon 筛选前， f-icon-active 筛选后 ； triangle 下三角，triangle-active 上三角-->
-                    <div v-if="listFilter.packageList && listFilter.packageList.length == 0">无套餐</div>
+                    <div v-if="listFilter.packageList == null">无套餐</div>
                     <div v-else @click="()=> { pfShow.package = true; pfShow.filter = false;}">{{packageText}}<i></i></div>
                     <div @click="()=> { pfShow.filter = true; pfShow.package = false;}"><b></b>筛选</div>
                 </div>
@@ -52,8 +52,7 @@
                 </div>
             </div>
         </div>
-
-        <listLay :listData="listData" myCourse="false" :validContractCount="validContractCount" ></listLay>
+       <listLay :get-data="getData" v-on:scroll-y="scrollY" ref="listRefresh"></listLay>
         <div class="popNotWrap big">
             <img src="../../../static/img/not_1.png" alt="" />
             <p>咦!?找不到哎!</p>
@@ -84,7 +83,6 @@
     import popMin from '@/components/popMin.js'
     import common from '@/components/common.js'
     import listLay from './list'
-    import * as dict from '@/dictionary/dict'
     import * as utils from '@/utils/logic'
     const logic = new utils.Logic();
     export default {
@@ -96,7 +94,7 @@
                 fixedTop: false,
                 cateList: '',
                 pIndex: '',
-                listData: '',
+                listData: [],
                 addListDate: [],
                 currentPage: 1,
                 showCate: false,
@@ -132,20 +130,23 @@
                 filterSubData: {
                     categoryId: [],
                     teacherId: [],
-                    reservationType: null,
-                    startDay: null,
+                    reservationType: '',
+                    timeScope: '',
                 },
-                packageId: 0,
-                pageSize: 5,
+                packageId: '',
+                pageSize: 10,
+                mescroll: null, //mescroll实例对象
+                phone: '',
+                getData: {
+                },
             }
         },
         created () {
           //  var isLogin = this.$store.state.isLogin || localStorage.getItem('isLogin')
 
            // if(isLogin == 'true' || isLogin == true){
-                console.log(this.showChooseAdd, 'showChooseAdd')
                 this.initDate()      //获取全局数据
-                this.getCateList()   //获取分类列表
+             //   this.getCateList()   //获取分类列表
 
                 if(this.$store.state.listLoaded == true){ //是否有缓存数据
                     this.currentPage = this.$store.state.currentPage
@@ -164,7 +165,7 @@
             listLay,
         },
         methods: {
-            initDate:function(){
+            initDate:function() {
                 this.isMember = localStorage.getItem('isMember') || this.$store.state.isMember
                 this.categoryCount = this.$store.state.categoryCount || localStorage.getItem('categoryCount')
                 this.validContractCount = this.$store.state.validContractCount || localStorage.getItem('validContractCount')
@@ -172,14 +173,14 @@
                 this.categoryId = localStorage.getItem('categoryId') || this.$store.state.categoryId
                 this.categoryName = localStorage.getItem('categoryName') || this.$store.state.categoryName
 
-                if(this.isMember == false || this.isMember == 'false'){
+                if (this.isMember == false || this.isMember == 'false') {
                     this.courseStatus = 0
-                }else{
-                    this.courseStatus = localStorage.getItem('courseStatus') ||  this.$store.state.courseStatus
-                    this.courseStatusTxt = localStorage.getItem('courseStatusTxt') ||  this.$store.state.courseStatusTxt
+                } else {
+                    this.courseStatus = localStorage.getItem('courseStatus') || this.$store.state.courseStatus
+                    this.courseStatusTxt = localStorage.getItem('courseStatusTxt') || this.$store.state.courseStatusTxt
                 }
 
-                this.startday = localStorage.getItem('startday') || this.$store.state.startday
+                this.timeScope = localStorage.getItem('startday') || this.$store.state.timeScope
                 this.startdayTxt = localStorage.getItem('startdayTxt') || this.$store.state.startdayTxt
 
                 this.teacherId = localStorage.getItem('teacherId') || this.$store.state.teacherId || 0
@@ -193,6 +194,15 @@
                 this.uid = localStorage.getItem('uid') || this.$store.state.uid
                 this.memberClass();
                 this.getAddList();
+                this.getData = {
+                    phone: this.phone,
+                    currentPage: this.currentPage,
+                    pageSize: this.pageSize,
+                    addressId: this.addressId,
+                    uid: this.uid,
+                    packageId: this.packageId,
+                    filterSubData: this.filterSubData,
+                }
             },
             /*
              * Description: 获取筛选分类
@@ -218,53 +228,6 @@
                     }
                      this.listFilter = data;
                 })
-            },
-            filterA:function(index, value, txt){  //筛选分类蛋糕/面点/烹饪
-                this.categoryId = value
-                this.categoryName = txt
-
-                this.$store.state.categoryId = value
-                this.$store.state.categoryName = txt
-
-                localStorage.setItem('categoryId',value)
-                localStorage.setItem('categoryName',txt)
-
-                this.watchChange()
-            },
-            filterB:function(iv, txt){  //筛选课程状态 可约/不可约
-                this.courseStatus = iv
-                this.courseStatusTxt = txt
-
-                this.$store.state.courseStatus = iv
-                this.$store.state.courseStatusTxt = txt
-
-                localStorage.setItem('courseStatus',iv)
-                localStorage.setItem('courseStatusTxt',txt)
-
-                this.watchChange()
-            },
-            filterC:function(iv, txt){ //筛选时间周期 /7/14/30
-                this.startday = iv
-                this.startdayTxt = txt
-
-                this.$store.state.startday = iv
-                this.$store.state.startdayTxt = txt
-
-                localStorage.setItem('startday',iv)
-                localStorage.setItem('startdayTxt',txt)
-
-                this.watchChange()
-            },
-            filterD(index,teacherId,teacherName){
-                this.teacherId = teacherId;
-                this.teacherName = teacherName;
-                this.$store.state.teacherName = teacherName;
-
-                localStorage.setItem('teacherId',teacherId)
-                localStorage.setItem('teacherName',teacherName)
-
-                this.watchChange();
-                // console.log(teacherId)
             },
             chooseAddFun:function(id, txt){ //切换地址
                 this.showChooseAdd = false
@@ -297,56 +260,7 @@
                 this.endListen = false
                 this.currentPage = 1
                 this.showCate = false
-                this.getList('')
-            },
-            getList:function(scroll){  //获取课程列表
-                var _this = this
-                 //var _listUrl = '/daydaycook/server/offline/reservationUser/offlineCourseList.do?startDay=' + this.startday +'&reservationType=' + this.courseStatus + '&categoryId=' + this.categoryId + '&pageSize=5' + '&currentPage=' + this.currentPage + "&mobile=" + this.phone + "&type=1&uid=" + this.uid + '&addressId=' + this.addressId;
-                 var _listUrl = '/daydaycook/server/offline/reservationUser/offlineCourseListNew.do?reservationType=0&pageSize=5&currentPage=1&addressId&categoryId&mobile=18616592129&uid=11&packageId=1';
-                if(this.teacherId > 0){
-                    _listUrl += '&teacherId='+this.teacherId
-                }
-
-                let el = document.querySelector('.isLoading')
-
-                _this.$store.state.loadingTxt = '加载中...'
-                this.ajaxDataFun('post', _listUrl, function(obj){
-                    if(obj.code == '200'){
-                        //先过滤不可预约课程
-                        obj.data.list.map(function(item){
-                            var arr = common.transTime(item.endTime-86400000);
-                            var _time = arr[0]+'-'+arr[1]+'-'+arr[2]+' '+'20:00:00:00';
-                            var date = new Date(_time);
-                            var endTime = date.getTime();
-                            var nowTime = +new Date();
-                            return nowTime < endTime
-                        })
-                        var objLen = obj.data.list.length;
-                        _this.firstLoadData = false
-                        if(scroll){
-                            if(objLen){
-                                for(let j=0; j < objLen; j++){
-                                    _this.listData.push(obj.data.list[j]);
-                                }
-                                // _this.listData = obj.data
-                                _this.$set(_this.$data, 'listData', _this.listData);
-                            }else{
-                                console.log("加载完毕, 没有数据了")
-                                _this.endListen = true
-                                el.classList.add('line')
-                                _this.$store.state.loadingTxt = '我们是有底线的'
-                            }
-                        }else{
-                            el.classList.remove('line')
-                            _this.$store.state.loadingTxt = ''
-                            _this.listData = obj.data.list
-                            _this.categoryCount = obj.data.categoryCount
-                        }
-
-                        _this.$store.state.categoryCount = obj.data.categoryCount
-                        localStorage.setItem('categoryCount', obj.data.categoryCount)
-                    }
-                })
+               // this.getList('')
             },
             chooseCate:function(i){
                 this.pIndex = i
@@ -359,7 +273,6 @@
                     if(obj.code == '200'){
                         var objLen = obj.data.length
                         _this.addressLen = objLen
-
                         if(objLen == 2){
                             _this.addressId = obj.data[1].id
                             _this.addressTxt = obj.data[1].name
@@ -375,32 +288,7 @@
                                 _this.showChooseAdd = true
                             }
                         }
-                        _this.getList('')
-                    }
-                })
-            },
-            getCateList:function(){
-               var _this = this
-                /*  var _cateUrl = '/daydaycook/server/offline/webcourse/categorylist.do?userId=' + this.uid;*/
-                var _contUrl = '/daydaycook/server/contract/validContractCount.do?uid=' + this.uid
-
-              /*  this.ajaxDataFun('post', _cateUrl, (obj) => {
-                    if(obj.code == '200'){
-                        this.listFilter[1].list= obj.data
-                    }
-                })
-*/
-                this.ajaxDataFun('post', _contUrl, function(obj){
-                    if(obj.code == '200'){
-                        _this.validContractCount = obj.data
-                        _this.$store.state.validContractCount = obj.data
-                        localStorage.setItem('validContractCount', obj.data)
-
-                        if(_this.validContractCount == 0){
-                            _this.courseStatus = 0
-                            _this.$store.state.courseStatus = 0
-                            localStorage.setItem('courseStatus',0)
-                        }
+                      //  _this.getList('')
                     }
                 })
             },
@@ -451,7 +339,7 @@
                 if (data.title === '条件') {
                     this.filterTh(dataA, 'reservationType');
                 }else if(data.title === '时间') {
-                    this.filterTh(dataA, 'startDay');
+                    this.filterTh(dataA, 'timeScope');
                 }else if(data.title === '分类') {
                     this.filterTd(dataA, 'categoryId');
                 } else if (data.title === '教师') {
@@ -493,11 +381,11 @@
              */
             filterSub() {
                 let fromData = {
-                    startDay: this.filterSubData.startDay, // 时间id
+                    timeScope: this.filterSubData.timeScope, // 时间id
                     reservationType: this.filterSubData.reservationType, // 条件id type Array
-                    categoryId: this.filterSubData.categoryId.length > 0 ? this.filterSubData.categoryId : null, // 分类id type Array
-                    teacherId: this.filterSubData.teacherId.length > 0 ? this.filterSubData.teacherId : null, // 教师id
-                    packageId: this.packageId || null, // 套餐id
+                    categoryId: this.filterSubData.categoryId.length > 0 ? this.filterSubData.categoryId : '', // 分类id type Array
+                    teacherId: this.filterSubData.teacherId.length > 0 ? this.filterSubData.teacherId : '', // 教师id
+                    packageId: this.packageId || '', // 套餐id
                     pageSize: this.pageSize, // 条数
                     currentPage: this.currentPage, // 页数
                     mobile: this.phone, // 电话
@@ -506,7 +394,8 @@
                 }
                 this.pfShow.package = false
                 this.pfShow.filter = false
-                console.log(fromData);
+                console.log(this.$refs, fromData);
+                this.$refs.listRefresh.mescroll.resetUpScroll()
             },
             /*
              * Description: 重置筛选条件
@@ -517,47 +406,24 @@
                 this.filterSubData = {
                     categoryId: [],
                     teacherId: [],
-                    reservationType: null,
-                    startDay: null,
+                    reservationType: '',
+                    timeScope: '',
                 };
                 this.listFilter.selectList.forEach((item) => {
                     item.list.forEach((itemA) => {
                         this.$set(itemA, 'isActive', false)
                     })
                 })
-            }
-        },
-        mounted (){
-            var _this = this;
-            let py = localStorage.getItem('newIndexPageY')
-
-            if(py){
-                window.scrollTo(0, py)
-            }
-
-            window.onscroll = function(){
-                let y = common.getScrollTop()
-                let h = common.getWindowHeight()
-                let s = common.getScrollHeight()
-
-                _this.$store.state.indexPageY = y
-                localStorage.setItem('indexPageY', y)
-
-            　　 if(y >= 44){
-                    _this.fixedTop = true
-            　　 }else{
-                    _this.fixedTop = false
+            },
+            scrollY(y) {
+                if(y >= 44){
+                    this.fixedTop = true
+                }else{
+                    this.fixedTop = false
                 }
-
-            　　if(y + h == s){
-                    if(!_this.endListen && !_this.firstLoadData){
-                        _this.currentPage++
-                        _this.getList(1)
-                    }
-                    console.log("滑动加载:" + _this.currentPage)
-            　　}
             }
         },
+        mounted (){},
         computed: {
             isLogin:function(){
                 return this.$store.state.isLogin || localStorage.getItem('isLogin')
@@ -567,7 +433,7 @@
             isLogin:function(){
                 if(this.isLogin == 'true' || this.isLogin == true){
                     this.initDate()      //获取全局数据
-                    this.getCateList()   //获取分类列表
+                   // this.getCateList()   //获取分类列表
                     this.getAddList()    //获取地址列表
                 }
             },
@@ -578,7 +444,7 @@
                     document.body.className = ''
                 }
             },
-            listData:function(){
+          /*  listData:function(){
                 this.$store.state.listLoaded = true  //有储存列表值
                 this.$store.state.currentPage = this.currentPage
                 this.$store.state.listData = this.listData
@@ -589,7 +455,7 @@
                 }else{
                     e.classList.remove('show')
                 }
-            }
+            }*/
         }
     }
 </script>
