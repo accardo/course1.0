@@ -8,7 +8,8 @@
             <section class="entrance-user">
                 <img :src="userInfo.userHeader" alt="">
                 <dl v-if="userLogin=='true'">
-                    <dt>{{userInfo.lineUserName}}</dt>
+                    <dt v-if="userInfo.lineUserName">{{userInfo.lineUserName}}</dt>
+                    <dt v-else>{{userInfo.nickName}}</dt>
                     <dd v-if="userInfo.buyCourseNum" >剩余<strong>{{userInfo.buyCourseNum}}</strong>次可预约，{{userInfo.endtime}}到期</dd>
                     <dd v-else>您尚未购买课程，暂无约课权限</dd>
                 </dl>
@@ -36,8 +37,8 @@
                     <router-link to="/" tag="span"> 查看更多 </router-link>
                 </div>
                 <div class="lesson-list">
-                    <!-- <class-list :list-data="listData1" :list-type="listType"></class-list> -->
-                    <div class="lesson-item" v-for="(item,index) in coursesData" :key="index">
+                    <class-list :list-data="coursesData" :list-type="listType"></class-list>
+                    <!-- <div class="lesson-item" v-for="(item,index) in coursesData" :key="index">
                         <div class="lesson-img">
                             <img :src="item.courseImage" alt="">
                             <span>{{item.courseCategoryName}}</span>
@@ -47,7 +48,7 @@
                             <p class="lesson-p">{{item.startTime}}</p>
                             <p class="lesson-p">{{item.courseTeacherName }} | 剩余名额<strong>{{item.courseReservationCount}}</strong>人</p>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </section>
             <!-- 门店导航 -->
@@ -56,7 +57,7 @@
                     <strong>门店导航</strong>
                 </div>
                 <div class="store-list">
-                    <div class="lesson-item" v-for="(item,index) in shopList" :key="index">
+                    <div class="lesson-item" v-for="(item,index) in shopList" @click.prevent="shopDetail(item.id)"  :key="index">
                         <router-link :to="{ name: 'expShop' }">
                             <div class="lesson-img">
                                 <img :src="item.image" alt="">
@@ -88,7 +89,7 @@
                </div>
             </section>
         </article>
-        <div  id="map_gaode"></div>
+        <div id="map_gaode"></div>
         <!-- 登录 -->
         <login-lay v-show="isShowLogin"></login-lay>
     </div>
@@ -108,7 +109,6 @@
         data () {
             return {
                 pageTitle:'线下课程',
-                currentPage: 1,
                 uid: '',
                 isShowLogin:'', //是否显示登录弹窗
                 isShowMake:'',  //是否显示预约 课程
@@ -120,7 +120,10 @@
                     lineUserName:'',
                     buyCourseNum:0,
                 },    //用户信息
-                courseData:{},      //最近预约课程信息
+                courseData:{
+                    startTime:'',
+                    endTime:'',
+                },      //最近预约课程信息
                 positionData:'',     //用户 gps 地址
                 getTimeArray:util.formatTimeArray(),    
                 bannerParam:{           //banner swiper 配置
@@ -191,17 +194,17 @@
                         self.uid = localStorage.getItem('uid') || self.$store.state.uid;
                         self.userphone = localStorage.getItem('phone') || self.$store.state.phone;
                         self.getUserByUid(self.uid).then(res => {
-                            console.log('获取的用户信息',res);
                             self.userInfo['userHeader'] = res.img ? res.img : '../../../static/img/profile.png';
                             self.userInfo['lineUserName'] = res.lineUserName;
+                            self.userInfo['nickName'] = res.nickName;
                             self.userInfo['buyCourseNum'] = res.refundCount;
-                            let endtime = res.endTime ? self.getTimeArray(res.endTime) : '';
+                            let endtime = res.endTime ? self.getTimeArray(res.contractEndTime) : '';
                             self.userInfo.endtime = endtime ? `${endtime[0]}/${endtime[1]}/${endtime[2]}` : '';
                         })
                         self.getLastCourseByuid(self.userphone);
                     }
+                    self.showAll = true;
                 }
-                self.showAll = true;
                 self.getShopInfoByUid();
             },
 
@@ -247,15 +250,25 @@
                 });
             },
 
+            /* 店铺详情 */
+            shopDetail(id){
+                this.$router.push({
+                    name:'expShop',
+                    query:{
+                        id,
+                    }
+                })
+            },
+
             // 获取最近预约课程
             getLastCourseByuid(userphone){
                 let self = this;
                 let _listUrl = '/daydaycook/server/offline/reservationUser/theLastTimeRes.do?mobile='+userphone;
                 this.ajaxDataFun('get',_listUrl, function(res){
-                    if(res.code =='200'){
+                    if(res.code =='200' && res.data){
                         self.courseData = res.data;
-                        self.courseData['startTime'] = res.data.startTime ? util.formatTime(res.data.startTime) : '';
-                        self.courseData['endTime'] = res.data.endTime ? util.formatTimeTwo(res.data.endTime) : '';
+                        self.courseData.startTime = res.data.startTime ? util.formatTime(res.data.startTime) : '';
+                        self.courseData.endTime = res.data.endTime ? util.formatTimeTwo(res.data.endTime) : '';
                         self.isShowMake = true;
                     }
                 })
@@ -264,7 +277,7 @@
             /* 根据Uid 获取店铺信息 */
             getShopInfoByUid(){
                 let self = this;
-                let _listUrl = '/daydaycook/server/newCourse/getAddressInfoByUid.do?uid='+ self.uis;
+                let _listUrl = '/daydaycook/server/newCourse/getAddressInfoByUid.do?uid='+ self.uid;
                 this.ajaxDataFun('get',_listUrl, function(res){
                     if(res &&  res.code =='200'){
                         let listdata = res.list;
@@ -281,15 +294,11 @@
             /* 获取课程列表 */
             getCourseList(gps){
                 let self = this;
-                var _listUrl = '/daydaycook/server/newCourse/getAddressCourseInfo.do?uid=' + this.uid + '&gps='+gps;
+                var _listUrl = '/daydaycook/server/newCourse/getAddressCourseInfo.do?uid=' + self.uid + '&gps='+gps;
                 this.ajaxDataFun('post', _listUrl, function(obj){
                     if(obj.code == '200'){
                         if(obj.list && obj.list.length >0){
-                            let coursesList =  obj.list;
-                            coursesList.map(item => {
-                                item.startTime = item.courseStartTime ? util.formatTime(item.courseStartTime) : '';
-                            })
-                            self.coursesData =  coursesList;
+                            self.coursesData = obj.list;
                         }
                     }
                 })
@@ -484,6 +493,9 @@
        font-size: 12px;
        color: #a5a4a4;
        box-sizing: border-box;
+   }
+   .lesson-info .lesson-p strong{
+       color: #000;
    }
    .entrance-about .entrance-tit{
        padding: 20px 20px 10px;
