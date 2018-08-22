@@ -181,7 +181,6 @@
                 })
             },
             chooseAddFun:function(id, txt){ // 切换地址
-                this.addressTxt = txt
                 this.getData = { // 切换重置 数据
                     phone: this.getData.phone,
                     addressId: id,
@@ -194,6 +193,7 @@
                         timeScope: '',
                     }
                 }
+                this.addressTxt = txt
                 localStorage.setItem('addressTxt', txt);
                 localStorage.setItem('addressId', id);
                 this.showChooseAdd = false;
@@ -311,22 +311,9 @@
              * Date: 2018/8/15
              */
             filterSub() {
-                console.log(this.getData)
-               /* let fromData = {
-                    timeScope: this.filterSubData.timeScope, // 时间id
-                    reservationType: this.filterSubData.reservationType, // 条件id type Array
-                    categoryId: this.filterSubData.categoryId.length > 0 ? this.filterSubData.categoryId : '', // 分类id type Array
-                    teacherId: this.filterSubData.teacherId.length > 0 ? this.filterSubData.teacherId : '', // 教师id
-                    packageId: this.packageId || '', // 套餐id
-                    mobile: this.phone, // 电话
-                    uid: Number(this.uid), // 用户id
-                    addressId: Number(this.addressId), // 店铺id
-                }*/
                 this.isRefresh = true
                 this.pfShow.package = false
                 this.pfShow.filter = false
-               // console.log(this.$refs, fromData);
-               // this.$refs.listRefresh.mescroll.resetUpScroll(true)
             },
             /*
              * Description: 重置筛选条件
@@ -346,6 +333,11 @@
                     })
                 })
             },
+            /*
+             * Description: 设置筛选条件是否浮动
+             * Author: yanlichen <lichen.yan@daydaycook.com.cn>
+             * Date: 2018/8/21
+             */
             scrollY(y) {
                 if(y >= 44){
                     this.fixedTop = true

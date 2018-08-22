@@ -2,7 +2,7 @@
      <div id="mescroll" class="courseList mescroll" >
          <div id="dataList">
             <div class="courseItem" v-for="item in listData">
-                <router-link :to="'/details?id=' + item.offlineCourseId">
+                <router-link :to="{name: 'details', query: { courseId: item.courseId, state: item.reservationState}}">
                 <div class="list-img">
                     <img :src="item.imageUrl" alt="">
                     <div class="tip">
