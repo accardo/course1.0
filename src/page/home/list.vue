@@ -83,7 +83,6 @@
                     onScroll: (mescroll, y, isUp) => {
                         this.$emit('scroll-y', y);
                     },
-                    warpId: null,
                     empty: {
                         warpId: "dataList",
                         //列表第一页无任何数据时,显示的空提示布局; 需配置warpId或clearEmptyId才生效;
@@ -99,7 +98,7 @@
         },
         methods: {
             upCallback(page) {
-                let _listUrl = `/daydaycook/server/offline/reservationUser/offlineCourseList.do?timeScope=${this.getData.filterSubData.timeScope}&reservationType=${this.getData.filterSubData.reservationType}&categoryId=${this.getData.filterSubData.categoryId}&mobile=${this.getData.phone}&uid=${this.getData.uid}&addressId=${this.getData.addressId}&packageId=${this.getData.packageId}&teacherId=${this.getData.filterSubData.teacherId}&pageSize=${page.size = 7}&currentPage=${page.num}`;
+                let _listUrl = `/daydaycook/server/offline/reservationUser/offlineCourseList.do?timeScope=${this.getData.filterSubData.timeScope}&reservationType=${this.getData.filterSubData.reservationType || 0}&categoryId=${this.getData.filterSubData.categoryId}&mobile=${this.getData.phone}&uid=${this.getData.uid}&addressId=${this.getData.addressId}&packageId=${this.getData.packageId}&teacherId=${this.getData.filterSubData.teacherId}&pageSize=${page.size = 7}&currentPage=${page.num}`;
                 console.log(_listUrl, '子层')
                 this.ajaxDataFun('post', _listUrl, (res) => {
                     if(res.code == '200') {
