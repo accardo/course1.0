@@ -116,7 +116,8 @@
             }
         },
         created () {
-            this.initUserInfo()
+            this.initUserInfo();
+            this.getContPackage();
             // let isMember = this.$store.state.isMember || localStorage.getItem('isMember')
             // if(isMember == true || isMember == 'true'){
             //     this.initUserInfo()
@@ -142,7 +143,7 @@
              */
             getPersonalResList() {
                 let phone = localStorage.getItem('phone');
-                let infoUrl = `/server/offline/reservationUser/personalResList.do?mobile=${phone}`;
+                let infoUrl = `/daydaycook/server/offline/reservationUser/personalResList.do?mobile=${phone}`;
                 return new Promise((resolve) => {
                     this.ajaxDataFun('post', infoUrl, (obj) => {
                         if(obj.code == '200'){
@@ -171,9 +172,22 @@
                     }
                 });*/
         	},
+            /*
+             * Description: 套餐合同
+             * Author: yanlichen <lichen.yan@daydaycook.com.cn>
+             * Date: 2018/8/22
+             */
+            getContPackage() {
+                let packageUrl = `/daydaycook/server/newCourse/getContractPackageInfoByUid.do?uid=${this.uid}`;
+                this.ajaxDataFun('get', packageUrl, (obj) => {
+                    if(obj.code==200){
+                        console.log(obj, '合同套餐')
+                    }
+                })
+            },
         	getInfoNum:function(){
         		var _this = this
-        		var _infoNumUrl = '/daydaycook//server/offline/record/unreadCount.do?userPhone=' + this.phone + '&uid=' + this.uid
+        		var _infoNumUrl = '/daydaycook/server/offline/record/unreadCount.do?userPhone=' + this.phone + '&uid=' + this.uid
         		this.ajaxDataFun('post', _infoNumUrl, function(obj){
         		    if(obj.code==200){
         		        _this.unreadCount = obj.data.unreadCount

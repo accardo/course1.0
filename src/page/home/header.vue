@@ -173,9 +173,10 @@
                             this.$set(itemA, 'isActive', false)
                         })
                     })
-                    if (this.isMember == true) {
+                    if (this.isMember) {
                         this.packageText = data.packageList[0].packageName;
                         this.getData.packageId = data.packageList[0].packageId;
+                        localStorage.setItem('packageId', data.packageList[0].packageId);
                     }
                      this.listFilter = data;
                 })
@@ -231,8 +232,9 @@
             packgeList(txt, packageid, index) {
                 this.listIndex = index;
                 this.pfShow.package = false;
-                this.packageId = packageid;
+                this.getData.packageId = packageid;
                 this.packageText = txt;
+                localStorage.setItem('packageId', packageid);
             },
             /*
              * Description: 第一次进入显示气泡
@@ -487,6 +489,7 @@
         border-left: 3px solid transparent;
         border-right: 3px solid transparent;
         border-bottom: 4px solid #474747;
+        border-top: none;
     }
     .fication-flex b{
         display: inline-block;
