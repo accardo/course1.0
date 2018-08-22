@@ -1,25 +1,24 @@
 <template>
     <div>
-        <div class="lesson-item" v-for="item in listData" :key="">
-            <router-link :to="{ name: 'expShop', params: { userId: 123 }}">
-                <div class="lesson-img">
-                    <img :src="item.imageUrl" alt="">
-                    <span v-if="listType ==1">{{item.tip}}</span><!--listType 1 导航列表  2 个人中心-->
-                    <span v-if="listType ==2"
-                          :class="[item.courseStatus == 1 ? 'tip-active' : '']"
-                    >{{item.courseStatus == 1 ? '已结束' : '未开始'}}</span> <!--member 已结束 tip-active-->
-                </div>
-                <div class="lesson-info">
-                    <p class="tit two-line">{{item.courseName}}</p>
-                    <p class="lesson-p">{{item.startTime | formatTimeOne }}-{{item.endTime | formatTimeTwo}}</p>
-                    <p v-if="listType ==1" class="lesson-p">{{item.teacher}} | 剩余名额<strong> {{item.num}} </strong>人</p>
-                    <p v-if="listType ==2" class="lesson-p">{{item.address}} | {{item.teacherName}}</p>
-                </div>
-            </router-link>
+        <div class="lesson-item" v-for="(item,index) in listData" :key="index" @click="jumpDetail(item.courseId,item.courseStatus)" >
+            <div class="lesson-img">
+                <img :src="item.imageUrl" alt="">
+                <span v-if="listType ==1">{{item.categoryName}}</span><!--listType 1 导航列表  2 个人中心-->
+                <span v-if="listType ==2"
+                        :class="[item.courseStatus == 1 ? 'tip-active' : '']"
+                >{{item.courseStatus == 1 ? '已结束' : '未开始'}}</span> <!--member 已结束 tip-active-->
+            </div>
+            <div class="lesson-info">
+                <p class="tit two-line">{{item.courseName}}</p>
+                <p class="lesson-p">{{item.startTime | formatTimeOne }}-{{item.endTime | formatTimeTwo}}</p>
+                <p v-if="listType ==1" class="lesson-p">{{item.teacherName}} | 剩余名额<strong>{{item.courseReservationCount}}</strong>人</p>
+                <p v-if="listType ==2" class="lesson-p">{{item.address}} | {{item.teacherName}}</p>
+            </div>
         </div>
     </div>
 </template>
 <script>
+    import * as util from '@/utils/utils.js'
     export default {
         data() {
             return {}
@@ -38,6 +37,21 @@
 
         },
         methods: {
+
+            /* 跳转到课程详情页面 */
+            jumpDetail(courseId,status){
+                let params = {
+                    _this:this,
+                    url:'details',
+                    pageTitle:'充值活动',
+                    fullScreen:false,
+                    query:{
+                        courseId,
+                        state:status,
+                    }
+                }
+                util.jumpUrlByIsApp(params);
+            },
         },
         filters:{
             formatTimeOne:function(str){
@@ -127,6 +141,9 @@
         font-size: 12px;
         color: #a5a4a4;
         box-sizing: border-box;
+    }
+    .lesson-info .lesson-p strong{
+        color: #333;
     }
     .two-line {
         display: -webkit-box;

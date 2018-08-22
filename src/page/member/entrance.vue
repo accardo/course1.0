@@ -198,7 +198,7 @@
                             self.userInfo['lineUserName'] = res.lineUserName;
                             self.userInfo['nickName'] = res.nickName;
                             self.userInfo['buyCourseNum'] = res.refundCount;
-                            let endtime = res.endTime ? self.getTimeArray(res.contractEndTime) : '';
+                            let endtime = res.contractEndTime ? self.getTimeArray(res.contractEndTime) : '';
                             self.userInfo.endtime = endtime ? `${endtime[0]}/${endtime[1]}/${endtime[2]}` : '';
                         })
                         self.getLastCourseByuid(self.userphone);
@@ -281,6 +281,9 @@
                 this.ajaxDataFun('get',_listUrl, function(res){
                     if(res &&  res.code =='200'){
                         let listdata = res.list;
+                        listdata.map(item => {
+                            item.image = item.image ? item.image+'?x-oss-process=image/resize,w_300' : '';
+                        })
                         self.shopList = listdata;
                     }
                 })
@@ -294,10 +297,14 @@
             /* 获取课程列表 */
             getCourseList(gps){
                 let self = this;
+                console.log(gps);
                 var _listUrl = '/daydaycook/server/newCourse/getAddressCourseInfo.do?uid=' + self.uid + '&gps='+gps;
-                this.ajaxDataFun('post', _listUrl, function(obj){
+                this.ajaxDataFun('get', _listUrl, function(obj){
                     if(obj.code == '200'){
                         if(obj.list && obj.list.length >0){
+                            obj.list.map(item => {
+                                item.imageUrl =  item.imageUrl ? item.imageUrl+'?x-oss-process=image/resize,w_300' : '';
+                            })
                             self.coursesData = obj.list;
                         }
                     }

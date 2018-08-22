@@ -1,25 +1,24 @@
 <template>
     <div>
-        <div class="swiper-box">
+        <div class="swiper-box" v-if="swipeList.length >0">
              <swiper-banner :swipelist="swipeList" :param = "bannerParam"></swiper-banner>
         </div>
         <div class="exp-shop">
-            <h4>日日煮美食生活体验馆上海K11体验店</h4>
-            <ul>
-                <li>甜点</li>
-                <li>料理</li>
+            <h4>{{shopInfo.name}}</h4>
+            <ul v-if="shopInfo.lable && shopInfo.lable.length >0 ">
+                <li v-for="(item,index) in shopInfo.lable" :key="index">{{item}}</li>
+                <!-- <li>料理</li>
                 <li>面点</li>
                 <li>亲子</li>
-                <li>高阶课</li>
+                <li>高阶课</li> -->
             </ul>
             <div class="exp-time-address">
-                <div class="exp-time"><i></i>营业时间 10:00-22:00</div>
+                <div class="exp-time"><i></i>营业时间 {{shopInfo.startTime}}-{{shopInfo.endTime}}</div>
                 <div class="exp-address">
                     <div class="exp-coor"><i></i></div>
-
-                    <div class="exp-addr">
+                    <div class="exp-addr" @click="goMap">
                         <router-link :to="{ name: 'AMap' }">
-                            上海市黄浦区淮海中路300号K11艺术购物 地铁1号线黄陂南路2号出口50m
+                            {{shopInfo.address}}
                         </router-link>
                     </div>
                     <div class="exp-iphone" @click="isIphone = true"></div>
@@ -29,13 +28,13 @@
         <div class="exp-main">
             <h4><i></i>门店服务</h4>
             <div class="exp-content">
-                1111
+                {{shopInfo.introduce}}
             </div>
         </div>
         <div class="exp-shop-bg">
             <button class="exp-shop-button" type="button">查看课程</button>
         </div>
-        <dia-iphone :is-iphone.sync="isIphone" v-if="isIphone"></dia-iphone>
+        <dia-iphone :phone-array="shopInfo.phone" :is-iphone.sync="isIphone" v-if="isIphone"></dia-iphone>
     </div>
 </template>
 
@@ -46,6 +45,7 @@
 		data() {
 		    return {
                 isIphone: false,
+                shopid:'',      //店铺id
                 bannerParam:{           //banner swiper 配置
                     auto:false,
                     swiperId:'aboutbanner',
@@ -53,27 +53,49 @@
                     delay:5000,
                     switchOpen: 1,
                 },
-                swipeList: [
-                    {
-                        id:1,
-                        imageUrl:'http://img0.daydaycook.com.cn/p/lh/lheroqxzbg.jpg',
-                        pageId:1,
-                    },
-                    {
-                        id:2,
-                        imageUrl:'http://img0.daydaycook.com.cn/p/lh/lheroqxzbg.jpg',
-                        pageId:2,
-                    },
-                    {
-                        id:3,
-                        imageUrl:'http://img0.daydaycook.com.cn/p/lh/lheroqxzbg.jpg',
-                        pageId:3,
-                    }
-                ]
+                shopInfo:[],        //获取到的 店铺信息
+                swipeList: []
+            }
+        },
+        created(){
+            let query = this.$router.history.current.query;
+            if(query && query.id){
+                this.shopid = query.id;
+                this.init();
             }
         },
         methods:{
 
+            /* 初始化 */
+            init(){
+                let self = this;
+                let _listUrl = '/daydaycook/server/newCourse/getAddressInfoByAid.do?aid='+this.shopid;
+                this.ajaxDataFun('get',_listUrl, function(res){
+                    if(res.code =='200' && res.list){
+                        self.shopInfo = res.list[0];
+                        let shopData = res.list[0];
+                        if(shopData.phone){
+                            shopData.phone = shopData.phone.split(',');
+                        }
+                        if(shopData.lable){
+                            shopData.lable = shopData.lable.split(',');
+                        }
+                        if(shopData.image && shopData.image.length >0){
+                            shopData.image.map(item => {
+                                let imageUrl = item +'?x-oss-process=image/resize,w_1108';
+                                self.swipeList.push({imageUrl})
+                            })
+                        }
+                        self.shopInfo = shopData;
+                    }
+                })
+            },
+
+            /* 跳转到 地图 */
+            goMap(){
+                let self = this;
+
+            },
         },
         components: {
             swiperBanner,

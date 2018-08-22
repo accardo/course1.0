@@ -107,6 +107,25 @@ export function formatTimeArray(temp){
     return new Array(postYear,postMonth,postDate,postHours,postMinutes,postMM)
 }
 
+//判断浏览器还是app 进行 页面跳转
+export function jumpUrlByIsApp(params){
+	if(typeof ddcApp == 'object'){
+		//内嵌在APP中执行
+		let _url = window.location.origin + window.location.pathname+'#/'+params.url;
+		ddcApp.navigateTo({
+			title:params.pageTitle || '',
+			url:_url,
+			fullScreen:params.fullScreen || false
+		})
+	}else{
+		//获取ddcApp方法失败后，当前浏览器直接跳转
+		params._this.$router.push({
+			name:params.url,
+			query:params.query || {}
+		})
+	}
+}
+
 export default {
 	isWeChatFun,
 	timeStamp,
