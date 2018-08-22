@@ -4,6 +4,10 @@
 	</div>
 </template>
 <style>
+    #app{
+        overflow: visible;
+    }
+    * { touch-action: pan-y; }
     body {
         font-family: 'PingFangSC-Medium', 'Microsoft YaHei', 'heiti TC', Arial, Helvetica, SimSun, Sans-serif
     }

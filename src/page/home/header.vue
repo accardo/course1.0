@@ -12,10 +12,10 @@
             <div class="fication-head">
                 <div class="fication-flex triangle f-icon"
                      :class='{"triangle-active": pfShow.package,
-                              "f-icon-active": (filterSubData.reservationType !== "" ||
-                              filterSubData.timeScope !== "" ||
-                              filterSubData.categoryId.length > 0 ||
-                              filterSubData.teacherId.length > 0)}'><!-- f-icon 筛选前， f-icon-active 筛选后 ； triangle 下三角，triangle-active 上三角-->
+                              "f-icon-active": (getData.filterSubData.reservationType !== "" ||
+                              getData.filterSubData.timeScope !== "" ||
+                              getData.filterSubData.categoryId.length > 0 ||
+                              getData.filterSubData.teacherId.length > 0)}'><!-- f-icon 筛选前， f-icon-active 筛选后 ； triangle 下三角，triangle-active 上三角-->
                     <div v-if="listFilter.packageList == null">无套餐</div>
                     <div v-else @click="()=> { pfShow.package = true; pfShow.filter = false;}">{{packageText}}<i></i></div>
                     <div @click="()=> { pfShow.filter = true; pfShow.package = false;}"><b></b>筛选</div>
@@ -52,7 +52,7 @@
                 </div>
             </div>
         </div>
-       <listLay :get-data="getData" v-on:scroll-y="scrollY" ref="listRefresh"></listLay>
+       <listLay :get-data="getData" :is-refresh.sync="isRefresh" v-on:scroll-y="scrollY" ref="listRefresh"></listLay>
         <div class="popNotWrap big">
             <img src="../../../static/img/not_1.png" alt="" />
             <p>咦!?找不到哎!</p>
@@ -74,7 +74,7 @@
                     {{ item.name }}
                 </p>
             </div>
-            <div class="close icon-yk_btn_clear" v-show="addressId" @click="closeAddPop"></div>
+            <div class="close icon-yk_btn_clear" v-show="getData.addressId" @click="closeAddPop"></div>
         </div>
     </section>
 </template>
@@ -90,13 +90,12 @@
         data () {
             return {
                 pageTitle: '头部模版',
-                showChooseAdd: false,
+                showChooseAdd: false, // 门店显示遮罩
                 fixedTop: false,
                 cateList: '',
                 pIndex: '',
                 listData: [],
                 addListDate: [],
-                currentPage: 1,
                 showCate: false,
                 categoryId: this.$store.state.categoryId,  //分类id
                 categoryName: this.$store.state.categoryName,
@@ -104,12 +103,10 @@
                 courseStatusTxt: this.$store.state.courseStatusTxt,     //可预约  不可预约文本
                 startday: this.$store.state.startday,       //时间周期
                 startdayTxt: this.$store.state.startdayTxt,   //时间文本
-                addressId: '',
-                addressTxt: this.$store.state.addressTxt,
+                addressTxt: localStorage.getItem('addressTxt') || '选择门店地址',
                 addressLen: '2',
-                uid: '',
                 categoryCount: '',
-                isMember: false,
+                isMember: false, // 是否是会员
                 validContractCount: '',
                 endListen: false,
                 firstLoadData: true,
@@ -127,81 +124,37 @@
                // listFilter: [],
                 foldIs: false,
                 listFilter: {},
-                filterSubData: {
-                    categoryId: [],
-                    teacherId: [],
-                    reservationType: '',
-                    timeScope: '',
-                },
-                packageId: '',
-                pageSize: 10,
-                phone: '',
-                getData: {
+                isRefresh: false, // 当筛选的时候是否执行子组件重新加载
+                getData: { // 需要传的参数
+                    uid: localStorage.getItem('uid') !== null ?  localStorage.getItem('uid') : '', // 用户id
+                    phone: localStorage.getItem('phone') !== null ?  localStorage.getItem('phone') : '', // 电话
+                    addressId: localStorage.getItem('addressId') !== null ?  localStorage.getItem('addressId') : '', // 门店地址
+                    packageId: localStorage.getItem('packageId') !== null ?  localStorage.getItem('packageId') : '', // 套餐 id
+                    filterSubData: {
+                        categoryId: [], // 分类id
+                        teacherId: [], // 老师id
+                        reservationType: '', // 条件
+                        timeScope: '', // 时间
+                    },
                 },
             }
         },
-        created () {
-          //  var isLogin = this.$store.state.isLogin || localStorage.getItem('isLogin')
-
-           // if(isLogin == 'true' || isLogin == true){
-                this.initDate()      //获取全局数据
-             //   this.getCateList()   //获取分类列表
-
-                if(this.$store.state.listLoaded == true){ //是否有缓存数据
-                    this.currentPage = this.$store.state.currentPage
-                    this.listData = this.$store.state.listData
-                    this.$store.state.loadingTxt = ''
-                    this.firstLoadData = false
-                    // console.log(this.listData)
-                }else{
-                    // console.log("重新获取数据")
-                    this.watchChange()
-                    this.getAddList()    //获取地址列表
-                }
-          //  }
+        mounted (){
+            this.initDate()      //获取全局数据
         },
         components: {
             listLay,
         },
         methods: {
-            initDate:function() {
-                this.isMember = localStorage.getItem('isMember') || this.$store.state.isMember
-                this.categoryCount = this.$store.state.categoryCount || localStorage.getItem('categoryCount')
-                this.validContractCount = this.$store.state.validContractCount || localStorage.getItem('validContractCount')
-
-                this.categoryId = localStorage.getItem('categoryId') || this.$store.state.categoryId
-                this.categoryName = localStorage.getItem('categoryName') || this.$store.state.categoryName
-
-                if (this.isMember == false || this.isMember == 'false') {
-                    this.courseStatus = 0
-                } else {
-                    this.courseStatus = localStorage.getItem('courseStatus') || this.$store.state.courseStatus
-                    this.courseStatusTxt = localStorage.getItem('courseStatusTxt') || this.$store.state.courseStatusTxt
+            initDate() {
+                let  addressTxt = localStorage.getItem('addressTxt');
+                let  addressId = localStorage.getItem('addressId');
+                this.isMember =  localStorage.getItem('isMember');
+                if (!addressTxt && !addressId) {
+                    this.showChooseAdd = true;
                 }
-
-                this.timeScope = localStorage.getItem('startday') || this.$store.state.timeScope
-                this.startdayTxt = localStorage.getItem('startdayTxt') || this.$store.state.startdayTxt
-
-                this.teacherId = localStorage.getItem('teacherId') || this.$store.state.teacherId || 0
-
-                this.teacherName = localStorage.getItem('teacherName') || this.$store.state.teacherName || '全部老师'
-
-                this.addressId = localStorage.getItem('addressId') || this.$store.state.addressId
-                this.addressTxt = localStorage.getItem('addressTxt') || this.$store.state.addressTxt
-
-                this.phone = localStorage.getItem('phone') || this.$store.state.phone
-                this.uid = localStorage.getItem('uid') || this.$store.state.uid
                 this.memberClass();
                 this.getAddList();
-                this.getData = {
-                    phone: this.phone,
-                    currentPage: this.currentPage,
-                    pageSize: this.pageSize,
-                    addressId: this.addressId,
-                    uid: this.uid,
-                    packageId: this.packageId,
-                    filterSubData: this.filterSubData,
-                }
             },
             /*
              * Description: 获取筛选分类
@@ -209,8 +162,7 @@
              * Date: 2018/8/13
              */
             memberClass() {
-                let _cateUrl = `/daydaycook/server/offline/webcourse/filterList.do?userId=${this.uid}&addressId=${this.addressId}`
-                //let _cateUrl = '/daydaycook/server/offline/webcourse/filterList.do?userId=11&addressId=2';
+                let _cateUrl = `/daydaycook/server/offline/webcourse/filterList.do?userId=${this.getData.uid}&addressId=${this.getData.addressId}`
                 logic.ajaxGetData(_cateUrl).then(({data}) => {
                     data.selectList.forEach((item) => {
                         item.pick = 2
@@ -223,73 +175,51 @@
                     })
                     if (this.isMember == true) {
                         this.packageText = data.packageList[0].packageName;
-                        this.packageId = data.packageList[0].packageId;
+                        this.getData.packageId = data.packageList[0].packageId;
                     }
                      this.listFilter = data;
                 })
             },
-            chooseAddFun:function(id, txt){ //切换地址
-                this.showChooseAdd = false
-
-                this.addressId = id
-                this.getData.addressId = id
+            chooseAddFun:function(id, txt){ // 切换地址
+                this.getData = { // 切换重置 数据
+                    phone: this.getData.phone,
+                    addressId: id,
+                    uid: this.getData.uid,
+                    packageId: this.getData.packageId,
+                    filterSubData: {
+                        categoryId: [],
+                        teacherId: [],
+                        reservationType: '',
+                        timeScope: '',
+                    }
+                }
                 this.addressTxt = txt
-
-                this.$store.state.addressId = id
-                this.$store.state.addressTxt = txt
-
-                localStorage.setItem('addressId', id)
-                localStorage.setItem('addressTxt', txt)
+                localStorage.setItem('addressTxt', txt);
+                localStorage.setItem('addressId', id);
+                this.showChooseAdd = false;
+                this.isRefresh = true
+                this.listFilter.selectList.forEach((item) => {
+                    item.list.forEach((itemA) => {
+                        this.$set(itemA, 'isActive', false)
+                    })
+                })
+                console.log(this.getData, '父层')
                 this.tipShow();
-                this.watchChange();
-                this.$refs.listRefresh.mescroll.resetUpScroll()
             },
             chooseFun:function(){
-                if(this.addressLen == '2'){
-                    return
-                }else{
-                    this.showChooseAdd = true
-                }
+                this.showChooseAdd = true
             },
             closeAddPop:function(){
-                if(this.addressId){
+                if(this.getData.addressId){
                     this.showChooseAdd = false
                 }
             },
-            watchChange:function(){
-                window.scrollTo(0, 0)
-                this.endListen = false
-                this.currentPage = 1
-                this.showCate = false
-                // this.getList('')
-            },
-            chooseCate:function(i){
-                this.pIndex = i
-                this.showCate = true
-            },
-            getAddList: function(){  //获取地址列表
-                var _this = this
-                var addUrl = '/daydaycook/server/offline/address/list.do?uid=' + this.uid
-                this.ajaxDataFun('post', addUrl, function(obj){
-                    if(obj.code == '200'){
-                        var objLen = obj.data.length
-                        _this.addressLen = objLen
-                        if(objLen == 2){
-                            _this.addressId = obj.data[1].id
-                            _this.addressTxt = obj.data[1].name
-                            _this.$store.state.addressId = obj.data[1].id
-                            _this.$store.state.addressTxt = obj.data[1].name
-                            localStorage.setItem('addressId', obj.data[1].id)
-                            localStorage.setItem('addressTxt', obj.data[1].name)
-                        }else{
-                             console.log(obj.data)
-                            _this.addListDate = obj.data
-                            var isSelectAdd = localStorage.getItem('addressId')
-                            if(!isSelectAdd){
-                                _this.showChooseAdd = true
-                            }
-                        }
-                      //  _this.getList('')
+            getAddList() {  //获取地址列表
+                var addUrl = `/daydaycook/server/offline/address/list.do?uid=${this.getData.uid}`;
+                this.ajaxDataFun('post', addUrl, (res) => {
+                    console.log(res, 'getAddList');
+                    if(res.code == '200') {
+                        this.addListDate = res.data;
                     }
                 })
             },
@@ -354,9 +284,9 @@
              */
             filterTh(data, key) {
                 if (data.isActive) {
-                    this.filterSubData[key] = data.id;
+                    this.getData.filterSubData[key] = data.id;
                 } else {
-                    this.filterSubData[key] = '';
+                    this.getData.filterSubData[key] = '';
                 }
             },
             /*
@@ -366,11 +296,11 @@
              */
             filterTd(data, key) {
                 if (data.isActive) {
-                    this.filterSubData[key].push(data.id);
+                    this.getData.filterSubData[key].push(data.id);
                 } else {
-                    this.filterSubData[key].forEach((item, index) => {
+                    this.getData.filterSubData[key].forEach((item, index) => {
                         if (item == data.id) {
-                            this.filterSubData[key].splice(index, 1)
+                            this.getData.filterSubData[key].splice(index, 1)
                         }
                     })
                 }
@@ -381,22 +311,9 @@
              * Date: 2018/8/15
              */
             filterSub() {
-                let fromData = {
-                    timeScope: this.filterSubData.timeScope, // 时间id
-                    reservationType: this.filterSubData.reservationType, // 条件id type Array
-                    categoryId: this.filterSubData.categoryId.length > 0 ? this.filterSubData.categoryId : '', // 分类id type Array
-                    teacherId: this.filterSubData.teacherId.length > 0 ? this.filterSubData.teacherId : '', // 教师id
-                    packageId: this.packageId || '', // 套餐id
-                    pageSize: this.pageSize, // 条数
-                    currentPage: this.currentPage, // 页数
-                    mobile: this.phone, // 电话
-                    uid: Number(this.uid), // 用户id
-                    addressId: Number(this.addressId), // 店铺id
-                }
+                this.isRefresh = true
                 this.pfShow.package = false
                 this.pfShow.filter = false
-                console.log(this.$refs, fromData);
-                this.$refs.listRefresh.mescroll.resetUpScroll()
             },
             /*
              * Description: 重置筛选条件
@@ -404,7 +321,7 @@
              * Date: 2018/8/15
              */
             filterClear() {
-                this.filterSubData = {
+                this.getData.filterSubData = {
                     categoryId: [],
                     teacherId: [],
                     reservationType: '',
@@ -416,6 +333,11 @@
                     })
                 })
             },
+            /*
+             * Description: 设置筛选条件是否浮动
+             * Author: yanlichen <lichen.yan@daydaycook.com.cn>
+             * Date: 2018/8/21
+             */
             scrollY(y) {
                 if(y >= 44){
                     this.fixedTop = true
@@ -424,7 +346,6 @@
                 }
             }
         },
-        mounted (){},
         computed: {
             isLogin:function(){
                 return this.$store.state.isLogin || localStorage.getItem('isLogin')
@@ -445,18 +366,6 @@
                     document.body.className = ''
                 }
             },
-          /*  listData:function(){
-                this.$store.state.listLoaded = true  //有储存列表值
-                this.$store.state.currentPage = this.currentPage
-                this.$store.state.listData = this.listData
-                let l = this.listData
-                let e = document.querySelector('.popNotWrap')
-                if(l == 0){
-                    e.classList.add('show')
-                }else{
-                    e.classList.remove('show')
-                }
-            }*/
         }
     }
 </script>

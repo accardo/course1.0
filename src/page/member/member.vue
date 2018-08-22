@@ -49,7 +49,7 @@
        <div class="make-appointment">
            <h4>我得预约</h4>
            <div class="make-list">
-               <class-list :list-data="listData1" :list-type="listType"></class-list>
+               <class-list :list-data="listData" :list-type="listType"></class-list>
            </div>
        </div>
        <div class="popNotWrap">
@@ -112,41 +112,17 @@
                     }
                 ],
                 listType: 2, // 2 -> mermber页面
-                listData1: [
-                    {
-                        img: '../../static/img/c_shop0.jpg',
-                        tip: '未开课',
-                        title: '巧克力甜甜圈体验课',
-                        startTime: 1534230000000,
-                        endTime: 1534230300000,
-                        teacher: '小鱼老师',
-                        num: '3',
-                        seIs: true,
-                        address: '上海K11体验店',
-                        name: '张学世'
-                    },
-                    {
-                        img: '../../static/img/c_shop0.jpg',
-                        tip: '已结束',
-                        title: '巧克力甜甜圈体验课',
-                        startTime: 1534230000000,
-                        endTime: 1534230300000,
-                        teacher: '老坑老师',
-                        num: '3',
-                        seIs: false,
-                        address: '上海K11体验店',
-                        name: '张学世'
-                    }
-                ]
+                listData: []
             }
         },
         created () {
-            let isMember = this.$store.state.isMember || localStorage.getItem('isMember')
-            if(isMember == true || isMember == 'true'){
-                this.initUserInfo()
-            }else{
-                this.$router.push('/notMember')
-            }
+            this.initUserInfo()
+            // let isMember = this.$store.state.isMember || localStorage.getItem('isMember')
+            // if(isMember == true || isMember == 'true'){
+            //     this.initUserInfo()
+            // }else{
+            //     this.$router.push('/notMember')
+            // }
         },
         components: {
         	listLay,
@@ -164,9 +140,9 @@
              * Author: yanlichen <lichen.yan@daydaycook.com>
              * Date: 2018/5/16
              */
-            getDateEnd() {
-                let uid = this.$store.state.uid || localStorage.getItem('uid');
-                let infoUrl = `/daydaycook/server/contract/userInfo.do?uid=${uid}`;
+            getPersonalResList() {
+                let phone = localStorage.getItem('phone');
+                let infoUrl = `/server/offline/reservationUser/personalResList.do?mobile=${phone}`;
                 return new Promise((resolve) => {
                     this.ajaxDataFun('post', infoUrl, (obj) => {
                         if(obj.code == '200'){
@@ -176,7 +152,13 @@
                 });
             },
         	initUserInfo(){
-        		this.avar = this.$store.state.avar || localStorage.getItem('avar')
+                this.getPersonalResList().then((res) => {
+                    if (res.code == '200') {
+                        this.listData = res.data;
+                        console.log(res);
+                    }
+                })
+        		/*this.avar = this.$store.state.avar || localStorage.getItem('avar')
                 this.uid = this.$store.state.uid || localStorage.getItem('uid')
         		this.phone = this.$store.state.phone || localStorage.getItem('phone')
         		this.lineUserName = this.$store.state.lineUserName || localStorage.getItem('lineUserName')
@@ -186,10 +168,8 @@
                 this.getDateEnd().then((data) => { // 获取到期日期
                     if (data.code == '200') {
                         this.contractEndTime = data.userContract.contractEndTime;
-                        // let endTime = timeStamp(data.userContract.contractEndTime);
-                        // this.contractEndTime = `${endTime.Y}/${endTime.M}/${endTime.D}`;
                     }
-                });
+                });*/
         	},
         	getInfoNum:function(){
         		var _this = this
@@ -231,7 +211,7 @@
             },
         },
         mounted (){
-            var _this = this
+          /*  var _this = this
             document.body.className = ''
             window.onscroll = function(){
             	let t = common.getScrollTop()
@@ -245,10 +225,10 @@
                     }
                     console.log(_this.currentPage)
             　　}
-            }
+            }*/
         },
         watch:{
-        	listData:function(){
+       /* 	listData:function(){
                 let l = this.listData
                 let e = document.querySelector('.popNotWrap')
                 if(l == 0){
@@ -256,7 +236,7 @@
                 }else{
                   	e.classList.remove('show')
                 }
-            }
+            }*/
         }
     }
 </script>

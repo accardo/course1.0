@@ -2,8 +2,8 @@
    <div id="container">
         <VTitle>{{ pageTitle }} </VTitle>
         <HeaderLay></HeaderLay>
-        <!--<FooterLay v-bind:position="position"></FooterLay>-->
-        <!--<LoginLay v-show="$store.state.isShowLogin == true"></LoginLay>-->
+       <!-- <FooterLay v-bind:position="position"></FooterLay>-->
+        <LoginLay v-show="$store.state.isShowLogin == false"></LoginLay>
     </div>
 </template>
 
@@ -12,7 +12,7 @@
     import VTitle from '@/components/title'
     import HeaderLay from './header'
     import FooterLay from '@/components/footer'
-    // import LoginLay from '@/components/login'
+    import LoginLay from '@/components/login'
 
     export default {
         name: 'login',
@@ -29,23 +29,9 @@
             HeaderLay,
             FooterLay,
             VTitle,
-           // LoginLay,
+            LoginLay,
         },
         methods: {},
-        // computed: {
-        //     isLogin:function(){
-        //         return this.$store.state.isLogin || localStorage.getItem('isLogin')
-        //     }
-        // },
-        // watch: {
-        //     isLogin:function(){
-        //         if(this.isLogin == 'true' || this.isLogin == true){
-        //             this.$store.state.isShowLogin = false
-        //         }else{
-        //             this.$store.state.isShowLogin = true
-        //         }
-        //     }
-        // },
         mounted (){
             document.body.className = ''
             let isLogin = this.$store.state.isLogin || localStorage.getItem('isLogin')

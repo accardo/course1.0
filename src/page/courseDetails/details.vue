@@ -7,30 +7,40 @@
         <div class="details">
             <div class="banner">
                 <img :src="allData.imageUrl + '?x-oss-process=image/resize,w_640'" alt="banner" />
-                <div class="tip" v-if="chLen > 0">
-                    <span v-for="item in allData.childs">{{ item.attributeName }}{{ allData.categoryName }}</span>
-                </div>
-                <div class="tip" v-if="chLen == 0">
-                    <span>
-                        {{ allData.categoryName }}
-                    </span>
+                <div class="tip" >
+                    <span>{{ allData.courseName }}</span>
                 </div>
             </div>
             <div class="infoBox">
-                <div class="title">{{ allData.title }} </div>
+                <div class="title">{{ allData.courseName }} </div>
                 <div class="teacher"><span>{{ allData.teacherName }}</span></div>
                 <p class="min">剩余名额
                     <span style="color:#000;">
-                        {{ allData.totalCount - allData.reservationCount}}
+                        {{ allData.surplusCount}}
                     </span> 人
                 </p>
                 <span class="minLine"></span>
-                <p v-show="allData.reservationState != 12">{{ allData.startDate | formatTimeOne }}-{{ allData.endDate | formatTimeTwo }}</p>
-                <p>{{ allData.addressName }} </p>
+                <p v-show="allData.reservationState != 12">{{ allData.startTime | formatTimeOne }}-{{ allData.endTime | formatTimeTwo }}</p>
+                <p>{{ allData.address }} </p>
             </div>
             <div class="infoItem" v-html="allData.introduction"></div>
             <div class="exp-shop-bg">
-            <template v-if="!isMember && canMake">
+
+                <button v-if="isMember" @click="needLogin=true">立即预约</button>
+
+                <!--<template v-if="isMember == true">
+
+                </template>-->
+                <!--<button v-if="$route.query.state == 2" >立即预约</button>
+                <button v-if="$route.query.state === 0">敬请期待</button>
+                <button v-if="$route.query.state === 1">查看</button>
+                <button v-if="$route.query.state === 2">预约</button>
+                <button v-if="$route.query.state === 3 || $route.query.state === 4 || $route.query.state === 6"
+                        class="list-disabled"
+                >预约</button>
+                <button v-if="$route.query.state === 5">已截止</button>-->
+
+ <!--           <template v-if="!isMember && canMake">
                 <div class="btButton active 1" v-if="!isLogin" @click="needLogin=true"> 立即预约 </div>
                 <div class="btButton active 2" v-if="isLogin && allData.reservationState != 5" @click="showNotMPop=true">
                     立即预约
@@ -57,7 +67,7 @@
                 <div class="btButton active 3 gray">
                     即将开课，无法预约
                 </div>
-            </template>
+            </template>-->
             </div>
             <div class="popBg" v-show="showNotMPop" @click="showNotMPop=false"></div>
             <div class="popRed" v-show="showNotMPop">
@@ -82,7 +92,7 @@
                 <div class="close icon-yk_btn_clear" @click="showNotMPop=false"></div>
             </div>
 
-            <div class="popBg" v-show="RSuccess" @click="RSuccess = false"></div>
+            <div class="popBg" v-show="RSuccess" @click="RSuccess"></div>
             <div class="popRed" v-show="RSuccess">
                 <div class="img">
                     <img src="../../../static/img/tc_icon_yuyue.png" alt="" />
@@ -90,11 +100,11 @@
                 <div class="tip">确定预约课程吗？</div>
                 <div class="des">
                     <p>开课时间：<br/>
-                    {{ allData.startDate | formatTimeOne }}-{{ allData.endDate | formatTimeTwo }}
+                    {{ allData.startTime | formatTimeOne }}-{{ allData.endTime | formatTimeTwo }}
                     <br/>
                     <br/>
                     开课地点：<br/>
-                    {{ allData.addressName}}
+                    {{ allData.address}}
                 </p>
                 </div>
                 <div class="button" @click="onRecommend">{{ recommendTxt }}</div>
@@ -168,36 +178,36 @@
         },
         methods: {
             initDate:function(){
-                let locaUrl = window.location.href
+                /*let locaUrl = window.location.href
                 if(locaUrl.indexOf('id=') > -1){
                     this.id = common.getUrlPars(locaUrl).id
-                }
+                }*/
                 this.uid = this.$store.state.uid || localStorage.getItem('uid')
                 this.phone = localStorage.getItem('phone') || localStorage.getItem('phoneBack') || this.$store.state.phone
-                this.isMember = this.$store.state.isMember || localStorage.getItem('isMember')
+                this.isMember = localStorage.getItem('isMember')
 
                 // console.log("uid==" + this.uid)
                 // console.log("phone==" + this.phone)
                 // console.log("isMember==" + this.isMember)
                 this.getCourseInfo();
             },
-            getCourseInfo:function(){
-                var _this = this
-                var _shareUrl = window.location.protocol + '//' + window.location.host  + '/course/index.html#/details?id=' + _this.id
-
-                var _detailsUrl = '/daydaycook/server/offline/reservationUser/viewMyReservation.do?offlineCourseId=' +_this.id + '&mobile=' + _this.phone + '&uid=' + this.uid;
-                this.ajaxDataFun('post', _detailsUrl ,function(obj){
+            getCourseInfo() {
+                var _shareUrl = window.location.protocol + '//' + window.location.host  + '/course/index.html#/details?id=' + this.$route.query.courseId
+                var _detailsUrl = `/daydaycook/server/offline/reservationUser/courseDetail.do?courseId=${this.$route.query.courseId}`;
+                console.log(_detailsUrl)
+                this.ajaxDataFun('post', _detailsUrl , (obj) =>{
                     if(obj.code == '200'){
-                        _this.allData = obj.data
-                        _this.chLen = obj.data.childs.length
-                        _this.pageTitle = obj.data.title
-                        _this.cancelCount = obj.data.cancelCount
-                        _this.showAll = true;
-                        _this.endTime = obj.data.endDate;
-                        _this.isHost();
-                       // common.wxShare(_this.pageTitle, '日日煮线下美食课程预约', '',  _shareUrl)
+                        this.allData = obj.data
+                        this.showAll = true;
+                        /*his.chLen = obj.data.childs.length
+                        this.pageTitle = obj.data.title
+                        this.cancelCount = obj.data.cancelCount
+
+                        this.endTime = obj.data.endDate;*/
+                        this.isHost();
+                       // common.wxShare(this.pageTitle, '日日煮线下美食课程预约', '',  _shareUrl)
                         common.wxShare('日日煮线下美食课程预约', '生活就要极致', '',  _shareUrl);
-                        _this.calcIfEnd();
+                        this.calcIfEnd();
                     }
                 })
             },
@@ -344,9 +354,26 @@
     .details .infoBox .title {
         font-size: 20px;
     }
-    .details .btButton.active {
-        background-image: linear-gradient(45deg, #393939 0%, #2F2F2F 100%);
+    .details button {
+        background: linear-gradient(45deg, #393939 0%, #2F2F2F 100%);
         box-shadow: 0 2px 8px 0 rgba(0,0,0,0.20);
+        border-radius: 100px;
+        width: 232px;
+        height: 40px;
+        line-height: 40px;
+        font-size: 16px;
+        color: #FFFFFF;
+        text-align: center;
+        position: fixed;
+        z-index: 20;
+        left: 0;
+        right: 0;
+        margin: auto;
+        bottom: 15px;
+    }
+    .details button.active {
+        background: #CDCDCD;
+        box-shadow: 0 2px 10px 0 rgba(126, 126, 126, 0.45);
         border-radius: 100px;
     }
     .popRed {

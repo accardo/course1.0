@@ -1,17 +1,21 @@
 <template>
     <div>
         <div class="lesson-item" v-for="item in listData" :key="">
-            <div class="lesson-img">
-                <img :src="item.img" alt="">
-                <span v-if="listType ==1">{{item.tip}}</span><!--listType 1 导航列表  2 个人中心-->
-                <span v-if="listType ==2" :class="[!item.seIs ? 'tip-active' : '']">{{item.tip}}</span> <!--member 已结束 tip-active-->
-            </div>
-            <div class="lesson-info">
-                <p class="tit two-line">{{item.title}}</p>
-                <p class="lesson-p">{{item.startTime | formatTimeOne }}-{{item.endTime | formatTimeTwo}}</p>
-                <p v-if="listType ==1" class="lesson-p">{{item.teacher}} | 剩余名额<strong> {{item.num}} </strong>人</p>
-                <p v-if="listType ==2" class="lesson-p">{{item.address}} | {{item.name}}</p>
-            </div>
+            <router-link :to="{ name: 'expShop', params: { userId: 123 }}">
+                <div class="lesson-img">
+                    <img :src="item.imageUrl" alt="">
+                    <span v-if="listType ==1">{{item.tip}}</span><!--listType 1 导航列表  2 个人中心-->
+                    <span v-if="listType ==2"
+                          :class="[item.courseStatus == 1 ? 'tip-active' : '']"
+                    >{{item.courseStatus == 1 ? '已结束' : '未开始'}}</span> <!--member 已结束 tip-active-->
+                </div>
+                <div class="lesson-info">
+                    <p class="tit two-line">{{item.courseName}}</p>
+                    <p class="lesson-p">{{item.startTime | formatTimeOne }}-{{item.endTime | formatTimeTwo}}</p>
+                    <p v-if="listType ==1" class="lesson-p">{{item.teacher}} | 剩余名额<strong> {{item.num}} </strong>人</p>
+                    <p v-if="listType ==2" class="lesson-p">{{item.address}} | {{item.teacherName}}</p>
+                </div>
+            </router-link>
         </div>
     </div>
 </template>
