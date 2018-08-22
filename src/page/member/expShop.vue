@@ -27,9 +27,7 @@
         </div>
         <div class="exp-main">
             <h4><i></i>门店服务</h4>
-            <div class="exp-content">
-                {{shopInfo.introduce}}
-            </div>
+            <div class="exp-content" v-html="shopInfo.introduce"></div>
         </div>
         <div class="exp-shop-bg">
             <button class="exp-shop-button" type="button">查看课程</button>
@@ -189,9 +187,12 @@
     }
     .exp-main {
         padding-top: 16px;
+        padding-bottom: 30px;
+        box-sizing: border-box;
     }
     .exp-main h4 {
         font-size: 18px;
+        margin-bottom: 20px;
         color: #1a1a1a;
     }
     .exp-main h4 i {
