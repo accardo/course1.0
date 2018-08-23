@@ -129,5 +129,6 @@ export function jumpUrlByIsApp(params){
 export default {
 	isWeChatFun,
 	timeStamp,
+	formatTimeArray
 };
 

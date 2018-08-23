@@ -18,7 +18,7 @@
            <div class="login-out" @click="loginOutShow = true">登出</div>
        </div>
        <div class="swiper-box">
-           <swiper-banner :param = "bannerParam"></swiper-banner>
+           <swiper-banner :swipelist="swipelist" :param="bannerParam"></swiper-banner>
        </div>
        <div class="make-appointment">
            <h4>我的预约</h4>
@@ -49,9 +49,9 @@
         data () {
             return {
                 pageTitle: '个人中心',
-                uid: '',
+                uid: localStorage.getItem('uid'),
                 avar: '',
-                phone: '',
+                phone: localStorage.getItem('phone'),
                 nickName: '',
                 lineUserName: '',
                 unreadCount: '',
@@ -62,23 +62,22 @@
                 position:2,
                 contractEndTime: '', // 到期日期
                 bannerParam:{           //banner swiper 配置
-                    auto:false,
+                    auto: true,
                     swiperId:'aboutbanner',
                     showText:false,
                     delay:5000,
                     switchOpen: 2,
                 },
+                swipelist: [],
                 listType: 2, // 2 -> mermber页面
-                listData: []
+                listData: [],
             }
         },
         mounted () {
-            this.phone = localStorage.getItem('phone');
-            this.uid = localStorage.getItem('uid');
             let isMember = this.$store.state.isMember || localStorage.getItem('isMember')
-            this.initUserInfo();
             if(isMember == true || isMember == 'true'){
-                this.initUserInfo()
+                this.initUserInfo();
+                this.getContPackage();
             }else{
                 this.$router.push('/notMember')
             }
@@ -117,6 +116,21 @@
                     }
                 })
         	},
+            /*
+            * Description: 套餐合同
+            * Author: yanlichen <lichen.yan@daydaycook.com.cn>
+            * Date: 2018/8/22
+            */
+            getContPackage() {
+                let packageUrl = `/daydaycook/server/newCourse/getContractPackageInfoByUid.do?uid=${this.uid}`;
+                console.log(packageUrl)
+                this.ajaxDataFun('get', packageUrl, (obj) => {
+                    if(obj.code==200){
+                        this.swipelist = obj.list;
+                        console.log(obj, '合同套餐')
+                    }
+                })
+            }
         },
         watch:{
         }
