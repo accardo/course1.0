@@ -125,7 +125,6 @@
                     endTime:'',
                 },      //最近预约课程信息
                 positionData:'',     //用户 gps 地址
-                getTimeArray:util.formatTimeArray(),    
                 bannerParam:{           //banner swiper 配置
                     auto:false,
                     swiperId:'aboutbanner',
@@ -198,7 +197,7 @@
                             self.userInfo['lineUserName'] = res.lineUserName;
                             self.userInfo['nickName'] = res.nickName;
                             self.userInfo['buyCourseNum'] = res.refundCount;
-                            let endtime = res.contractEndTime ? self.getTimeArray(res.contractEndTime) : '';
+                            let endtime = res.contractEndTime ? util.formatTimeArray(res.contractEndTime) : '';
                             self.userInfo.endtime = endtime ? `${endtime[0]}/${endtime[1]}/${endtime[2]}` : '';
                         })
                         self.getLastCourseByuid(self.userphone);

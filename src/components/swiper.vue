@@ -11,7 +11,7 @@
             </div>
             <div class="swiper-pagination"></div>
         </div>
-        <div class="swiper-member" :id="swiperId" :ref="swiperId"  v-if="param.switchOpen == 2 && swipelist.length > 0">
+        <div class="swiper-member" :id="swiperId" :ref="swiperId"  v-if="param.switchOpen == 2 &&  swipelist.length > 0">
             <div class="swiper-wrapper">
                     <div class="swiper-slide" v-for="item in swipelist" :key="">
                         <router-link :to="{name: 'contract', query: {pid: item.contractId}}">
@@ -34,23 +34,19 @@
                 pageTitle: 'banner',
                 swiperId: 'swiperbanner',
                 mySwiper: '',
-                phone: localStorage.getItem('phone'),
-                uid : localStorage.getItem('uid'),
-                swipelist: [],
             }
         },
-        props: ['param'],
+        props:['swipelist','param'],
         mounted() {
-          //  this.setImglist();
-            this.getContPackage();
+            this.setImglist();
         },
-        updated() {
+        updated(){
             this.setImglist();
         },
         methods: {
             setImglist() {
                 //根据参数 设置swiper 展示方式
-                let { param = {},} = this.$props;
+                let { param = {}, swipelist = []} = this.$props;
                 this.swiperId = param.swiperId; //实例化swiper 的配置参数  id为  indexseckill || infospaceswiper 时显示title
                 let pagination = (this.swiperId.indexOf('infospaceswiper') > -1 || this.swiperId == 'indexseckill') ? '' : '.swiper-pagination';
                 this.$nextTick(() => {
@@ -59,7 +55,7 @@
                         this.mySwiper.destroy();
                     }
                     this.mySwiper = new Swiper(`#${this.swiperId}`, {
-                        loop: this.swipelist.length > 1 ? true : false,              //循环播放
+                        loop: swipelist.length > 1 ? true : false,              //循环播放
                         autoplay: param.auto || false,
                         delay: param.delay || 5000,     //自动播放间隔
                         slidesPerView: 'auto',
@@ -77,8 +73,8 @@
                         },
                         on: {
                             //解决 手动滑动后 不自动轮播
-                            slideChangeTransitionEnd: function () {
-                                if (param.auto) {
+                            slideChangeTransitionEnd: function(){
+                                if(param.auto){
                                     this.autoplay.start()
                                 }
                             }
@@ -86,21 +82,6 @@
                     })
                 })
             },
-            /*
-               * Description: 套餐合同
-               * Author: yanlichen <lichen.yan@daydaycook.com.cn>
-               * Date: 2018/8/22
-               */
-            getContPackage() {
-                let packageUrl = `/daydaycook/server/newCourse/getContractPackageInfoByUid.do?uid=${this.uid}`;
-                console.log(packageUrl)
-                this.ajaxDataFun('get', packageUrl, (obj) => {
-                    if(obj.code==200){
-                        this.swipelist = obj.list;
-                        console.log(obj, '合同套餐')
-                    }
-                })
-            }
         },
     }
 </script>
