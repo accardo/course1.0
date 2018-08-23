@@ -10,6 +10,16 @@
 	<meta name="x5-fullscreen" content="true">
     <meta name="full-screen" content="yes">
 	<title>预约课程</title>
+	<script>
+        //全局获取用户信息
+		var userInfo_app;
+        var sessionId_app;
+        function setSystemInfo(obj){
+            if(obj){
+                userInfo = obj;
+            }
+        }
+    </script>
     <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.8&key=bc539883ea37ed0307b790639408d331"></script>
 </head>
 <body>
