@@ -1,5 +1,5 @@
 <template>
-     <div id="mescroll" class="courseList mescroll" >
+     <div id="mescroll" :class="scrollY ?  'courseList mescroll' : 'courseList mescroll mescroll-top'" >
          <div id="dataList">
             <div class="courseItem" v-for="item in listData">
                 <router-link :to="{name: 'details', query: { courseId: item.courseId, state: item.reservationState}}">
@@ -71,6 +71,7 @@
                 pageTitle: '首页列表',
                 listData: [],
                 mescroll: null, //mescroll实例对象
+                scrollY:0,  //滚动的距离
             }
         },
         mounted () {
@@ -81,6 +82,7 @@
                     isBounce: false,
                     auto: true,
                     onScroll: (mescroll, y, isUp) => {
+                        this.scrollY = y > 44;
                         this.$emit('scroll-y', y);
                     },
                     empty: {
@@ -238,6 +240,12 @@
     .mescroll {
         position: fixed;
         top: 44px;
+        bottom: 0;
+        height: auto;
+    }
+    .mescroll-top{
+        position: fixed;
+        top:90px;
         bottom: 0;
         height: auto;
     }

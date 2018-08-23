@@ -7,7 +7,7 @@
         <article class="entrance">
             <section class="entrance-user">
                 <img :src="userInfo.userHeader" alt="">
-                <dl v-if="userLogin=='true'">
+                <dl v-if="userLogin">
                     <dt v-if="userInfo.lineUserName">{{userInfo.lineUserName}}</dt>
                     <dt v-else>{{userInfo.nickName}}</dt>
                     <dd v-if="userInfo.buyCourseNum" >剩余<strong>{{userInfo.buyCourseNum}}</strong>次可预约，{{userInfo.endtime}}到期</dd>
@@ -170,7 +170,7 @@
                 listType: 1, //
             }
         },
-        created(){
+        mounted(){
             this.init();
             this.getUserGps();
         },
@@ -192,6 +192,7 @@
                     if(self.userLogin == 'true' || self.userLogin == true){
                         // 如果用户已登录    获取用户信息
                         self.uid = localStorage.getItem('uid') || self.$store.state.uid;
+                        self.uid = '2199696';
                         self.userphone = localStorage.getItem('phone') || self.$store.state.phone;
                         self.getUserByUid(self.uid).then(res => {
                             self.userInfo['userHeader'] = res.img ? res.img : '../../../static/img/profile.png';
@@ -252,12 +253,13 @@
 
             /* 店铺详情 */
             shopDetail(id){
-                this.$router.push({
-                    name:'expShop',
-                    query:{
-                        id,
-                    }
-                })
+                let params = {
+                    _this:this,
+                    url:'expShop',
+                    pageTitle:'店铺详情',
+                    query:{id,}
+                }
+                util.jumpUrlByIsApp(params);
             },
 
             // 获取最近预约课程
@@ -297,7 +299,6 @@
             /* 获取课程列表 */
             getCourseList(gps){
                 let self = this;
-                console.log(gps);
                 var _listUrl = '/daydaycook/server/newCourse/getAddressCourseInfo.do?uid=' + self.uid + '&gps='+gps;
                 this.ajaxDataFun('get', _listUrl, function(obj){
                     if(obj.code == '200'){
