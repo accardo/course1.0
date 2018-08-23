@@ -192,7 +192,6 @@
                     if(self.userLogin == 'true' || self.userLogin == true){
                         // 如果用户已登录    获取用户信息
                         self.uid = localStorage.getItem('uid') || self.$store.state.uid;
-                        self.uid = '2199696';
                         self.userphone = localStorage.getItem('phone') || self.$store.state.phone;
                         self.getUserByUid(self.uid).then(res => {
                             self.userInfo['userHeader'] = res.img ? res.img : '../../../static/img/profile.png';
