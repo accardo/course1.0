@@ -2,7 +2,7 @@
      <div id="mescroll" class="courseList mescroll" >
          <div id="dataList">
             <div class="courseItem" v-for="item in listData">
-                <router-link :to="{name: 'details', query: { courseId: item.courseId, state: item.reservationState}}">
+                <router-link :to="{name: 'details', query: { courseId: item.courseId, state: item.reservationState, resId: item.resId }}">
                 <div class="list-img">
                     <img :src="item.imageUrl" alt="">
                     <div class="tip">
@@ -89,6 +89,7 @@
                         icon: '/static/img/not_1.png',
                         tip: "咦!?找不到哎!!!", //提示
                     },
+                    htmlLoading: '<p class="upwarp-progress mescroll-rotate"></p><p class="upwarp-tip">加载中.........</p>',
                     htmlNodata: '<p class="upwarp-nodata">-- 我也是有底线的 --</p>', //无数据的布局
                 }
              });

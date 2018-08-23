@@ -76,30 +76,27 @@
         data () {
             return {
                 pageTitle: '我的合同',
-                uid: '',
                 conList: '',
                 conLen: 0,
                 position:2
             }
         },
         created () {
-            this.initUserInfo()
+            this.getConList();
         },
         components: {
             VTitle,
         	footerLay,
         },
         methods: {
-            initUserInfo() {
-                this.uid = this.$store.state.uid || localStorage.getItem('uid');
-                this.getConList();
-            },
             getConList() {
-                var conUrl = `/daydaycook/server/contract/myContract.do?uid=${this.uid}`;
+                var conUrl = `/daydaycook/server/newCourse/getContractPackageInfoByPid.do?pid=${this.$route.query.pid}`;
+                console.log(conUrl);
                 this.ajaxDataFun('post', conUrl, (obj) => {
                     if(obj.code == '200'){
-                        this.conList = obj.data
-                        this.conLen = obj.data.length
+                        console.log(obj, '套餐合同详情')
+                        /*this.conList = obj.data
+                        this.conLen = obj.data.length*/
                     }
                 })
             }

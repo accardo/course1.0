@@ -25,22 +25,24 @@
             </div>
             <div class="infoItem" v-html="allData.introduction"></div>
             <div class="exp-shop-bg">
-                <button v-if="$route.query.state == 0" class="active">敬请期待</button>
-                <button v-if="$route.query.state == 2" @click="reservationNow">立即预约</button>
-                <button v-if="$route.query.state == 4" class="active">预约已满</button>
-                <button v-if="$route.query.state == 5" class="active">即将开课，无法预约</button>
+                <button v-if="allData.reservationState == 0" class="active">敬请期待</button>
+                <button v-if="allData.reservationState == 2" @click="reservationNow">立即预约</button>
+                <button v-if="allData.reservationState == 4" class="active">预约已满</button>
+                <button v-if="allData.reservationState == 5" class="active">即将开课，无法预约</button>
                 <template v-if="isMember">
-                    <button v-if="$route.query.state == 3" class="active">目前无法预约该级别课程</button>
-                    <button v-if="$route.query.state == 6" class="active">超出同一时间预约课程数限制</button>
-                    <button v-if="$route.query.state == 1 && !canMake" class="active">即将开课，无法取消预约</button>
-                    <button v-if="$route.query.state == 1 && canMake" @click="cancelNow">取消预约</button>
+                    <button v-if="allData.reservationState == 3" class="active">目前无法预约该级别课程</button>
+                    <button v-if="allData.reservationState == 6" class="active">超出同一时间预约课程数限制</button>
+                    <button v-if="allData.reservationState == 1 && canMake == 1" class="active">即将开课，无法取消预约</button>
+                    <button v-if="allData.reservationState == 1 && canMake == 0" @click="cancelNow">取消预约</button>
+                    <button v-if="allData.reservationState == 1 && canMake == 2" class="active">已截止</button>
+
                 </template>
 
 
                 <!--<template v-if="isMember == true">
 
                 </template>-->
-                <!--<button v-if="$route.query.state == 2" >立即预约</button>
+                <!--<button v-if="allData.reservationState == 2" >立即预约</button>
                 <button v-if="$route.query.state === 0">敬请期待</button>
                 <button v-if="$route.query.state === 1">查看</button>
                 <button v-if="$route.query.state === 2">预约</button>
@@ -88,7 +90,7 @@
                     <p>课程名额有限，即刻联系门店进行预约！</p>
                     <a href="tel:11233455"></a>
                 </div>
-                <div class="button" @click="showNotMPop=false">联系门店</div>
+                <div class="button" @click="showNotMPop=false"><a style="color: #fff" :href="'tel:' + allData.addressPhone">联系门店</a></div>
                 <div class="close icon-yk_btn_clear" @click="showNotMPop=false"></div>
             </div>
 
@@ -160,7 +162,7 @@
                 chLen: 0,
                 recommendTxt: '确定',
                 cancelTxt: '确定',
-                canMake:true,           //默认可以预约
+                canMake: '',           //默认可以预约
                 isHostUrl: '',
                 packageId: '' // 套餐id
 
@@ -191,7 +193,7 @@
             },
             getCourseInfo() {
                 var _shareUrl = window.location.protocol + '//' + window.location.host  + '/course/index.html#/details?id=' + this.$route.query.courseId
-                var _detailsUrl = `/daydaycook/server/offline/reservationUser/courseDetail.do?courseId=${this.$route.query.courseId}&mobile=${this.phone}`;
+                var _detailsUrl = `/daydaycook/server/offline/reservationUser/courseDetail.do?courseId=${this.$route.query.courseId}&mobile=${this.phone}&reservationState=${this.$route.query.state}`;
                 console.log(_detailsUrl)
                 this.ajaxDataFun('post', _detailsUrl , (obj) =>{
                     if(obj.code == '200'){
@@ -212,10 +214,12 @@
             calcIfEnd(){
                 //判断是否在预约时间内
                 var getTimes = this.allData.startTime - (new Date().getTime());
-                if(getTimes > 86400000){
-                    return
-                }else{
-                    this.canMake = false;
+                if(getTimes > 86400000){ // 24小时外
+                    this.canMake = 0
+                }else if (getTimes > 0 && getTimes < 86400000){ // 24小时内
+                    this.canMake = 1;
+                } else { // 已截止
+                    this.canMake = 2;
                 }
             },
             /*
@@ -228,10 +232,12 @@
                     this.needLogin = true
                     return
                 }
-                if (!this.isMember) {
+                console.log(JSON.parse(this.isMember))
+                if (!JSON.parse(this.isMember)) {
                     this.showNotMPop = true
+                } else {
+                    this.RSuccess = true;
                 }
-                this.RSuccess = true;
             },
             /*
              * Description: 取消预约
@@ -264,15 +270,14 @@
             },
             cancelRdF(){
                 this.cancelTxt = '取消中...'
-                var _canlUrl = `/daydaycook/server/offline/reservationUser/cancel.do?id=${this.allData.reservationId}&offlineCourseId=${this.$route.query.courseId}&mobile=${this.phone}&uid=${this.uid}`
+                var _canlUrl = `/daydaycook/server/offline/reservationUser/cancel.do?id=${this.$route.query.resId}&offlineCourseId=${this.$route.query.courseId}&mobile=${this.phone}&uid=${this.uid}`
                 console.log(_canlUrl);
-                return false
-                this.ajaxDataFun('post', _canlUrl, function(obj){
+                this.ajaxDataFun('post', _canlUrl, (obj) => {
                     if(obj.code == '200'){
-                        _this.$store.state.listLoaded = false
-                        _this.CSuccess =  false
-                        _this.getCourseInfo()
-                        _this.cancelTxt = '确定'
+                        this.$store.state.listLoaded = false
+                        this.CSuccess =  false
+                        this.getCourseInfo()
+                        this.cancelTxt = '确定'
                         popMin.show("icon-yk_icon_success","取消成功")
                     }else if(obj.code == '414'){
                         window.location.reload()

@@ -11,13 +11,15 @@
             </div>
             <div class="swiper-pagination"></div>
         </div>
-        <div class="swiper-member" :id="swiperId" :ref="swiperId"  v-if="param.switchOpen == 2">
+        <div class="swiper-member" :id="swiperId" :ref="swiperId"  v-if="param.switchOpen == 2 && swipelist.length > 0">
             <div class="swiper-wrapper">
-                <div class="swiper-slide" v-for="item in swipelist" :key="">
-                    <strong class="member-title">{{item.title}}</strong>
-                    <div class="member-date">{{item.date | formatDate }}到期</div>
-                    <div class="member-num">剩余<b>{{item.num}}</b>次可预约</div>
-                </div>
+                    <div class="swiper-slide" v-for="item in swipelist" :key="">
+                        <router-link :to="{name: 'contract', query: {pid: item.contractId}}">
+                        <strong class="member-title">{{item.packageName}}</strong>
+                        <div class="member-date">{{item.paperEndTime | formatDate }}到期</div>
+                        <div class="member-num">剩余<b>{{item.retainCount || 0}}</b>次可预约</div>
+                        </router-link>
+                    </div>
             </div>
         </div>
     </div>
@@ -31,12 +33,16 @@
             return {
                 pageTitle: 'banner',
                 swiperId: 'swiperbanner',
-                mySwiper: ''
+                mySwiper: '',
+                phone: localStorage.getItem('phone'),
+                uid : localStorage.getItem('uid'),
+                swipelist: [],
             }
         },
-        props: ['swipelist', 'param'],
+        props: ['param'],
         mounted() {
-            this.setImglist();
+          //  this.setImglist();
+            this.getContPackage();
         },
         updated() {
             this.setImglist();
@@ -44,7 +50,7 @@
         methods: {
             setImglist() {
                 //根据参数 设置swiper 展示方式
-                let { param = {}, swipelist = [] } = this.$props;
+                let { param = {},} = this.$props;
                 this.swiperId = param.swiperId; //实例化swiper 的配置参数  id为  indexseckill || infospaceswiper 时显示title
                 let pagination = (this.swiperId.indexOf('infospaceswiper') > -1 || this.swiperId == 'indexseckill') ? '' : '.swiper-pagination';
                 this.$nextTick(() => {
@@ -53,7 +59,7 @@
                         this.mySwiper.destroy();
                     }
                     this.mySwiper = new Swiper(`#${this.swiperId}`, {
-                        loop: swipelist.length > 1 ? true : false,              //循环播放
+                        loop: this.swipelist.length > 1 ? true : false,              //循环播放
                         autoplay: param.auto || false,
                         delay: param.delay || 5000,     //自动播放间隔
                         slidesPerView: 'auto',
@@ -79,8 +85,23 @@
                         }
                     })
                 })
+            },
+            /*
+               * Description: 套餐合同
+               * Author: yanlichen <lichen.yan@daydaycook.com.cn>
+               * Date: 2018/8/22
+               */
+            getContPackage() {
+                let packageUrl = `/daydaycook/server/newCourse/getContractPackageInfoByUid.do?uid=${this.uid}`;
+                console.log(packageUrl)
+                this.ajaxDataFun('get', packageUrl, (obj) => {
+                    if(obj.code==200){
+                        this.swipelist = obj.list;
+                        console.log(obj, '合同套餐')
+                    }
+                })
             }
-        }
+        },
     }
 </script>
 <style>

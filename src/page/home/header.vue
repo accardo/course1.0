@@ -140,7 +140,9 @@
             }
         },
         mounted (){
-            this.initDate()      //获取全局数据
+            this.$nextTick(()=> {
+                this.initDate()      //获取全局数据
+            })
         },
         components: {
             listLay,
@@ -173,11 +175,13 @@
                             this.$set(itemA, 'isActive', false)
                         })
                     })
-                    if (this.isMember) {
+
+                    if (data.packageList !== null) { // 有套餐需要把第一项赋值
                         this.packageText = data.packageList[0].packageName;
                         this.getData.packageId = data.packageList[0].packageId;
                         localStorage.setItem('packageId', data.packageList[0].packageId);
                     }
+
                      this.listFilter = data;
                 })
             },
@@ -234,6 +238,7 @@
                 this.pfShow.package = false;
                 this.getData.packageId = packageid;
                 this.packageText = txt;
+                this.isRefresh = true;
                 localStorage.setItem('packageId', packageid);
             },
             /*

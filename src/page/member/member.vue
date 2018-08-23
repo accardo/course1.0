@@ -16,38 +16,12 @@
 	           </router-link>
            </div>
            <div class="login-out" @click="loginOutShow = true">登出</div>
-           <!--<div class="contract box" v-show="isHaveContract">
-           		<router-link to="/contract">
-               		<p>{{ contractEndTime | formatDate }}到期</p>
-               		<span class="icon-arrow icon-icon_contract_left rotate"></span>
-           		</router-link>
-           </div>-->
        </div>
-       <!--<reserveList></reserveList>-->
        <div class="swiper-box">
-           <swiper-banner :swipelist="swipeList" :param = "bannerParam"></swiper-banner>
+           <swiper-banner :param = "bannerParam"></swiper-banner>
        </div>
-      <!-- <div class="colList">
-           <ul>
-              <li>
-	               	<router-link to="/notice">
-	                   <img src="../../../static/img/xiaoxi.png" alt="" />
-	                   <p> 消息通知 </p>
-	                   <div class="right">
-	                       <span class="num" v-show="unreadCount">{{ unreadCount }} </span>
-	                       <span class="icon icon-icon_contract_left rotate"></span>
-	                   </div>
-	                </router-link>
-               </li>
-               <li>
-                   <img src="../../../static/img/kechng.png" alt="" />
-                   <p>我的预约</p>
-               </li>
-           </ul>
-       </div>-->
-       <!--<listLay :coursefrom="1" :listData="listData" v-if="listData.length"></listLay>-->
        <div class="make-appointment">
-           <h4>我得预约</h4>
+           <h4>我的预约</h4>
            <div class="make-list">
                <class-list :list-data="listData" :list-type="listType"></class-list>
            </div>
@@ -94,36 +68,20 @@
                     delay:5000,
                     switchOpen: 2,
                 },
-                swipeList: [
-                    {
-                        title: '日日煮精选套餐',
-                        date: '2018-12-23',
-                        num: 8,
-                    },
-                    {
-                        title: '日日煮精',
-                        date: '2018-11-23',
-                        num: 5,
-                    },
-                    {
-                        title: '日日煮精选套餐日日煮精选套餐日日煮精选套餐',
-                        date: '2018-8-21',
-                        num: 4,
-                    }
-                ],
                 listType: 2, // 2 -> mermber页面
                 listData: []
             }
         },
-        created () {
+        mounted () {
+            this.phone = localStorage.getItem('phone');
+            this.uid = localStorage.getItem('uid');
+            let isMember = this.$store.state.isMember || localStorage.getItem('isMember')
             this.initUserInfo();
-            this.getContPackage();
-            // let isMember = this.$store.state.isMember || localStorage.getItem('isMember')
-            // if(isMember == true || isMember == 'true'){
-            //     this.initUserInfo()
-            // }else{
-            //     this.$router.push('/notMember')
-            // }
+            if(isMember == true || isMember == 'true'){
+                this.initUserInfo()
+            }else{
+                this.$router.push('/notMember')
+            }
         },
         components: {
         	listLay,
@@ -137,13 +95,12 @@
         },
         methods: {
             /**
-             * Description: 获取到期日期
+             * Description: 我得预约
              * Author: yanlichen <lichen.yan@daydaycook.com>
              * Date: 2018/5/16
              */
             getPersonalResList() {
-                let phone = localStorage.getItem('phone');
-                let infoUrl = `/daydaycook/server/offline/reservationUser/personalResList.do?mobile=${phone}`;
+                let infoUrl = `/daydaycook/server/offline/reservationUser/personalResList.do?mobile=${this.phone}`;
                 return new Promise((resolve) => {
                     this.ajaxDataFun('post', infoUrl, (obj) => {
                         if(obj.code == '200'){
@@ -159,98 +116,9 @@
                         console.log(res);
                     }
                 })
-        		/*this.avar = this.$store.state.avar || localStorage.getItem('avar')
-                this.uid = this.$store.state.uid || localStorage.getItem('uid')
-        		this.phone = this.$store.state.phone || localStorage.getItem('phone')
-        		this.lineUserName = this.$store.state.lineUserName || localStorage.getItem('lineUserName')
-        		this.nickName = this.$store.state.nickName || localStorage.getItem('nickName')
-        		this.getList()  //获取我的课程列表
-        		this.getInfoNum()  //获取消息数量
-                this.getDateEnd().then((data) => { // 获取到期日期
-                    if (data.code == '200') {
-                        this.contractEndTime = data.userContract.contractEndTime;
-                    }
-                });*/
         	},
-            /*
-             * Description: 套餐合同
-             * Author: yanlichen <lichen.yan@daydaycook.com.cn>
-             * Date: 2018/8/22
-             */
-            getContPackage() {
-                let packageUrl = `/daydaycook/server/newCourse/getContractPackageInfoByUid.do?uid=${this.uid}`;
-                this.ajaxDataFun('get', packageUrl, (obj) => {
-                    if(obj.code==200){
-                        console.log(obj, '合同套餐')
-                    }
-                })
-            },
-        	getInfoNum:function(){
-        		var _this = this
-        		var _infoNumUrl = '/daydaycook/server/offline/record/unreadCount.do?userPhone=' + this.phone + '&uid=' + this.uid
-        		this.ajaxDataFun('post', _infoNumUrl, function(obj){
-        		    if(obj.code==200){
-        		        _this.unreadCount = obj.data.unreadCount
-                        _this.isHaveContract = obj.data.isHaveContract
-                        _this.$nextTick(() => {
-                          	window.scrollTo(0, 1)
-                          	window.scrollTo(0, 0)
-                        })
-        		    }
-        		})
-        	},
-        	getList:function(scroll){  //获取课程列表
-                var _this = this
-                var _listUrl = '/daydaycook/server/offline/reservationUser/offlineCourseList.do?type=2&mobile=' + this.phone + '&pageSize=5&currentPage=' + this.currentPage + '&uid=' + this.uid
-                console.log(_listUrl, '获取课程列表');
-                this.ajaxDataFun('post', _listUrl, function(obj){
-                    if(obj.code == '200'){
-                        if(scroll){
-                            var objLen = obj.data.list.length;
-                            if(objLen){
-                                for(let j=0; j < objLen; j++){
-                                    _this.listData.push(obj.data.list[j]);
-                                }
-                                _this.$set(_this.$data, 'listData', _this.listData);
-                            }else{
-                                _this.endListen = true
-                                _this.$store.state.loadingTxt = ''
-                            }
-                        }else{
-                            _this.categoryCount = obj.data.categoryCount
-                            _this.listData = obj.data.list
-                        }
-                    }
-                })
-            },
-        },
-        mounted (){
-          /*  var _this = this
-            document.body.className = ''
-            window.onscroll = function(){
-            	let t = common.getScrollTop()
-            	let h = common.getWindowHeight()
-            	let s = common.getScrollHeight()
-
-            　　if(t + h == s){
-                    if(!_this.endListen){
-                        _this.currentPage++
-                        _this.getList(1)
-                    }
-                    console.log(_this.currentPage)
-            　　}
-            }*/
         },
         watch:{
-       /* 	listData:function(){
-                let l = this.listData
-                let e = document.querySelector('.popNotWrap')
-                if(l == 0){
-                    e.classList.add('show')
-                }else{
-                  	e.classList.remove('show')
-                }
-            }*/
         }
     }
 </script>
