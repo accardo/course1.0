@@ -5,7 +5,7 @@
             <img src="../../../static/img/profile.png" alt="loading">
         </div>
         <article class="entrance">
-            <section class="entrance-user">
+            <section class="entrance-user" @click.stop="goMember">
                 <img :src="userInfo.userHeader" alt="">
                 <dl v-if="userLogin">
                     <dt v-if="userInfo.lineUserName">{{userInfo.lineUserName}}</dt>
@@ -252,12 +252,23 @@
             /* 店铺详情 */
             shopDetail(id){
                 let params = {
-                    _this:this,
-                    url:'expShop',
-                    pageTitle:'店铺详情',
+                    that:this,
+                    router:'expShop',
+                    title:'店铺详情',
                     query:{id,}
                 }
-                util.jumpUrlByIsApp(params);
+                util.navTo(params);
+            },
+
+            /* 前往 个人中心 */
+            goMember(){
+                if(!this.userLogin) return;
+                let params = {
+                    that:this,
+                    router:'member',
+                    title:'个人中心',
+                }
+                util.navTo(params);
             },
 
             // 获取最近预约课程

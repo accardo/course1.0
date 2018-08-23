@@ -28,6 +28,7 @@ export function timeStamp(time) {
 }
 
 
+
 /* 时间格式转换 */
 export function formatTime(time){
 	function setv(v){v = v < 10?'0' + v : v; return v; }
@@ -125,6 +126,100 @@ export function jumpUrlByIsApp(params){
 		})
 	}
 }
+
+// 获取用户session
+export function getSessionId() {
+	return new Promise((resolve,reject) => {
+		if(sessionId) resolve(sessionId)
+		let num = 0;
+		let timer = setInterval(() => {
+			num++
+			if(num > 60){
+				clearInterval(timer);
+				reject('')
+			}else{
+				if(typeof ddcApp == 'object'){
+					//内嵌在APP中执
+					ddcApp.getSystemInfo();
+					setTimeout(() => {
+						if(userInfo && userInfo.appVersion){
+							clearInterval(timer);
+							localStorage.setItem('sessionId',userInfo.uid);
+							if(userInfo.uid){
+								sessionId = userInfo.uid;
+								resolve(userInfo.uid)
+							}else{
+								reject('')
+							}
+						}else{
+							clearInterval(timer);
+							reject('')
+						}
+					},30)
+				}
+			}
+		},50)
+	})
+}
+
+
+export function navTo({
+	title = '线下课程', 
+	pathname = window.location.pathname, 
+	router = null, 
+	query = null, 
+	fullScreen = false, 
+	that = null
+}) {
+	// pathname begin with '/' and end without '?'
+	pathname = /^\//.test(pathname) ? pathname.replace(/\?*$/, '') : `/${pathname.replace(/\?*$/, '')}`
+	// combine query
+	let queryStr = query ? '?' : ''
+	for (let key in query) {
+        queryStr = (/\?$/).test(queryStr) ? `${queryStr}${key}=${query[key]}` : `${queryStr}&${key}=${query[key]}`
+    }
+	// combine url with origin pathname router & query
+	let url = `${window.location.origin}${pathname}`
+	if (router) {
+		url = `${url}#/${router}${queryStr}`
+	} else {
+		url = `${url}${queryStr}`
+	}
+
+	if ('object' == typeof ddcApp) {
+		ddcApp.navigateTo({
+			title,
+			url,
+			fullScreen
+		})
+	} else {
+		if (that && router) {
+			that.$router.push({
+				name: router,
+				query: query || {}
+			})
+		} else {
+			window.location = url
+		}
+	}
+}
+
+
+//关闭loading 
+export function closeLoading(){
+	let num = 0;
+	let timer = setInterval(() => {
+		num++;
+		if(num > 60 || typeof ddcApp == 'object'){
+			clearInterval(timer);
+		}
+		if(typeof ddcApp == 'object'){
+			//关闭loading
+			ddcApp.closeLoading();
+		}
+	},50)
+}
+
 
 export default {
 	isWeChatFun,
