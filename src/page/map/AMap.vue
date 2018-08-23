@@ -8,28 +8,44 @@
     import AMap from 'AMap';   //在页面中引入高德地图
 	export default {
         data () {
-            return {}
+            return {
+                gps:'',
+                name:'',
+                address:'',
+            }
+        },
+        created(){
+            let query = this.$router.history.current.query;
+            if(query){
+                this.gps = query.gps;
+                // 测试 地址定位
+                this.name = query.name;
+                this.address = query.address;
+            }
         },
         mounted (){
             this.Amap()
         },
         methods: {
             Amap() {
+                let shopGps = this.gps.split(',');
                 var map = new AMap.Map("container", {
                     resizeEnable: true,
-                    center: [121.439106,31.188968],// 地图中心点
+                    center: shopGps,// 地图中心点
                     zoom: 13 // 地图显示的缩放级别
                 });
-                new AMap.Marker({ // 添加自定义点标记
+                let marker =  new AMap.Marker({ // 添加自定义点标记
                     map: map,
-                    position: [121.436983,31.189669], //基点位置
+                    position: shopGps, //基点位置
+                    icon: 'https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png',
                     offset: new AMap.Pixel(-17, -42), //相对于基点的偏移位置
                     draggable: false,  //是否可拖动
-                    content: '<div class="marker-route">\
-									<div class="marker-left"><p>日日煮美食生活体验馆日日煮美食生活体验馆</p><p>上海市徐汇区xxxxxxx上海市徐汇区xxxxxxx</p></div>\
+                    content: `<div class="marker-route">\
+                                    <div class="marker-left"><p>${this.name}</p><p>${this.address}</p></div>\
 									<div class="marker-right"><i></i>导航</div>\
-								</div>'  //自定义点标记覆盖物内容
+								</div>`  //自定义点标记覆盖物内容
                 });
+                map.add(marker);
             }
         }
 	}

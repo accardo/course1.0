@@ -17,9 +17,7 @@
                 <div class="exp-address">
                     <div class="exp-coor"><i></i></div>
                     <div class="exp-addr" @click="goMap">
-                        <router-link :to="{ name: 'AMap' }">
-                            {{shopInfo.address}}
-                        </router-link>
+                        {{shopInfo.address}}
                     </div>
                     <div class="exp-iphone" @click="isIphone = true"></div>
                 </div>
@@ -27,12 +25,10 @@
         </div>
         <div class="exp-main">
             <h4><i></i>门店服务</h4>
-            <div class="exp-content">
-                {{shopInfo.introduce}}
-            </div>
+            <div class="exp-content" v-html="shopInfo.introduce"></div>
         </div>
         <div class="exp-shop-bg">
-            <button class="exp-shop-button" type="button">查看课程</button>
+            <button class="exp-shop-button" @click="lookcourse" type="button">查看课程</button>
         </div>
         <dia-iphone :phone-array="shopInfo.phone" :is-iphone.sync="isIphone" v-if="isIphone"></dia-iphone>
     </div>
@@ -41,6 +37,7 @@
 <script>
     import swiperBanner from '@/components/swiper'
     import diaIphone from '@/components/diaIphone'
+    import * as util from '@/utils/utils.js'
     export default {
 		data() {
 		    return {
@@ -54,7 +51,7 @@
                     switchOpen: 1,
                 },
                 shopInfo:[],        //获取到的 店铺信息
-                swipeList: []
+                swipeList: [],
             }
         },
         created(){
@@ -82,7 +79,7 @@
                         }
                         if(shopData.image && shopData.image.length >0){
                             shopData.image.map(item => {
-                                let imageUrl = item +'?x-oss-process=image/resize,w_1108';
+                                let imageUrl = item +'?x-oss-process=image/resize,w_750';
                                 self.swipeList.push({imageUrl})
                             })
                         }
@@ -94,7 +91,30 @@
             /* 跳转到 地图 */
             goMap(){
                 let self = this;
+                if(this.shopInfo){
+                    let params = {
+                        _this:this,
+                        url:'AMap',
+                        pageTitle:'地图',
+                        query:{
+                            address:this.shopInfo.address,
+                            gps:this.shopInfo.gps,
+                            name:this.shopInfo.name
+                        }
+                    }
+                    util.jumpUrlByIsApp(params);
+                }
+            },
 
+            /* 查看课程*/
+            lookcourse(){
+                let params = {
+                    _this:this,
+                    url:'index',
+                    pageTitle:'课程列表',
+                    query:{shopid:this.shopid}
+                }
+                util.jumpUrlByIsApp(params);
             },
         },
         components: {
@@ -189,9 +209,12 @@
     }
     .exp-main {
         padding-top: 16px;
+        padding-bottom: 30px;
+        box-sizing: border-box;
     }
     .exp-main h4 {
         font-size: 18px;
+        margin-bottom: 20px;
         color: #1a1a1a;
     }
     .exp-main h4 i {
