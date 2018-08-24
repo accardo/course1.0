@@ -28,25 +28,36 @@
         },
         methods: {
             Amap() {
+                let self = this;
                 let shopGps = this.gps.split(',');
                 var map = new AMap.Map("container", {
                     resizeEnable: true,
                     center: shopGps,// 地图中心点
                     zoom: 13 // 地图显示的缩放级别
                 });
-                let marker =  new AMap.Marker({ // 添加自定义点标记
+                let marker = new AMap.Marker({
                     map: map,
-                    position: shopGps, //基点位置
-                    icon: 'https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png',
-                    offset: new AMap.Pixel(-17, -42), //相对于基点的偏移位置
+                    icon: "https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png",
+                    position: shopGps,
+                    offset: new AMap.Pixel(-60, -60), //相对于基点的偏移位置
                     draggable: false,  //是否可拖动
                     content: `<div class="marker-route">\
                                     <div class="marker-left"><p>${this.name}</p><p>${this.address}</p></div>\
-									<div class="marker-right"><i></i>导航</div>\
-								</div>`  //自定义点标记覆盖物内容
+									<div class="marker-right" id="openMapDoc"><i></i>导航</div>\
+								</div>`,  //自定义点标记覆盖物内容
                 });
-                map.add(marker);
-            }
+                marker.on('click', function() {
+                    if(typeof ddcApp == 'object' && shopGps.length){
+                        // 调用地图导航API
+                        ddcApp.navMap({
+                            latitude : shopGps[0], 
+                            longitude: shopGps[1], 
+                            title : self.name,
+                            subTitle : self.address 
+                        })
+                    }
+                });
+            },
         }
 	}
 </script>
@@ -136,9 +147,7 @@
 </style>
 <style>
     .marker-route {
-        position: absolute;
-        left: -60px;
-        top: -60px;
+        position: relative;
         width: 240px;
         height: 60px;
         background: #fff;

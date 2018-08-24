@@ -172,6 +172,7 @@
         mounted(){
             this.init();
             this.getUserGps();
+            this.getShopInfoByUid();
         },
         methods:{
             /* 初始化 */
@@ -208,7 +209,6 @@
                     }
                     self.showAll = true;
                 }
-                self.getShopInfoByUid();
             },
 
             /* 获取用户gps */
@@ -233,6 +233,8 @@
                         if(data.position){
                             self.positionData =  data.position.O +','+data.position.P;
                             self.getCourseList(self.positionData);
+                        }else{
+                            self.getCourseList();
                         }
                     });
                 });
@@ -318,6 +320,7 @@
             /* 获取课程列表 */
             getCourseList(gps){
                 let self = this;
+                console.log(gps);
                 var _listUrl = '/daydaycook/server/newCourse/getAddressCourseInfo.do?uid=' + self.uid + '&gps='+gps;
                 this.ajaxDataFun('get', _listUrl, function(obj){
                     if(obj.code == '200'){
