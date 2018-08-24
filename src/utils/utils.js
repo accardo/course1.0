@@ -130,7 +130,7 @@ export function jumpUrlByIsApp(params){
 // 获取用户session
 export function getSessionId() {
 	return new Promise((resolve,reject) => {
-		if(sessionId) resolve(sessionId)
+		if(sessionId_app) resolve(sessionId_app)
 		let num = 0;
 		let timer = setInterval(() => {
 			num++
@@ -142,12 +142,12 @@ export function getSessionId() {
 					//内嵌在APP中执
 					ddcApp.getSystemInfo();
 					setTimeout(() => {
-						if(userInfo && userInfo.appVersion){
+						if(userInfo_app && userInfo_app.appVersion){
 							clearInterval(timer);
-							localStorage.setItem('sessionId',userInfo.uid);
-							if(userInfo.uid){
-								sessionId = userInfo.uid;
-								resolve(userInfo.uid)
+							localStorage.setItem('uid',userInfo_app.uid);
+							if(userInfo_app.uid){
+								sessionId_app = userInfo_app.uid;
+								resolve(userInfo_app.uid)
 							}else{
 								reject('')
 							}

@@ -185,6 +185,17 @@
                         imgUrl:'https://mobile.daydaycook.com.cn/logo.png',
                         linkUrl:window.location.href
                     });
+                    util.getSessionId().then(res => {
+                       if(res){
+                            self.userLogin = true;
+                            self.uid = res;
+                            self.getUserByUid(self.uid);
+                            localStorage.setItem('isLogin',true);
+                            self.getLastCourseByuid(self.userphone);
+                       }else{
+                           console.log('app内用户未登录');
+                       }
+                    })
                     self.showAll = true;
                 }else{
                     self.userLogin = self.$store.state.isLogin || localStorage.getItem('isLogin');    //用户是否登录
@@ -192,14 +203,7 @@
                         // 如果用户已登录    获取用户信息
                         self.uid = localStorage.getItem('uid') || self.$store.state.uid;
                         self.userphone = localStorage.getItem('phone') || self.$store.state.phone;
-                        self.getUserByUid(self.uid).then(res => {
-                            self.userInfo['userHeader'] = res.img ? res.img : '../../../static/img/profile.png';
-                            self.userInfo['lineUserName'] = res.lineUserName;
-                            self.userInfo['nickName'] = res.nickName;
-                            self.userInfo['buyCourseNum'] = res.refundCount;
-                            let endtime = res.contractEndTime ? util.formatTimeArray(res.contractEndTime) : '';
-                            self.userInfo.endtime = endtime ? `${endtime[0]}/${endtime[1]}/${endtime[2]}` : '';
-                        })
+                        self.getUserByUid(self.uid);
                         self.getLastCourseByuid(self.userphone);
                     }
                     self.showAll = true;
@@ -236,16 +240,22 @@
 
             /* 根据用户uid 获取用户信息 */
             getUserByUid(uid){
+                let self = this;
                 let infoUrl = `/daydaycook/server/contract/userInfo.do?uid=${uid}`;
-                return new Promise((resolve,reject) => {
-                    this.ajaxDataFun('post', infoUrl, (obj) => {
-                        if(obj.code == '200'){
-                            resolve(obj.userContract);
-                        }else{
-                            this.showAll = true;
-                            this.userLogin = false;
-                        }
-                    });
+                this.ajaxDataFun('post', infoUrl, (obj) => {
+                    if(obj.code == '200'){
+                        let res = obj.userContract;
+                        self.userInfo['userHeader'] = res.img ? res.img : '../../../static/img/profile.png';
+                        self.userInfo['lineUserName'] = res.lineUserName;
+                        self.userInfo['nickName'] = res.nickName;
+                        self.userInfo['buyCourseNum'] = obj.refundCount;
+                        let endtime = res.contractEndTime ? util.formatTimeArray(res.contractEndTime) : '';
+                        self.userInfo.endtime = endtime ? `${endtime[0]}/${endtime[1]}/${endtime[2]}` : '';
+                        this.showAll = true;
+                    }else{
+                        this.showAll = true;
+                        this.userLogin = false;
+                    }
                 });
             },
 
