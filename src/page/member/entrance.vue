@@ -3,6 +3,7 @@
         <v-title>{{ pageTitle }}</v-title>
         <div id="loading" v-show="!showAll">
             <img src="../../../static/img/profile.png" alt="loading">
+            <span>数据加载中...</span>
         </div>
         <article class="entrance">
             <section class="entrance-user" @click.stop="goMember">
@@ -38,17 +39,6 @@
                 </div>
                 <div class="lesson-list">
                     <class-list :list-data="coursesData" :list-type="listType"></class-list>
-                    <!-- <div class="lesson-item" v-for="(item,index) in coursesData" :key="index">
-                        <div class="lesson-img">
-                            <img :src="item.courseImage" alt="">
-                            <span>{{item.courseCategoryName}}</span>
-                        </div>
-                        <div class="lesson-info">
-                            <p class="tit two-line">{{item.courseTitle}}</p>
-                            <p class="lesson-p">{{item.startTime}}</p>
-                            <p class="lesson-p">{{item.courseTeacherName }} | 剩余名额<strong>{{item.courseReservationCount}}</strong>人</p>
-                        </div>
-                    </div> -->
                 </div>
             </section>
             <!-- 门店导航 -->
@@ -172,7 +162,6 @@
         mounted(){
             this.init();
             this.getUserGps();
-            this.getShopInfoByUid();
         },
         methods:{
             /* 初始化 */
@@ -197,7 +186,6 @@
                            console.log('app内用户未登录');
                        }
                     })
-                    self.showAll = true;
                 }else{
                     self.userLogin = self.$store.state.isLogin || localStorage.getItem('isLogin');    //用户是否登录
                     if(self.userLogin == 'true' || self.userLogin == true){
@@ -207,7 +195,6 @@
                         self.getUserByUid(self.uid);
                         self.getLastCourseByuid(self.userphone);
                     }
-                    self.showAll = true;
                 }
             },
 
@@ -230,13 +217,18 @@
                     geolocation.getCurrentPosition();
                     //返回定位信息
                     AMap.event.addListener(geolocation, 'complete', function(data){
+                        self.showAll = true;
                         if(data.position){
                             self.positionData =  data.position.O +','+data.position.P;
                             self.getCourseList(self.positionData);
-                        }else{
-                            self.getCourseList();
+                            self.getShopInfoByUid();
                         }
                     });
+                    AMap.event.addListener(geolocation, 'error', function(){
+                        self.showAll = true;
+                        self.getCourseList();
+                        self.getShopInfoByUid();
+                    });  
                 });
             },
 
@@ -253,9 +245,7 @@
                         self.userInfo['buyCourseNum'] = obj.refundCount;
                         let endtime = res.contractEndTime ? util.formatTimeArray(res.contractEndTime) : '';
                         self.userInfo.endtime = endtime ? `${endtime[0]}/${endtime[1]}/${endtime[2]}` : '';
-                        this.showAll = true;
                     }else{
-                        this.showAll = true;
                         this.userLogin = false;
                     }
                 });
@@ -300,7 +290,7 @@
             /* 根据Uid 获取店铺信息 */
             getShopInfoByUid(){
                 let self = this;
-                let _listUrl = '/daydaycook/server/newCourse/getAddressInfoByUid.do?uid='+ self.uid;
+                let _listUrl = '/daydaycook/server/newCourse/getAddressInfoByUid.do?uid='+ self.uid+'&gps='+self.positionData;
                 this.ajaxDataFun('get',_listUrl, function(res){
                     if(res &&  res.code =='200'){
                         let listdata = res.list;
@@ -322,7 +312,7 @@
                 let self = this;
                 console.log(gps);
                 var _listUrl = '/daydaycook/server/newCourse/getAddressCourseInfo.do?uid=' + self.uid + '&gps='+gps;
-                this.ajaxDataFun('get', _listUrl, function(obj){
+                this.ajaxDataFun('post', _listUrl, function(obj){
                     if(obj.code == '200'){
                         if(obj.list && obj.list.length >0){
                             obj.list.map(item => {
