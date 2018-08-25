@@ -96,7 +96,7 @@ export default new Router({
             path: '/AMap',
             name: 'AMap',
             meta: {
-               requireAuth: true,
+               requireAuth: false,
             },
             component: AMap
         },

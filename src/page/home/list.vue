@@ -55,6 +55,7 @@
     //引入mescroll.min.js和mescroll.min.css
     import MeScroll from 'mescroll.js'
     import 'mescroll.js/mescroll.min.css'
+    import popMin from '@/components/popMin'
     export default {
         props: {
             getData: {
@@ -112,7 +113,11 @@
                             this.mescroll.endSuccess(res.data.length);
                         })
                         console.log(res.data, 'upCallback');
+                    } else if(res.code == '911') {
+                        popMin.show("icon-yk_icon_warning",res.msg);
+                        window.location.reload();
                     }
+
                 })
             },
         },
