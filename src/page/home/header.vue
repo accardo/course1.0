@@ -26,7 +26,7 @@
                 <ul class="fication-package" v-show="pfShow.package" >
                     <li v-for="(item, index) in listFilter.packageList "
                         :class='{"active icon-yk_icon_select": index == listIndex}'
-                        @click="packgeList(item.packageName,item.packageId, index)"
+                        @click="packgeList(item.packageName, item.contractId, index)"
                     >{{item.packageName}}</li>
                 </ul>
                 <div class="fication-filter" v-show="pfShow.filter">
@@ -129,7 +129,7 @@
                     uid: localStorage.getItem('uid') !== null ?  localStorage.getItem('uid') : '', // 用户id
                     phone: localStorage.getItem('phone') !== null ?  localStorage.getItem('phone') : '', // 电话
                     addressId: localStorage.getItem('addressId') !== null ?  localStorage.getItem('addressId') : '', // 门店地址
-                    packageId: localStorage.getItem('packageId') !== null ?  localStorage.getItem('packageId') : '', // 套餐 id
+                    contractId: localStorage.getItem('contractId') !== null ?  localStorage.getItem('contractId') : '', // 套餐 id
                     filterSubData: {
                         categoryId: [], // 分类id
                         teacherId: [], // 老师id
@@ -178,10 +178,9 @@
 
                     if (data.packageList !== null) { // 有套餐需要把第一项赋值
                         this.packageText = data.packageList[0].packageName;
-                        this.getData.packageId = data.packageList[0].packageId;
-                        localStorage.setItem('packageId', data.packageList[0].packageId);
+                        this.getData.contractId = data.packageList[0].contractId;
+                        localStorage.setItem('contractId', data.packageList[0].contractId);
                     }
-
                      this.listFilter = data;
                 })
             },
@@ -190,7 +189,7 @@
                     phone: this.getData.phone,
                     addressId: id,
                     uid: this.getData.uid,
-                    packageId: this.getData.packageId,
+                    contractId: this.getData.contractId,
                     filterSubData: {
                         categoryId: [],
                         teacherId: [],
@@ -233,13 +232,13 @@
              * Author: yanlichen <lichen.yan@daydaycook.com.cn>
              * Date: 2018/8/8
              */
-            packgeList(txt, packageid, index) {
+            packgeList(txt, contractId, index ) {
                 this.listIndex = index;
                 this.pfShow.package = false;
-                this.getData.packageId = packageid;
+                this.getData.contractId = contractId;
                 this.packageText = txt;
                 this.isRefresh = true;
-                localStorage.setItem('packageId', packageid);
+                localStorage.setItem('contractId', contractId);
             },
             /*
              * Description: 第一次进入显示气泡

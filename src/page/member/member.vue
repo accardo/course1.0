@@ -31,7 +31,7 @@
            <p>还没有预约过课程，快去瞅瞅吧</p>
        </div>
        <login-out :login-out-show.sync="loginOutShow" v-if="loginOutShow"></login-out>
-       <footerLay v-bind:position="position"></footerLay>
+       <!--<footerLay v-bind:position="position"></footerLay>-->
    </div>
 </template>
 
@@ -125,7 +125,7 @@
             getContPackage() {
                 let packageUrl = `/daydaycook/server/newCourse/getContractPackageInfoByUid.do?uid=${this.uid}`;
                 console.log(packageUrl)
-                this.ajaxDataFun('get', packageUrl, (obj) => {
+                this.ajaxDataFun('post', packageUrl, (obj) => {
                     if(obj.code==200){
                         this.swipelist = obj.list;
                         this.isshwoSwiper = true;

@@ -3,7 +3,7 @@
         <VTitle>{{ pageTitle }} </VTitle>
         <HeaderLay></HeaderLay>
        <!-- <FooterLay v-bind:position="position"></FooterLay>-->
-        <LoginLay v-show="$store.state.isShowLogin == true"></LoginLay>
+        <!--<LoginLay v-show="$store.state.isShowLogin == true"></LoginLay>-->
     </div>
 </template>
 

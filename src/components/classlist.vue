@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="lesson-item" v-for="(item,index) in listData" :key="index" @click="jumpDetail(item.courseId, item.courseStatus, item.reservationState)" >
+        <div class="lesson-item" v-for="(item,index) in listData" :key="index" @click="jumpDetail(item.courseId, item.courseStatus, item.reservationState, item.resId)" >
             <div class="lesson-img">
                 <img :src="item.imageUrl" alt="">
                 <span v-if="listType ==1">{{item.categoryName}}</span><!--listType 1 导航列表  2 个人中心-->
@@ -39,7 +39,7 @@
         methods: {
 
             /* 跳转到课程详情页面 */
-            jumpDetail(courseId,status1,status2){
+            jumpDetail(courseId, status1, status2, resId){
                 let params = {
                     _this:this,
                     url:'details',
@@ -48,6 +48,7 @@
                     query:{
                         courseId,
                         state:status1 || status2,
+                        resId: resId,
                     }
                 }
                 util.jumpUrlByIsApp(params);

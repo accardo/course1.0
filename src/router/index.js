@@ -104,7 +104,7 @@ export default new Router({
             path: '/expShop',
             name: 'expShop',
             meta: {
-               requireAuth: true,
+               requireAuth: false,
             },
             component: expShop
         }

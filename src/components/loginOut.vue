@@ -62,6 +62,10 @@
                 localStorage.removeItem('teacherId')
                 localStorage.removeItem('teacherName')
                 localStorage.removeItem('tip')
+                localStorage.removeItem('addressId')
+                localStorage.removeItem('addressTxt')
+                localStorage.removeItem('contractId')
+                localStorage.removeItem('uid')
             },
         }
     }
