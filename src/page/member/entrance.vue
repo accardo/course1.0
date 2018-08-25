@@ -115,6 +115,8 @@
                     endTime:'',
                 },      //最近预约课程信息
                 positionData:'',     //用户 gps 地址
+                positionX:'',
+                positionY:'',
                 bannerParam:{           //banner swiper 配置
                     auto:false,
                     swiperId:'aboutbanner',
@@ -219,8 +221,9 @@
                     AMap.event.addListener(geolocation, 'complete', function(data){
                         self.showAll = true;
                         if(data.position){
-                            self.positionData =  data.position.O +','+data.position.P;
-                            self.getCourseList(self.positionData);
+                            self.positionX = data.position.P;
+                            self.positionY = data.position.O;
+                            self.getCourseList();
                             self.getShopInfoByUid();
                         }
                     });
@@ -290,8 +293,8 @@
             /* 根据Uid 获取店铺信息 */
             getShopInfoByUid(){
                 let self = this;
-                let _listUrl = '/daydaycook/server/newCourse/getAddressInfoByUid.do?uid='+ self.uid+'&gps='+self.positionData;
-                this.ajaxDataFun('get',_listUrl, function(res){
+                let _listUrl = '/daydaycook/server/newCourse/getAddressInfoByUid.do?uid='+ self.uid+'&x='+self.positionX+'&y='+self.positionY;
+                this.ajaxDataFun('post',_listUrl, function(res){
                     if(res &&  res.code =='200'){
                         let listdata = res.list;
                         listdata.map(item => {
@@ -308,10 +311,10 @@
             },
 
             /* 获取课程列表 */
-            getCourseList(gps){
+            getCourseList(){
                 let self = this;
-                console.log(gps);
-                var _listUrl = '/daydaycook/server/newCourse/getAddressCourseInfo.do?uid=' + self.uid + '&gps='+gps;
+                console.log(self.positionData);
+                var _listUrl = '/daydaycook/server/newCourse/getAddressCourseInfo.do?uid=' + self.uid + '&x='+self.positionX+'&y='+self.positionY;
                 this.ajaxDataFun('post', _listUrl, function(obj){
                     if(obj.code == '200'){
                         if(obj.list && obj.list.length >0){
