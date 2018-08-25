@@ -3,9 +3,10 @@
         <v-title>{{ pageTitle }}</v-title>
         <div id="loading" v-show="!showAll">
             <img src="../../../static/img/profile.png" alt="loading">
+            <span>数据加载中...</span>
         </div>
         <article class="entrance">
-            <section class="entrance-user">
+            <section class="entrance-user" @click.stop="goMember">
                 <img :src="userInfo.userHeader" alt="">
                 <dl v-if="userLogin">
                     <dt v-if="userInfo.lineUserName">{{userInfo.lineUserName}}</dt>
@@ -38,17 +39,6 @@
                 </div>
                 <div class="lesson-list">
                     <class-list :list-data="coursesData" :list-type="listType"></class-list>
-                    <!-- <div class="lesson-item" v-for="(item,index) in coursesData" :key="index">
-                        <div class="lesson-img">
-                            <img :src="item.courseImage" alt="">
-                            <span>{{item.courseCategoryName}}</span>
-                        </div>
-                        <div class="lesson-info">
-                            <p class="tit two-line">{{item.courseTitle}}</p>
-                            <p class="lesson-p">{{item.startTime}}</p>
-                            <p class="lesson-p">{{item.courseTeacherName }} | 剩余名额<strong>{{item.courseReservationCount}}</strong>人</p>
-                        </div>
-                    </div> -->
                 </div>
             </section>
             <!-- 门店导航 -->
@@ -185,26 +175,27 @@
                         imgUrl:'https://mobile.daydaycook.com.cn/logo.png',
                         linkUrl:window.location.href
                     });
-                    self.showAll = true;
+                    util.getSessionId().then(res => {
+                       if(res){
+                            self.userLogin = true;
+                            self.uid = res;
+                            self.getUserByUid(self.uid);
+                            localStorage.setItem('isLogin',true);
+                            self.getLastCourseByuid(self.userphone);
+                       }else{
+                           console.log('app内用户未登录');
+                       }
+                    })
                 }else{
                     self.userLogin = self.$store.state.isLogin || localStorage.getItem('isLogin');    //用户是否登录
                     if(self.userLogin == 'true' || self.userLogin == true){
                         // 如果用户已登录    获取用户信息
                         self.uid = localStorage.getItem('uid') || self.$store.state.uid;
                         self.userphone = localStorage.getItem('phone') || self.$store.state.phone;
-                        self.getUserByUid(self.uid).then(res => {
-                            self.userInfo['userHeader'] = res.img ? res.img : '../../../static/img/profile.png';
-                            self.userInfo['lineUserName'] = res.lineUserName;
-                            self.userInfo['nickName'] = res.nickName;
-                            self.userInfo['buyCourseNum'] = res.refundCount;
-                            let endtime = res.contractEndTime ? util.formatTimeArray(res.contractEndTime) : '';
-                            self.userInfo.endtime = endtime ? `${endtime[0]}/${endtime[1]}/${endtime[2]}` : '';
-                        })
+                        self.getUserByUid(self.uid);
                         self.getLastCourseByuid(self.userphone);
                     }
-                    self.showAll = true;
                 }
-                self.getShopInfoByUid();
             },
 
             /* 获取用户gps */
@@ -226,38 +217,60 @@
                     geolocation.getCurrentPosition();
                     //返回定位信息
                     AMap.event.addListener(geolocation, 'complete', function(data){
+                        self.showAll = true;
                         if(data.position){
                             self.positionData =  data.position.O +','+data.position.P;
                             self.getCourseList(self.positionData);
+                            self.getShopInfoByUid();
                         }
                     });
+                    AMap.event.addListener(geolocation, 'error', function(){
+                        self.showAll = true;
+                        self.getCourseList();
+                        self.getShopInfoByUid();
+                    });  
                 });
             },
 
             /* 根据用户uid 获取用户信息 */
             getUserByUid(uid){
+                let self = this;
                 let infoUrl = `/daydaycook/server/contract/userInfo.do?uid=${uid}`;
-                return new Promise((resolve,reject) => {
-                    this.ajaxDataFun('post', infoUrl, (obj) => {
-                        if(obj.code == '200'){
-                            resolve(obj.userContract);
-                        }else{
-                            this.showAll = true;
-                            this.userLogin = false;
-                        }
-                    });
+                this.ajaxDataFun('post', infoUrl, (obj) => {
+                    if(obj.code == '200'){
+                        let res = obj.userContract;
+                        self.userInfo['userHeader'] = res.img ? res.img : '../../../static/img/profile.png';
+                        self.userInfo['lineUserName'] = res.lineUserName;
+                        self.userInfo['nickName'] = res.nickName;
+                        self.userInfo['buyCourseNum'] = obj.refundCount;
+                        let endtime = res.contractEndTime ? util.formatTimeArray(res.contractEndTime) : '';
+                        self.userInfo.endtime = endtime ? `${endtime[0]}/${endtime[1]}/${endtime[2]}` : '';
+                    }else{
+                        this.userLogin = false;
+                    }
                 });
             },
 
             /* 店铺详情 */
             shopDetail(id){
                 let params = {
-                    _this:this,
-                    url:'expShop',
-                    pageTitle:'店铺详情',
+                    that:this,
+                    router:'expShop',
+                    title:'店铺详情',
                     query:{id,}
                 }
-                util.jumpUrlByIsApp(params);
+                util.navTo(params);
+            },
+
+            /* 前往 个人中心 */
+            goMember(){
+                if(!this.userLogin) return;
+                let params = {
+                    that:this,
+                    router:'member',
+                    title:'个人中心',
+                }
+                util.navTo(params);
             },
 
             // 获取最近预约课程
@@ -277,7 +290,7 @@
             /* 根据Uid 获取店铺信息 */
             getShopInfoByUid(){
                 let self = this;
-                let _listUrl = '/daydaycook/server/newCourse/getAddressInfoByUid.do?uid='+ self.uid;
+                let _listUrl = '/daydaycook/server/newCourse/getAddressInfoByUid.do?uid='+ self.uid+'&gps='+self.positionData;
                 this.ajaxDataFun('get',_listUrl, function(res){
                     if(res &&  res.code =='200'){
                         let listdata = res.list;
@@ -297,8 +310,9 @@
             /* 获取课程列表 */
             getCourseList(gps){
                 let self = this;
+                console.log(gps);
                 var _listUrl = '/daydaycook/server/newCourse/getAddressCourseInfo.do?uid=' + self.uid + '&gps='+gps;
-                this.ajaxDataFun('get', _listUrl, function(obj){
+                this.ajaxDataFun('post', _listUrl, function(obj){
                     if(obj.code == '200'){
                         if(obj.list && obj.list.length >0){
                             obj.list.map(item => {
