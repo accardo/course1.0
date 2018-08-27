@@ -104,7 +104,7 @@
                 showAll:false,
                 userLogin:'',     //是否登录
                 userInfo:{
-                    userHeader:'course/../../static/img/pic_touxiang.png',//用户头像 未登录
+                    userHeader:`${hostUrl}pic_touxiang.png`,//用户头像 未登录
                     userphone:'', //用户手机号
                     lineUserName:'',
                     buyCourseNum:0,
