@@ -48,15 +48,13 @@
                 </div>
                 <div class="store-list">
                     <div class="lesson-item" v-for="(item,index) in shopList" @click.prevent="shopDetail(item.id)"  :key="index">
-                        <router-link :to="{ name: 'expShop' }">
-                            <div class="lesson-img">
-                                <img :src="item.image" alt="">
-                            </div>
-                            <div class="store-info lesson-info">
-                                <p class="tit one-line" >{{item.name}}</p>
-                                <p class="lesson-p two-line">{{item.address}}</p>
-                            </div>
-                        </router-link>
+                        <div class="lesson-img">
+                            <img :src="item.image" alt="">
+                        </div>
+                        <div class="store-info lesson-info">
+                            <p class="tit one-line" >{{item.name}}</p>
+                            <p class="lesson-p two-line">{{item.address}}</p>
+                        </div>
                     </div>
                 </div>
             </section>
