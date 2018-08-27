@@ -47,7 +47,7 @@
                     <strong>门店导航</strong>
                 </div>
                 <div class="store-list">
-                    <div class="lesson-item" v-for="(item,index) in shopList" @click="shopDetail(item.id)"  :key="index">
+                    <div class="lesson-item" v-for="(item,index) in shopList" @click.prevent="shopDetail(item.id)"  :key="index">
                         <div class="lesson-img">
                             <img :src="item.image" alt="">
                         </div>
