@@ -164,11 +164,11 @@ export function getSessionId() {
 
 
 export function navTo({
-	title = '线下课程', 
-	pathname = window.location.pathname, 
-	router = null, 
-	query = null, 
-	fullScreen = false, 
+	title = '线下课程',
+	pathname = window.location.pathname,
+	router = null,
+	query = null,
+	fullScreen = false,
 	that = null
 }) {
 	// pathname begin with '/' and end without '?'
@@ -194,6 +194,7 @@ export function navTo({
 		})
 	} else {
 		if (that && router) {
+			//debugger
 			that.$router.push({
 				name: router,
 				query: query || {}
@@ -205,7 +206,7 @@ export function navTo({
 }
 
 
-//关闭loading 
+//关闭loading
 export function closeLoading(){
 	let num = 0;
 	let timer = setInterval(() => {
@@ -224,6 +225,9 @@ export function closeLoading(){
 export default {
 	isWeChatFun,
 	timeStamp,
-	formatTimeArray
+	formatTimeArray,
+	getSessionId,
+	navTo,
+	closeLoading
 };
 

@@ -47,16 +47,14 @@
                     <strong>门店导航</strong>
                 </div>
                 <div class="store-list">
-                    <div class="lesson-item" v-for="(item,index) in shopList" @click.prevent="shopDetail(item.id)"  :key="index">
-                        <router-link :to="{ name: 'expShop' }">
-                            <div class="lesson-img">
-                                <img :src="item.image" alt="">
-                            </div>
-                            <div class="store-info lesson-info">
-                                <p class="tit one-line" >{{item.name}}</p>
-                                <p class="lesson-p two-line">{{item.address}}</p>
-                            </div>
-                        </router-link>
+                    <div class="lesson-item" v-for="(item,index) in shopList" @click="shopDetail(item.id)"  :key="index">
+                        <div class="lesson-img">
+                            <img :src="item.image" alt="">
+                        </div>
+                        <div class="store-info lesson-info">
+                            <p class="tit one-line" >{{item.name}}</p>
+                            <p class="lesson-p two-line">{{item.address}}</p>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -188,11 +186,15 @@
                     });
                     util.getSessionId().then(res => {
                        if(res){
-                            self.userLogin = true;
-                            self.uid = res;
-                            self.getUserByUid(self.uid);
-                            localStorage.setItem('isLogin',true);
-                            self.getLastCourseByuid(self.userphone);
+                           console.log(res);
+                           self.userLogin = true;
+                           self.uid = res;
+                           self.getUserByUid(self.uid);
+                           self.isMemberFun(self.uid);
+                           self.getLastCourseByuid(self.userphone);
+                           localStorage.setItem('uid', self.uid);
+                           localStorage.setItem('nickName', self.userName);
+                           localStorage.setItem('phone', self.userphone);
                        }else{
                            console.log('app内用户未登录');
                        }
@@ -208,7 +210,20 @@
                     }
                 }
             },
+            isMemberFun(id) {
+                var _this = this
+                var _isMenberUrl = '/daydaycook/server/offline/reservationUser/isBuyCourse.do?uid=' + id
+                this.ajaxDataFun('post',_isMenberUrl,function(obj){
+                    if(obj.code == '200'){
+                        _this.$store.state.isMember = obj.data
+                        localStorage.setItem('isMember', obj.data);
 
+                        localStorage.setItem('isLogin', true);
+                        _this.$store.state.isLogin = true
+                    }
+                   console.log('App 获取是否是会员用户', obj.data)
+                })
+            },
             /* 获取用户gps */
             getUserGps(){
                 let self =this;
@@ -241,7 +256,7 @@
                         self.showAll = true;
                         self.getCourseList();
                         self.getShopInfoByUid();
-                    });  
+                    });
                 });
             },
 

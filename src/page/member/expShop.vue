@@ -90,19 +90,20 @@
 
             /* 跳转到 地图 */
             goMap(){
+                let self = this;
                 let xxkc_gps = sessionStorage.getItem('xxkc_gps');
-                let mapUrl = `uri.amap.com/navigation?from=${xxkc_gps}&to=${shopGps.toString()},${self.name},&mode=car&src=DDC LIFE&callnative=1`
+                let mapUrl = `https://uri.amap.com/navigation?from=${xxkc_gps}&to=${self.shopInfo.gps},${self.shopInfo.name},&mode=car&src=DDC LIFE&callnative=1`
                 if(typeof ddcApp == 'object' && shopGps.length){
                     // 调用地图导航API
                     ddcApp.navMap({
-                        latitude : shopGps[0],
-                        longitude: shopGps[1],
-                        title : self.name,
-                        subTitle : self.address
+                        latitude : self.shopInfo.gps.split(',')[0],
+                        longitude: self.shopInfo.gps.split(',')[1],
+                        title : self.shopInfo.name,
+                        subTitle : self.shopInfo.address
                     })
                 } else {
                     // 调启高德App导航
-                    window.location.href= mapUrl
+                    window.open(mapUrl)
                 }
 
       /*          let self = this;
