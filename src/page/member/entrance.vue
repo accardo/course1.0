@@ -2,7 +2,7 @@
     <div id="container">
         <v-title>{{ pageTitle }}</v-title>
         <div id="loading" v-show="!showAll">
-            <img src="../../../static/img/profile.png" alt="loading">
+            <img src="../../assets/img/profile.png" alt="loading">
             <span>数据加载中...</span>
         </div>
         <article class="entrance">
@@ -91,7 +91,6 @@
     import AMap from 'AMap'
     import classList from '@/components/classlist'
     import * as util from '@/utils/utils.js'
-
     export default {
         name:'entrance',
         data () {
@@ -103,7 +102,7 @@
                 showAll:false,
                 userLogin:'',     //是否登录
                 userInfo:{
-                    userHeader:'../../../static/img/pic_touxiang.png',//用户头像 未登录
+                    userHeader: '../../../static/img/pic_touxiang.png',//用户头像 未登录
                     userphone:'', //用户手机号
                     lineUserName:'',
                     buyCourseNum:0,

@@ -2,7 +2,7 @@
     <div id="container">
         <v-title>{{ pageTitle }}</v-title>
         <div id="loading" v-show="!showAll">
-            <img src="../../../static/img/profile.png" alt="loading">
+            <img src="../../assets/img/profile.png" alt="loading">
         </div>
         <div class="details">
             <div class="banner">

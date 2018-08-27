@@ -20,9 +20,10 @@ var webpackConfig = merge(baseWebpackConfig, {
   },
   devtool: config.build.productionSourceMap ? '#cheap-module-source-map' : false,
   output: {
-    path: config.build.assetsRoot,
+	path: config.build.assetsRoot,
     filename: utils.assetsPath('js/[name].[chunkhash].js'),
-    chunkFilename: utils.assetsPath('js/[id].[chunkhash].js')
+    chunkFilename: utils.assetsPath('js/[id].[chunkhash].js'),
+	publicPath: '/dist/'
   },
   plugins: [
     // http://vuejs.github.io/vue-loader/en/workflow/production.html

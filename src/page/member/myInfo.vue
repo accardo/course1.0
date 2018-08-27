@@ -4,7 +4,7 @@
 	    <div class="myInfo">
 	        <div class="wrap">
 	            <div class="logo">
-	                <img class="one" src="../../../static/img/profile.png" alt="logo" />
+	                <img class="one" src="../../assets/img/profile.png" alt="logo" />
 	                <img class="two" src="../../../static/img/member.png" alt="logo" />
 	            </div>
 	            <div class="avar">
@@ -43,12 +43,12 @@
             VTitle,
         	footerLay
         },
-        methods: { 
+        methods: {
             initUserInfo:function(){
                 let uid = this.$store.state.uid || localStorage.getItem('uid')
                 var _this = this
                 var _infoUrl = '/daydaycook/server/contract/userInfo.do?uid=' + uid
-               
+
                 this.ajaxDataFun('post', _infoUrl, function(obj){
                     if(obj.code == '200'){
                         _this.userContract = obj.userContract
