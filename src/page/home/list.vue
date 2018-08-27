@@ -55,6 +55,7 @@
     //引入mescroll.min.js和mescroll.min.css
     import MeScroll from 'mescroll.js'
     import 'mescroll.js/mescroll.min.css'
+    import popMin from '@/components/popMin'
     export default {
         props: {
             getData: {
@@ -101,7 +102,7 @@
         },
         methods: {
             upCallback(page) {
-                let _listUrl = `/daydaycook/server/offline/reservationUser/offlineCourseList.do?timeScope=${this.getData.filterSubData.timeScope}&reservationType=${this.getData.filterSubData.reservationType || 0}&categoryId=${this.getData.filterSubData.categoryId}&mobile=${this.getData.phone}&uid=${this.getData.uid}&addressId=${this.getData.addressId}&packageId=${this.getData.packageId}&teacherId=${this.getData.filterSubData.teacherId}&pageSize=${page.size = 7}&currentPage=${page.num}`;
+                let _listUrl = `/daydaycook/server/offline/reservationUser/offlineCourseList.do?timeScope=${this.getData.filterSubData.timeScope}&reservationType=${this.getData.filterSubData.reservationType || 0}&categoryId=${this.getData.filterSubData.categoryId}&mobile=${this.getData.phone}&uid=${this.getData.uid}&addressId=${this.getData.addressId}&contractId=${this.getData.contractId}&teacherId=${this.getData.filterSubData.teacherId}&pageSize=${page.size = 7}&currentPage=${page.num}`;
                 console.log(_listUrl, '子层')
                 this.ajaxDataFun('post', _listUrl, (res) => {
                     if(res.code == '200') {
@@ -112,7 +113,11 @@
                             this.mescroll.endSuccess(res.data.length);
                         })
                         console.log(res.data, 'upCallback');
+                    } else if(res.code == '911') {
+                        popMin.show("icon-yk_icon_warning",res.msg);
+                        window.location.reload();
                     }
+
                 })
             },
         },

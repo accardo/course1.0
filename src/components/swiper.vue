@@ -40,9 +40,6 @@
         mounted() {
             this.setImglist();
         },
-        updated(){
-            this.setImglist();
-        },
         methods: {
             setImglist() {
                 //根据参数 设置swiper 展示方式

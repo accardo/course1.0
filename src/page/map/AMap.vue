@@ -44,16 +44,17 @@
                     content: `<div class="marker-route">\
                                     <div class="marker-left"><p>${this.name}</p><p>${this.address}</p></div>\
 									<div class="marker-right" id="openMapDoc"><i></i>导航</div>\
-								</div>`,  //自定义点标记覆盖物内容
+							  </div>`,  //自定义点标记覆盖物内容
                 });
+                map.add(marker);
                 marker.on('click', function() {
                     if(typeof ddcApp == 'object' && shopGps.length){
                         // 调用地图导航API
                         ddcApp.navMap({
-                            latitude : shopGps[0], 
-                            longitude: shopGps[1], 
+                            latitude : shopGps[0],
+                            longitude: shopGps[1],
                             title : self.name,
-                            subTitle : self.address 
+                            subTitle : self.address
                         })
                     }
                 });
@@ -144,6 +145,7 @@
     #myPageTop .column2{
         padding-left: 25px;
     }
+
 </style>
 <style>
     .marker-route {

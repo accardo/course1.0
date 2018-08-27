@@ -460,7 +460,11 @@
                 this.relPasswordTwo = ''
 
                 if(type){
-                    window.location.reload()
+                    if (this.$route.name == 'details') {
+                        this.$router.push({path: 'index'})
+                    } else {
+                        window.location.reload()
+                    }
                 }
             },
             isMemberFun:function(id){

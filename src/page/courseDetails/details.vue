@@ -32,10 +32,11 @@
                 <template v-if="isMember">
                     <button v-if="allData.reservationState == 3" class="active">目前无法预约该级别课程</button>
                     <button v-if="allData.reservationState == 6" class="active">超出同一时间预约课程数限制</button>
-                    <button v-if="allData.reservationState == 1 && canMake == 1" class="active">即将开课，无法取消预约</button>
-                    <button v-if="allData.reservationState == 1 && canMake == 0" @click="cancelNow">取消预约</button>
-                    <button v-if="allData.reservationState == 1 && canMake == 2" class="active">已截止</button>
-
+                    <button v-if="allData.reservationState == 1 && canMake == 1 && !cancel" class="active">即将开课，无法取消预约</button>
+                    <button v-if="allData.reservationState == 1 && canMake == 0 && !cancel" @click="cancelNow">取消预约</button>
+                    <button v-if="allData.reservationState == 1 && canMake == 2 && !cancel" class="active">已截止</button>
+                    <button v-if="allData.reservationState == 2 && cancel" class="active">已取消</button>
+                    <button v-if="allData.reservationState == 1 && cancel" class="active">预约成功</button>
                 </template>
 
 
@@ -164,11 +165,13 @@
                 cancelTxt: '确定',
                 canMake: '',           //默认可以预约
                 isHostUrl: '',
-                packageId: '' // 套餐id
-
+                contractId: '', // 合同id
+                status: '',
+                cancel: false, // 控制已取消
             }
         },
-        created () {
+        mounted () {
+            document.body.className = ''
             let y = localStorage.getItem('indexPageY')
             if(y){
                 localStorage.setItem('newIndexPageY', y)
@@ -184,7 +187,7 @@
                 this.uid = this.$store.state.uid || localStorage.getItem('uid')
                 this.phone = localStorage.getItem('phone') || localStorage.getItem('phoneBack') || this.$store.state.phone
                 this.isMember = localStorage.getItem('isMember');
-                this.packageId = localStorage.getItem('packageId');
+                this.contractId = localStorage.getItem('contractId');
 
                 // console.log("uid==" + this.uid)
                 // console.log("phone==" + this.phone)
@@ -193,7 +196,7 @@
             },
             getCourseInfo() {
                 var _shareUrl = window.location.protocol + '//' + window.location.host  + '/course/index.html#/details?id=' + this.$route.query.courseId
-                var _detailsUrl = `/daydaycook/server/offline/reservationUser/courseDetail.do?courseId=${this.$route.query.courseId}&mobile=${this.phone}&reservationState=${this.$route.query.state}`;
+                var _detailsUrl = `/daydaycook/server/offline/reservationUser/courseDetail.do?courseId=${this.$route.query.courseId}&mobile=${this.phone}&reservationState=${this.$route.query.state}&status=${this.status}`;
                 console.log(_detailsUrl)
                 this.ajaxDataFun('post', _detailsUrl , (obj) =>{
                     if(obj.code == '200'){
@@ -232,8 +235,8 @@
                     this.needLogin = true
                     return
                 }
-                console.log(JSON.parse(this.isMember))
-                if (!JSON.parse(this.isMember)) {
+                console.log(!JSON.parse(this.isMember))
+                if (this.contractId === null) {
                     this.showNotMPop = true
                 } else {
                     this.RSuccess = true;
@@ -249,13 +252,17 @@
             },
             onRecommend:function(){
                 this.recommendTxt = '预约中...'
-                var _RUrl = `/daydaycook/server/offline/reservationUser/save.do?offlineCourseId=${this.$route.query.courseId}&mobile=${this.phone}&uid=${this.uid}&packageId=${this.packageId}`;
+                var _RUrl = `/daydaycook/server/offline/reservationUser/save.do?offlineCourseId=${this.$route.query.courseId}&mobile=${this.phone}&uid=${this.uid}&contractId=${this.contractId}`;
+                console.log(_RUrl, '立即预约')
                 this.ajaxDataFun('post', _RUrl, (obj) => {
                     this.recommendTxt = '确定'
                     if(obj.code == '200'){
-                        this.RSuccess = false
-                        this.$store.state.listLoaded = false
-                        popMin.show("icon-yk_icon_success","预约成功")
+                        this.RSuccess = false;
+                        this.$store.state.listLoaded = false;
+                        popMin.show("icon-yk_icon_success","预约成功");
+                        this.status = 'res';
+                       // window.location.reload()
+                        this.cancel = true;
                         this.getCourseInfo()
                     }else if(obj.code == '416'){
                         popMin.show("icon-yk_icon_warning","已预约,不能重复预约")
@@ -270,12 +277,14 @@
             },
             cancelRdF(){
                 this.cancelTxt = '取消中...'
-                var _canlUrl = `/daydaycook/server/offline/reservationUser/cancel.do?id=${this.$route.query.resId}&offlineCourseId=${this.$route.query.courseId}&mobile=${this.phone}&uid=${this.uid}`
+                var _canlUrl = `/daydaycook/server/offline/reservationUser/cancel.do?id=${this.$route.query.resId}&offlineCourseId=${this.$route.query.courseId}&mobile=${this.phone}&uid=${this.uid}`;
                 console.log(_canlUrl);
                 this.ajaxDataFun('post', _canlUrl, (obj) => {
                     if(obj.code == '200'){
                         this.$store.state.listLoaded = false
-                        this.CSuccess =  false
+                        this.CSuccess =  false;
+                        this.status = 'cancel';
+                        this.cancel = true;
                         this.getCourseInfo()
                         this.cancelTxt = '确定'
                         popMin.show("icon-yk_icon_success","取消成功")
@@ -289,9 +298,6 @@
                 let  host = window.location.host;
                 this.isHostUrl = host.split('.')[0];
             }
-        },
-        mounted (){
-            document.body.className = ''
         },
         computed: {
             isLogin:function(){

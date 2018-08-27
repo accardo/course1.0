@@ -96,7 +96,7 @@ export default new Router({
             path: '/AMap',
             name: 'AMap',
             meta: {
-               requireAuth: true,
+               requireAuth: false,
             },
             component: AMap
         },
@@ -104,7 +104,7 @@ export default new Router({
             path: '/expShop',
             name: 'expShop',
             meta: {
-               requireAuth: true,
+               requireAuth: false,
             },
             component: expShop
         }
