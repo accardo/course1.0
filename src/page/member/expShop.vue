@@ -90,7 +90,22 @@
 
             /* 跳转到 地图 */
             goMap(){
-                let self = this;
+                let xxkc_gps = sessionStorage.getItem('xxkc_gps');
+                let mapUrl = `uri.amap.com/navigation?from=${xxkc_gps}&to=${shopGps.toString()},${self.name},&mode=car&src=DDC LIFE&callnative=1`
+                if(typeof ddcApp == 'object' && shopGps.length){
+                    // 调用地图导航API
+                    ddcApp.navMap({
+                        latitude : shopGps[0],
+                        longitude: shopGps[1],
+                        title : self.name,
+                        subTitle : self.address
+                    })
+                } else {
+                    // 调启高德App导航
+                    window.location.href= mapUrl
+                }
+
+      /*          let self = this;
                 if(this.shopInfo){
                     let params = {
                         _this:this,
@@ -103,7 +118,7 @@
                         }
                     }
                     util.jumpUrlByIsApp(params);
-                }
+                }*/
             },
 
             /* 查看课程*/

@@ -56,6 +56,9 @@
                             title : self.name,
                             subTitle : self.address
                         })
+                    } else {
+                        // 调启高德App导航
+
                     }
                 });
             },
