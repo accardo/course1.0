@@ -114,8 +114,7 @@
                     startTime:'',
                     endTime:'',
                 },      //最近预约课程信息
-                positionData:'',     //用户 gps 地址
-                positionX:'',
+                positionX:'',//用户 gps 地址
                 positionY:'',
                 bannerParam:{           //banner swiper 配置
                     auto:false,
@@ -163,17 +162,27 @@
         },
         mounted(){
             this.init();
-            this.getUserGps();
         },
         methods:{
             /* 初始化 */
             init(){
                 let self = this;
+                let positionInfo = sessionStorage.getItem('xxkc_gps');
+                if(positionInfo){
+                    //如果存储的有 gps 地址
+                    this.positionX = positionInfo.split(',')[0];
+                    this.positionY = positionInfo.split(',')[1];
+                    this.getCourseList();
+                    this.getShopInfoByUid();
+                    this.showAll = true;
+                }else{
+                    this.getUserGps();
+                }
                 if(typeof ddcApp == 'object'){
                     //如果在app内 显示分享按钮
                     ddcApp.shareBtn({
-                        title:'线下课程',
-                        desc:'线下课程分享信息描述',
+                        title:'日日煮美食厨艺课程预约',
+                        desc:'这个课程好玩又好吃，快点来种草！',
                         imgUrl:'https://mobile.daydaycook.com.cn/logo.png',
                         linkUrl:window.location.href
                     });
@@ -223,6 +232,7 @@
                         if(data.position){
                             self.positionX = data.position.P;
                             self.positionY = data.position.O;
+                            sessionStorage.setItem('xxkc_gps',`${data.position.P},${data.position.O}`)
                             self.getCourseList();
                             self.getShopInfoByUid();
                         }
@@ -313,7 +323,6 @@
             /* 获取课程列表 */
             getCourseList(){
                 let self = this;
-                console.log(self.positionData);
                 var _listUrl = '/daydaycook/server/newCourse/getAddressCourseInfo.do?uid=' + self.uid + '&x='+self.positionX+'&y='+self.positionY;
                 this.ajaxDataFun('post', _listUrl, function(obj){
                     if(obj.code == '200'){
