@@ -2,7 +2,7 @@
     <div id="container">
         <v-title>{{ pageTitle }}</v-title>
         <div id="loading" v-show="!showAll">
-            <img src="../../../static/img/profile.png" alt="loading">
+            <img src="../../assets/img/profile.png" alt="loading">
             <span>数据加载中...</span>
         </div>
         <article class="entrance">
@@ -157,7 +157,6 @@
                     }
                 ],
                 listType: 1, //
-                hostUrl: window.location.origin + window.location.pathname+'static/img/',
             }
         },
         mounted(){
