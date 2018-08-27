@@ -6,7 +6,7 @@
 	           	<router-link to="/myInfo">
 	               	<div class="avar">
 	                   <img v-if="avar && avar != 'null'" :src="avar" />
-	                   <img v-if="!avar || avar == 'null'" src="../../../static/img/default.png" />
+	                   <img v-if="!avar || avar == 'null'" :src="imgIcon.img_1" />
 	               	</div>
 	               	<div class="name">
                      <p v-if="lineUserName != 'null'">{{ lineUserName }}</p>
@@ -27,7 +27,7 @@
            </div>
        </div>
        <div class="popNotWrap">
-           <img src="../../../static/img/not_1.png" alt="" />
+           <img :src="imgIcon.img_2"  alt="" />
            <p>还没有预约过课程，快去瞅瞅吧</p>
        </div>
        <login-out :login-out-show.sync="loginOutShow" v-if="loginOutShow"></login-out>
@@ -72,6 +72,10 @@
                 isshwoSwiper:false,
                 listType: 2, // 2 -> mermber页面
                 listData: [],
+                imgIcon: {
+                    img_1: './static/img/default.png',
+                    img_2: './static/img/not_1.png'
+                }
             }
         },
         mounted () {

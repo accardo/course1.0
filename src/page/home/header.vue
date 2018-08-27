@@ -54,7 +54,7 @@
         </div>
        <listLay :get-data="getData" :is-refresh.sync="isRefresh" v-on:scroll-y="scrollY" ref="listRefresh"></listLay>
         <div class="popNotWrap big">
-            <img src="../../../static/img/not_1.png" alt="" />
+            <img :src="imgIcon.img_1" alt="" />
             <p>咦!?找不到哎!</p>
         </div>
        <!-- 筛选遮罩层-->
@@ -65,7 +65,7 @@
         <div class="popBg than" v-show="showChooseAdd" @click="closeAddPop"></div>
         <div class="popRed than" v-show="showChooseAdd">
             <div class="img">
-                <img src="../../../static/img/tc_icon_mendian.png" alt="" />
+                <img :src="imgIcon.img_2" alt="" />
             </div>
             <div class="tip">选择您最近的上课门店</div>
             <div class="choose" :class="{min: addListDate.length < 4}">
@@ -137,6 +137,10 @@
                         timeScope: '', // 时间
                     },
                 },
+                imgIcon: {
+                    img_1: './static/img/not_1.png',
+                    img_2: './static/img/tc_icon_mendian.png',
+                }
             }
         },
         mounted (){

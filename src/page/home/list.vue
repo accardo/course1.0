@@ -89,7 +89,7 @@
                     empty: {
                         warpId: "dataList",
                         //列表第一页无任何数据时,显示的空提示布局; 需配置warpId或clearEmptyId才生效;
-                        icon: '/static/img/not_1.png',
+                        icon: './static/img/not_1.png',
                         tip: "咦!?找不到哎!!!", //提示
                     },
                     htmlLoading: '<p class="upwarp-progress mescroll-rotate"></p><p class="upwarp-tip">加载中.........</p>',
