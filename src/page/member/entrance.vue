@@ -92,6 +92,7 @@
     import classList from '@/components/classlist'
     import * as util from '@/utils/utils.js'
 
+    let hostUrl = window.location.origin + window.location.pathname+'static/img/';
     export default {
         name:'entrance',
         data () {
@@ -103,7 +104,7 @@
                 showAll:false,
                 userLogin:'',     //是否登录
                 userInfo:{
-                    userHeader:'../../../static/img/pic_touxiang.png',//用户头像 未登录
+                    userHeader:'course/../../static/img/pic_touxiang.png',//用户头像 未登录
                     userphone:'', //用户手机号
                     lineUserName:'',
                     buyCourseNum:0,
@@ -126,36 +127,37 @@
                 swipeList: [
                     {
                         id:1,
-                        imageUrl:'../../../static/img/pic_aboutus1.jpg',
+                        imageUrl:  `${hostUrl}pic_aboutus1.jpg`,
                         pageId:1,
                     },
                     {
                         id:2,
-                        imageUrl:'../../../static/img/pic_aboutus2.jpg',
+                        imageUrl:`${hostUrl}pic_aboutus2.jpg`,
                         pageId:2,
                     },
                     {
                         id:3,
-                        imageUrl:'../../../static/img/pic_aboutus3.jpg',
+                        imageUrl:`${hostUrl}pic_aboutus3.jpg`,
                         pageId:3,
                     },
                     {
                         id:4,
-                        imageUrl:'../../../static/img/pic_aboutus4.jpg',
+                        imageUrl:`${hostUrl}pic_aboutus4.jpg`,
                         pageId:4,
                     },
                     {
                         id:5,
-                        imageUrl:'../../../static/img/pic_aboutus5.jpg',
+                        imageUrl:`${hostUrl}pic_aboutus5.jpg`,
                         pageId:5,
                     },
                     {
                         id:6,
-                        imageUrl:'../../../static/img/pic_aboutus6.jpg',
+                        imageUrl:`${hostUrl}pic_aboutus6.jpg`,
                         pageId:6,
                     }
                 ],
                 listType: 1, //
+                hostUrl: window.location.origin + window.location.pathname+'static/img/',
             }
         },
         mounted(){
@@ -267,7 +269,7 @@
                 this.ajaxDataFun('post', infoUrl, (obj) => {
                     if(obj.code == '200'){
                         let res = obj.userContract;
-                        self.userInfo['userHeader'] = res.img ? res.img : '../../../static/img/profile.png';
+                        self.userInfo['userHeader'] = res.img ? res.img : `${hostUrl}profile.png`;
                         self.userInfo['lineUserName'] = res.lineUserName;
                         self.userInfo['nickName'] = res.nickName;
                         self.userInfo['buyCourseNum'] = obj.refundCount;
