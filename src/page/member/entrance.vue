@@ -11,7 +11,8 @@
                 <dl v-if="userLogin">
                     <dt v-if="userInfo.lineUserName">{{userInfo.lineUserName}}</dt>
                     <dt v-else>{{userInfo.nickName}}</dt>
-                    <dd v-if="userInfo.buyCourseNum" >剩余<strong>{{userInfo.buyCourseNum}}</strong>次可预约，{{userInfo.endtime}}到期</dd>
+                    <dd v-if="sellingCourseType ==2 && userInfo.buyCourseNum" >剩余<strong>{{userInfo.buyCourseNum}}</strong>次可预约，{{userInfo.endtime}}到期</dd>
+                    <dd v-if="sellingCourseType ==3 || sellingCourseType ==1" >您的课程套餐，{{userInfo.endtime}}到期</dd>
                     <dd v-else>您尚未购买课程，暂无约课权限</dd>
                 </dl>
                 <div v-else @click="showLogin" class="nologin">点击登录</div>
@@ -35,7 +36,7 @@
             <section class="entrance-model" v-if="coursesData && coursesData.length > 0">
                 <div class="entrance-tit">
                     <strong>最新课程</strong>
-                    <router-link to="/" tag="span"> 查看更多 </router-link>
+                    <span @click='movecourse'>查看更多</span>
                 </div>
                 <div class="lesson-list">
                     <class-list :list-data="coursesData" :list-type="listType"></class-list>
@@ -155,6 +156,7 @@
                     }
                 ],
                 listType: 1, //
+                sellingCourseType:0,   // 购买课程类型:1:按分类购买 2:按次数购买 3:按时效购买
             }
         },
         mounted(){
@@ -261,6 +263,16 @@
                 });
             },
 
+            /* 查看 更多课程 */
+            movecourse(){
+                let params = {
+                    that:this,
+                    router:'index',
+                    title:'课程列表',
+                }
+                util.navTo(params);
+            },
+
             /* 根据用户uid 获取用户信息 */
             getUserByUid(uid){
                 let self = this;
@@ -268,10 +280,12 @@
                 this.ajaxDataFun('post', infoUrl, (obj) => {
                     if(obj.code == '200'){
                         let res = obj.userContract;
+                        self.sellingCourseType  = res.sellingCourseType;
                         self.userInfo['userHeader'] = res.img ? res.img : './static/img/profile.png';
                         self.userInfo['lineUserName'] = res.lineUserName;
                         self.userInfo['nickName'] = res.nickName;
                         self.userInfo['buyCourseNum'] = obj.refundCount;
+
                         let endtime = res.contractEndTime ? util.formatTimeArray(res.contractEndTime) : '';
                         self.userInfo.endtime = endtime ? `${endtime[0]}/${endtime[1]}/${endtime[2]}` : '';
                     }else{
