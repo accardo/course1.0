@@ -3,17 +3,17 @@
        <v-title>{{ pageTitle }}</v-title>
        <div class="member justify">
            <div class="top box">
-	           	<router-link to="/myInfo">
-	               	<div class="avar">
-	                   <img v-if="avar && avar != 'null'" :src="avar" />
-	                   <img v-if="!avar || avar == 'null'" :src="imgIcon.img_1" />
-	               	</div>
-	               	<div class="name">
+                <div @click="myInfo">
+                    <div class="avar">
+                       <img v-if="avar && avar != 'null'" :src="avar" />
+                       <img v-if="!avar || avar == 'null'" :src="imgIcon.img_1" />
+                    </div>
+                    <div class="name">
                      <p v-if="lineUserName != 'null'">{{ lineUserName }}</p>
                      <p v-if="lineUserName == 'null'">{{ nickName }}</p>
                      <div class="not">课程会员</div>
-	               	</div>
-	           </router-link>
+                    </div>
+                </div>
            </div>
            <div class="login-out" @click="loginOutShow = true">登出</div>
        </div>
@@ -44,6 +44,7 @@
     import swiperBanner from '@/components/swiper'
     import classList from '@/components/classlist'
     import loginOut from '@/components/loginOut'
+    import * as util from '@/utils/utils.js'
 
     export default {
         data () {
@@ -85,7 +86,12 @@
                 this.initUserInfo();
                 this.getContPackage();
             }else{
-                this.$router.push({name: 'notMember'})
+                let params = {
+                    that: this,
+                    router: 'notMember',
+                    title: '个人中心',
+                }
+                util.navTo(params);
             }
         },
         components: {
@@ -118,7 +124,6 @@
                 this.getPersonalResList().then((res) => {
                     if (res.code == '200') {
                         this.listData = res.data;
-                        console.log(res);
                     }
                 })
         	},
@@ -136,6 +141,19 @@
                         this.isshwoSwiper = true;
                     }
                 })
+            },
+            /*
+             * Description: 跳转
+             * Author: yanlichen <lichen.yan@daydaycook.com.cn>
+             * Date: 2018/8/28
+             */
+            myInfo() {
+                let params = {
+                    that: this,
+                    router: 'myInfo',
+                    title: '我的资料',
+                }
+                util.navTo(params);
             }
         },
         watch:{

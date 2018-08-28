@@ -293,10 +293,11 @@
 
             /* 前往 个人中心 */
             goMember(){
+                let isMember = localStorage.getItem('isMember')
                 if(!this.userLogin) return;
                 let params = {
                     that:this,
-                    router: this.isMember == true ? 'member' : 'notMember',
+                    router: isMember ? 'member' : 'notMember',
                     title:'个人中心',
                 }
                 util.navTo(params);
