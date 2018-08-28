@@ -43,7 +43,7 @@
             this.$nextTick(() => {
                 let isMember = this.$store.state.isMember || localStorage.getItem('isMember')
                 if(isMember == true || isMember == 'true'){
-                    this.$router.push('/member')
+                    this.$router.push({name: 'member'})
                 } else {
                     this.noMemner();
                 }

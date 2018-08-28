@@ -62,11 +62,12 @@
                 position:2,
                 contractEndTime: '', // 到期日期
                 bannerParam:{           //banner swiper 配置
-                    auto: true,
+                    auto: false,
                     swiperId:'aboutbanner',
                     showText:false,
                     delay:5000,
                     switchOpen: 2,
+                    isAutoFalse: true,
                 },
                 swipelist: [],
                 isshwoSwiper:false,
@@ -84,7 +85,7 @@
                 this.initUserInfo();
                 this.getContPackage();
             }else{
-                this.$router.push('/notMember')
+                this.$router.push({name: 'notMember'})
             }
         },
         components: {

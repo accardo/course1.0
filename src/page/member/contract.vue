@@ -30,7 +30,7 @@
                             <li>结束日期：{{ item.paperEndTime | formatDate}}</li>
                             <li>有效时间：{{ item.effectiveTime }}</li>
                         </ul>
-                        <p class="tip" v-if="item.sellingCourseType != 3">已使用次数／购买次数：</p>
+                        <p class="tip" v-if="item.sellingCourseType != 3">可使用次数／购买次数：</p>
                         <template v-if="item.sellingCourseType == 1 && item.categoryInfo && item.categoryInfo.length > '0'">
                             <div class="list" v-for="itemA in item.categoryInfo">
                                 <span>{{ itemA.title }}</span>

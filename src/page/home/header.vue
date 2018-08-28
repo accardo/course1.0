@@ -269,6 +269,8 @@
              * Date: 2018/8/13
              */
             filterList(data, dataA, isActive, indexA) {
+                let docH = document.querySelector('.fication-content');
+                alert(docH.clientHeight)
                 if (data.pick === 1) { // 单选 互斥
                     data.list.map((item, index) => {
                         item.isActive = false
@@ -527,8 +529,8 @@
     .fication-content {
         margin-top: -1px;
         max-height: 388px;
-        overflow-y: scroll;
-        -webkit-overflow-scrolling: auto;
+        overflow:scroll;
+        -webkit-overflow-scrolling:touch;
     }
     .fication-package {
         border-top: #eee solid 1px;
@@ -555,6 +557,9 @@
     }
     .fication-filter {
         background: #fff;
+        max-height: 388px;
+        overflow:scroll;
+        -webkit-overflow-scrolling:touch;
     }
     .fication-filter dl {
         padding: 20px 20px 20px 20px;

@@ -50,7 +50,10 @@ export default new Router({
         {
             path: '/notMember',
             name: 'notMember',
-            component: notMember
+            component: notMember,
+	        meta: {
+		        requireAuth: false,
+	        },
         },
         {
             path: '/myInfo',

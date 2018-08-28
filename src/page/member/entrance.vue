@@ -296,7 +296,7 @@
                 if(!this.userLogin) return;
                 let params = {
                     that:this,
-                    router:'member',
+                    router: this.isMember == true ? 'member' : 'notMember',
                     title:'个人中心',
                 }
                 util.navTo(params);

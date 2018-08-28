@@ -17,7 +17,8 @@
                         <router-link :to="{name: 'contract', query: {pid: item.contractId}}">
                         <strong class="member-title">{{item.packageName}}</strong>
                         <div class="member-date">{{item.paperEndTime | formatDate }}到期</div>
-                        <div class="member-num">剩余<b>{{item.retainCount || 0}}</b>次可预约</div>
+                        <div class="member-num" v-if="item.sellingCourseType == 3">不限次数</div>
+                        <div class="member-num" v-else>剩余<b>{{item.retainCount || 0}}</b>次可预约</div>
                         </router-link>
                     </div>
             </div>
@@ -52,7 +53,7 @@
                         this.mySwiper.destroy();
                     }
                     this.mySwiper = new Swiper(`#${this.swiperId}`, {
-                        loop: swipelist.length > 1 ? true : false,              //循环播放
+                        loop: !param.isAutoFalse && swipelist.length > 1 ? true : false,              //循环播放
                         autoplay: param.auto || false,
                         delay: param.delay || 5000,     //自动播放间隔
                         slidesPerView: 'auto',
