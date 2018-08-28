@@ -96,14 +96,14 @@
         data () {
             return {
                 pageTitle:'线下课程',
-                uid: '',
+                uid: localStorage.getItem('uid') || this.$store.state.uid,
                 isShowLogin:'', //是否显示登录弹窗
                 isShowMake:'',  //是否显示预约 课程
                 showAll:false,
                 userLogin:'',     //是否登录
                 userInfo:{
                     userHeader: './static/img/pic_touxiang.png',//用户头像 未登录
-                    userphone:'', //用户手机号
+                    userphone: localStorage.getItem('phone') || this.$store.state.phone, //用户手机号
                     lineUserName:'',
                     buyCourseNum:0,
                 },    //用户信息
@@ -164,17 +164,6 @@
             /* 初始化 */
             init(){
                 let self = this;
-                let positionInfo = sessionStorage.getItem('xxkc_gps');
-                if(positionInfo){
-                    //如果存储的有 gps 地址
-                    this.positionX = positionInfo.split(',')[0];
-                    this.positionY = positionInfo.split(',')[1];
-                    this.getCourseList();
-                    this.getShopInfoByUid();
-                    this.showAll = true;
-                }else{
-                    this.getUserGps();
-                }
                 if(typeof ddcApp == 'object'){
                     //如果在app内 显示分享按钮
                     ddcApp.shareBtn({
@@ -190,23 +179,36 @@
                            self.uid = res;
                            self.getUserByUid(self.uid);
                            self.isMemberFun(self.uid);
-                           self.getLastCourseByuid(self.userphone);
-                           localStorage.setItem('uid', self.uid);
+                           self.getLastCourseByuid();
+                           self.isGps();
+                           localStorage.setItem('uid', res.uid);
                            localStorage.setItem('nickName', self.userName);
-                           localStorage.setItem('phone', self.userphone);
+                          // localStorage.setItem('phone', self.userphone);
                        }else{
                            console.log('app内用户未登录');
                        }
                     })
                 }else{
                     self.userLogin = self.$store.state.isLogin || localStorage.getItem('isLogin');    //用户是否登录
+                    self.isGps();
                     if(self.userLogin == 'true' || self.userLogin == true){
                         // 如果用户已登录    获取用户信息
-                        self.uid = localStorage.getItem('uid') || self.$store.state.uid;
-                        self.userphone = localStorage.getItem('phone') || self.$store.state.phone;
                         self.getUserByUid(self.uid);
-                        self.getLastCourseByuid(self.userphone);
+                        self.getLastCourseByuid();
                     }
+                }
+            },
+            isGps() {
+                let positionInfo = sessionStorage.getItem('xxkc_gps');
+                if(positionInfo){
+                    //如果存储的有 gps 地址
+                    this.positionX = positionInfo.split(',')[0];
+                    this.positionY = positionInfo.split(',')[1];
+                    this.getCourseList();
+                    this.getShopInfoByUid();
+                    this.showAll = true;
+                }else{
+                    this.getUserGps();
                 }
             },
             isMemberFun(id) {
@@ -301,9 +303,9 @@
             },
 
             // 获取最近预约课程
-            getLastCourseByuid(userphone){
+            getLastCourseByuid(){
                 let self = this;
-                let _listUrl = '/daydaycook/server/offline/reservationUser/theLastTimeRes.do?mobile='+userphone;
+                let _listUrl = '/daydaycook/server/offline/reservationUser/theLastTimeRes.do?uid='+self.uid;
                 this.ajaxDataFun('get',_listUrl, function(res){
                     if(res.code =='200' && res.data){
                         self.courseData = res.data;
@@ -342,7 +344,7 @@
                     if(obj.code == '200'){
                         if(obj.list && obj.list.length >0){
                             obj.list.map(item => {
-                                item.imageUrl =  item.imageUrl ? item.imageUrl+'?x-oss-process=image/resize,w_300' : '';
+                                item.imageUrl =  item.imageUrl ? item.imageUrl + '?x-oss-process=image/resize,w_300' : '';
                             })
                             self.coursesData = obj.list;
                         }

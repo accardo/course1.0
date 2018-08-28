@@ -4,7 +4,7 @@
              <swiper-banner :swipelist="swipeList" :param = "bannerParam"></swiper-banner>
         </div>
         <div class="exp-shop">
-            <h4>{{shopInfo.name}}</h4>
+            <h4>{{shopInfo.brand}}{{shopInfo.name}}</h4>
             <ul v-if="shopInfo.lable && shopInfo.lable.length >0 ">
                 <li v-for="(item,index) in shopInfo.lable" :key="index">{{item}}</li>
                 <!-- <li>料理</li>

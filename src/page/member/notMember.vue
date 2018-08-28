@@ -18,13 +18,13 @@
         </div>
         <div class="notMemner" v-html="notMemberData"></div>
         <login-out :login-out-show.sync="loginOutShow" v-if="loginOutShow"></login-out>
-        <footerLay v-bind:position="position"></footerLay>
+       <!-- <footerLay v-bind:position="position"></footerLay>-->
     </div>
 </template>
 
 <script>
     import VTitle from '@/components/title'
-    import footerLay from '@/components/footer'
+    /*import footerLay from '@/components/footer'*/
     import loginOut from '@/components/loginOut'
 
     export default {
@@ -55,7 +55,7 @@
         },
         components: {
             VTitle,
-            footerLay,
+         /*   footerLay,*/
             loginOut
         },
         methods: {

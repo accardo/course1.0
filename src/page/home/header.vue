@@ -159,6 +159,9 @@
                 if (!addressTxt && !addressId) {
                     this.showChooseAdd = true;
                 }
+                if (addressId) {
+                    this.tipShow();
+                }
                 this.memberClass();
                 this.getAddList();
             },
@@ -524,7 +527,8 @@
     .fication-content {
         margin-top: -1px;
         max-height: 388px;
-        overflow-x: auto;
+        overflow-y: scroll;
+        -webkit-overflow-scrolling: auto;
     }
     .fication-package {
         border-top: #eee solid 1px;
@@ -591,7 +595,6 @@
         bottom: -2px;
         margin-left: -25px;
     }
-    fold-active
     .fication-filter dl.fold .fold-button button {
         padding: 5px;
     }

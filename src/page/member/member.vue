@@ -11,7 +11,7 @@
 	               	<div class="name">
                      <p v-if="lineUserName != 'null'">{{ lineUserName }}</p>
                      <p v-if="lineUserName == 'null'">{{ nickName }}</p>
-                        <div class="not">课程会员</div>
+                     <div class="not">课程会员</div>
 	               	</div>
 	           </router-link>
            </div>
@@ -52,8 +52,8 @@
                 uid: localStorage.getItem('uid'),
                 avar: '',
                 phone: localStorage.getItem('phone'),
-                nickName: '',
-                lineUserName: '',
+                nickName: localStorage.getItem('nickName'),
+                lineUserName: localStorage.getItem('lineUserName'),
                 unreadCount: '',
                 currentPage: 1,
                 isHaveContract: '',

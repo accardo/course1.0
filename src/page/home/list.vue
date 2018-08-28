@@ -9,7 +9,7 @@
                         <span>{{ item.cateAttr }}</span>
                     </div>
                     <div class="list-content">
-                        <div>
+                        <div class="list-button">
                             <strong>{{item.courseName}}</strong>
                             <div class="list-time">{{item.startTime | formatTimeOne }} - {{ item.endTime | formatTimeTwo}}</div>
                             <div class="list-teacher">{{item.teacherName}}老师 |
@@ -197,7 +197,7 @@
         justify-content: space-between;
         -webkit-align-items: center;
         align-items: center;
-
+        position: relative;
     }
     .list-content .list-time, .list-teacher {
         font-size: 12px;
@@ -210,11 +210,18 @@
     }
 
     .list-content strong {
-        font-size: 20px;
+        display: block;
+        font-size: 16px;
         color: #000;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .list-content .list-button {
+        width: 70%;
     }
     .list-content div:last-of-type button {
-        padding: 6px 24px;
+        padding: 4px 20px;
         background-image: linear-gradient(45deg, #393939 0%, #2F2F2F 100%);
         box-shadow: 0 2px 8px 0 rgba(0,0,0,0.20);
         border-radius: 100px;

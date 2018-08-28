@@ -36,7 +36,8 @@
                 this.$emit('update:loginOutShow', false);
             },
             changeLogin:function() {
-                window.location.href = '/index'
+               // window.location.href = '/index'
+                this.$router.push({name: 'entrance'})
                 this.$store.state.isShowLogin = true
                 document.body.className = 'overflow'
                 localStorage.removeItem('isLogin')
