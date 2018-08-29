@@ -11,7 +11,8 @@
                 <dl v-if="userLogin">
                     <dt v-if="userInfo.lineUserName">{{userInfo.lineUserName}}</dt>
                     <dt v-else>{{userInfo.nickName}}</dt>
-                    <dd v-if="userInfo.buyCourseNum" >剩余<strong>{{userInfo.buyCourseNum}}</strong>次可预约，{{userInfo.endtime}}到期</dd>
+                    <dd v-if="sellingCourseType ==2 && userInfo.buyCourseNum" >剩余<strong>{{userInfo.buyCourseNum}}</strong>次可预约，{{userInfo.endtime}}到期</dd>
+                    <dd v-else-if="sellingCourseType ==3 || sellingCourseType ==1" >您的课程套餐，{{userInfo.endtime}}到期</dd>
                     <dd v-else>您尚未购买课程，暂无约课权限</dd>
                 </dl>
                 <div v-else @click="showLogin" class="nologin">点击登录</div>
@@ -35,7 +36,7 @@
             <section class="entrance-model" v-if="coursesData && coursesData.length > 0">
                 <div class="entrance-tit">
                     <strong>最新课程</strong>
-                    <span @click="entMore">查看更多</span>
+                    <span @click='movecourse'>查看更多</span>
                 </div>
                 <div class="lesson-list">
                     <class-list :list-data="coursesData" :list-type="listType"></class-list>
@@ -155,6 +156,7 @@
                     }
                 ],
                 listType: 1, //
+                sellingCourseType:0,   // 购买课程类型:1:按分类购买 2:按次数购买 3:按时效购买
             }
         },
         mounted(){
@@ -206,7 +208,6 @@
                     this.positionY = positionInfo.split(',')[1];
                     this.getCourseList();
                     this.getShopInfoByUid();
-                    this.showAll = true;
                 }else{
                     this.getUserGps();
                 }
@@ -261,6 +262,16 @@
                 });
             },
 
+            /* 查看 更多课程 */
+            movecourse(){
+                let params = {
+                    that:this,
+                    router:'index',
+                    title:'课程列表',
+                }
+                util.navTo(params);
+            },
+
             /* 根据用户uid 获取用户信息 */
             getUserByUid(uid){
                 let self = this;
@@ -268,10 +279,12 @@
                 this.ajaxDataFun('post', infoUrl, (obj) => {
                     if(obj.code == '200'){
                         let res = obj.userContract;
+                        self.sellingCourseType  = obj.sellingCourseType;
                         self.userInfo['userHeader'] = res.img ? res.img : './static/img/profile.png';
                         self.userInfo['lineUserName'] = res.lineUserName;
                         self.userInfo['nickName'] = res.nickName;
                         self.userInfo['buyCourseNum'] = obj.refundCount;
+
                         let endtime = res.contractEndTime ? util.formatTimeArray(res.contractEndTime) : '';
                         self.userInfo.endtime = endtime ? `${endtime[0]}/${endtime[1]}/${endtime[2]}` : '';
                     }else{
@@ -302,15 +315,7 @@
                 }
                 util.navTo(params);
             },
-            /* 课程列表*/
-            entMore() {
-                let params = {
-                    that: this,
-                    router: 'index',
-                    title: '线下课程',
-                }
-                util.navTo(params);
-            },
+
             // 获取最近预约课程
             getLastCourseByuid(){
                 let self = this;
@@ -330,10 +335,14 @@
                 let self = this;
                 let _listUrl = '/daydaycook/server/newCourse/getAddressInfoByUid.do?uid='+ self.uid+'&x='+self.positionX+'&y='+self.positionY;
                 this.ajaxDataFun('post',_listUrl, function(res){
+                    self.showAll = true;
                     if(res &&  res.code =='200'){
                         let listdata = res.list;
-                        listdata.map(item => {
-                            item.image = item.image ? item.image+'?x-oss-process=image/resize,w_300' : '';
+                        listdata = listdata.filter(item => {
+                            if (item.id !== 2) {
+                                item.image = item.image ? item.image+'?x-oss-process=image/resize,w_300' : '';
+                                return item
+                            }
                         })
                         self.shopList = listdata;
                     }
@@ -359,7 +368,7 @@
                         }
                     }
                 })
-            },
+            }
         },
         components: {
         	common,

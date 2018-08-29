@@ -269,8 +269,8 @@
              * Date: 2018/8/13
              */
             filterList(data, dataA, isActive, indexA) {
-                let docH = document.querySelector('.fication-content');
-                alert(docH.clientHeight)
+               /* let docH = document.querySelector('.fication-content');
+                alert(docH.clientHeight)*/
                 if (data.pick === 1) { // 单选 互斥
                     data.list.map((item, index) => {
                         item.isActive = false
