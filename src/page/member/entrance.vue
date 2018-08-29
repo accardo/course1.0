@@ -208,7 +208,6 @@
                     this.positionY = positionInfo.split(',')[1];
                     this.getCourseList();
                     this.getShopInfoByUid();
-                    this.showAll = true;
                 }else{
                     this.getUserGps();
                 }
@@ -336,6 +335,7 @@
                 let self = this;
                 let _listUrl = '/daydaycook/server/newCourse/getAddressInfoByUid.do?uid='+ self.uid+'&x='+self.positionX+'&y='+self.positionY;
                 this.ajaxDataFun('post',_listUrl, function(res){
+                    self.showAll = true;
                     if(res &&  res.code =='200'){
                         let listdata = res.list;
                         listdata.map(item => {
