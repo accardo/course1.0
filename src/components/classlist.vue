@@ -41,17 +41,16 @@
             /* 跳转到课程详情页面 */
             jumpDetail(courseId, status1, status2, resId){
                 let params = {
-                    _this:this,
+                    that:this,
                     url:'details',
-                    pageTitle: '店铺心情',
-                    fullScreen: false,
+                    title: '店铺心情',
                     query:{
                         courseId,
                         state:status1 || status2,
                         resId: resId,
                     }
                 }
-                util.jumpUrlByIsApp(params);
+                util.navTo(params);
             },
         },
         filters:{

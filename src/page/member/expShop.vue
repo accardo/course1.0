@@ -125,14 +125,14 @@
             /* 查看课程*/
             lookcourse(){
                 let params = {
-                    _this:this,
+                    that:this,
                     url:'index',
-                    pageTitle:'课程列表',
+                    title:'课程列表',
                     query:{shopid:this.shopid}
                 }
                 localStorage.setItem('addressId', this.shopid)
                 localStorage.setItem('addressTxt', this.shopInfo.name);
-                util.jumpUrlByIsApp(params);
+                util.navTo(params);
             },
         },
         components: {

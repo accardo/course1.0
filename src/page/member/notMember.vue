@@ -26,6 +26,7 @@
     import VTitle from '@/components/title'
     /*import footerLay from '@/components/footer'*/
     import loginOut from '@/components/loginOut'
+    import * as util from '@/utils/utils.js'
 
     export default {
         data () {
@@ -43,7 +44,12 @@
             this.$nextTick(() => {
                 let isMember = this.$store.state.isMember || localStorage.getItem('isMember')
                 if(isMember == true || isMember == 'true'){
-                    this.$router.push({name: 'member'})
+                    let params = {
+                        that: this,
+                        router: 'member',
+                        title: '个人中心',
+                    }
+                    util.navTo(params);
                 } else {
                     this.noMemner();
                 }

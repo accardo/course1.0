@@ -108,24 +108,6 @@ export function formatTimeArray(temp){
     return new Array(postYear,postMonth,postDate,postHours,postMinutes,postMM)
 }
 
-//判断浏览器还是app 进行 页面跳转
-export function jumpUrlByIsApp(params){
-	if(typeof ddcApp == 'object'){
-		//内嵌在APP中执行
-		let _url = window.location.origin + window.location.pathname+'#/'+params.url;
-		ddcApp.navigateTo({
-			title:params.pageTitle || '',
-			url:_url,
-			fullScreen:params.fullScreen || false
-		})
-	}else{
-		//获取ddcApp方法失败后，当前浏览器直接跳转
-		params._this.$router.push({
-			name:params.url,
-			query:params.query || {}
-		})
-	}
-}
 
 // 获取用户session
 export function getSessionId() {
@@ -164,20 +146,21 @@ export function getSessionId() {
 
 
 export function navTo({
-	title = '线下课程',
-	pathname = window.location.pathname,
-	router = null,
-	query = null,
-	fullScreen = false,
-	that = null
+   title = '线下课程',
+   pathname = window.location.pathname,
+   router = null,
+   query = null,
+   fullScreen = false,
+   that = null,
+   replace = false
 }) {
 	// pathname begin with '/' and end without '?'
 	pathname = /^\//.test(pathname) ? pathname.replace(/\?*$/, '') : `/${pathname.replace(/\?*$/, '')}`
 	// combine query
 	let queryStr = query ? '?' : ''
 	for (let key in query) {
-        queryStr = (/\?$/).test(queryStr) ? `${queryStr}${key}=${query[key]}` : `${queryStr}&${key}=${query[key]}`
-    }
+		queryStr = (/\?$/).test(queryStr) ? `${queryStr}${key}=${query[key]}` : `${queryStr}&${key}=${query[key]}`
+	}
 	// combine url with origin pathname router & query
 	let url = `${window.location.origin}${pathname}`
 	if (router) {
@@ -187,24 +170,32 @@ export function navTo({
 	}
 
 	if ('object' == typeof ddcApp) {
-		ddcApp.navigateTo({
-			title,
-			url,
-			fullScreen
-		})
+		if (!(/\#\/index/.test(url))) {
+			let params = {title, url, fullScreen}
+			if (!replace) {
+				ddcApp.navigateTo(params)
+			} else {
+				ddcApp.redirectTo(params)
+			}
+		} else {
+			ddcApp.goCategory();
+		}
 	} else {
 		if (that && router) {
-			//debugger
-			that.$router.push({
+			let params = {
 				name: router,
 				query: query || {}
-			})
+			}
+			if (!replace) {
+				that.$router.push(params)
+			} else {
+				that.$router.replace(params)
+			}
 		} else {
 			window.location = url
 		}
 	}
 }
-
 
 //关闭loading
 export function closeLoading(){
