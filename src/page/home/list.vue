@@ -2,8 +2,7 @@
      <div id="mescroll" :class="scrollY ?  'courseList mescroll' : 'courseList mescroll mescroll-top'" >
          <div id="dataList">
             <div class="courseItem" v-for="item in listData">
-                <router-link :to="{name: 'details', query: { courseId: item.courseId, state: item.reservationState, resId: item.resId }}">
-                <div class="list-img">
+                <div class="list-img" @click="details(item.courseId, item.reservationState, item.resId)">
                     <img :src="item.imageUrl" alt="">
                     <div class="tip">
                         <span>{{ item.cateAttr }}</span>
@@ -44,7 +43,6 @@
                         </div>
                     </div>
                 </div>
-                </router-link>
             </div>
          </div>
     </div>
@@ -56,6 +54,8 @@
     import MeScroll from 'mescroll.js'
     import 'mescroll.js/mescroll.min.css'
     import popMin from '@/components/popMin'
+    import * as util from '@/utils/utils.js'
+
     export default {
         props: {
             getData: {
@@ -92,7 +92,7 @@
                         icon: './static/img/not_1.png',
                         tip: "咦!?找不到哎!!!", //提示
                     },
-                    htmlLoading: '<p class="upwarp-progress mescroll-rotate"></p><p class="upwarp-tip">加载中.........</p>',
+                    htmlLoading: '<p class="upwarp-progress mescroll-rotate"></p><p class="upwarp-tip">加载中...</p>',
                     htmlNodata: '<p class="upwarp-nodata">-- 我也是有底线的 --</p>', //无数据的布局
                 }
              });
@@ -120,6 +120,19 @@
 
                 })
             },
+            details(cId, rState, rId) {
+                let params = {
+                     that:this,
+                     router: 'details',
+                     title: '店铺详情',
+                     query: {
+                        courseId: cId,
+                        state: rState,
+                        resId: rId
+                    }
+                }
+                util.navTo(params);
+            }
         },
         watch: {
             isRefresh(val) {

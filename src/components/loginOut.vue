@@ -12,6 +12,7 @@
 </template>
 
 <script>
+    import * as util from '@/utils/utils.js'
     export default {
         data() {
             return {
@@ -37,7 +38,6 @@
             },
             changeLogin:function() {
                // window.location.href = '/index'
-                this.$router.push({name: 'entrance'})
                 this.$store.state.isShowLogin = true
                 document.body.className = 'overflow'
                 localStorage.removeItem('isLogin')
@@ -67,6 +67,12 @@
                 localStorage.removeItem('addressTxt')
                 localStorage.removeItem('contractId')
                 localStorage.removeItem('uid')
+                let params = {
+                    that:this,
+                    router: 'entrance',
+                    title: '线下课程',
+                }
+                util.navTo(params);
             },
         }
     }

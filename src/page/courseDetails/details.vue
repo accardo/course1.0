@@ -38,48 +38,6 @@
                     <button v-if="allData.reservationState == 2 && cancel" class="active">已取消</button>
                     <button v-if="allData.reservationState == 1 && cancel" class="active">预约成功</button>
                 </template>
-
-
-                <!--<template v-if="isMember == true">
-
-                </template>-->
-                <!--<button v-if="allData.reservationState == 2" >立即预约</button>
-                <button v-if="$route.query.state === 0">敬请期待</button>
-                <button v-if="$route.query.state === 1">查看</button>
-                <button v-if="$route.query.state === 2">预约</button>
-                <button v-if="$route.query.state === 3 || $route.query.state === 4 || $route.query.state === 6"
-                        class="list-disabled"
-                >预约</button>
-                <button v-if="$route.query.state === 5">已截止</button>-->
-
- <!--           <template v-if="!isMember && canMake">
-                <div class="btButton active 1" v-if="!isLogin" @click="needLogin=true"> 立即预约 </div>
-                <div class="btButton active 2" v-if="isLogin && allData.reservationState != 5" @click="showNotMPop=true">
-                    立即预约
-                </div>
-                <div class="btButton" v-if="allData.reservationState == 5"> 预约已满 </div>
-            </template>
-
-            <template v-if="isMember && canMake">
-                <div class="btButton active 3" v-if="allData.reservationState == 1" @click="RSuccess = true">
-                    立即预约
-                </div>
-                <div class="btButton active 4" v-if="allData.reservationState == 9 || allData.reservationState == 11" @click="showNotMPop=true">
-                    立即预约
-                </div>
-                <div class="btButton active 5" v-if="allData.reservationState == 7" @click="CSuccess=true">
-                    取消预约
-                </div>
-                <div class="btButton 6" v-if="allData.reservationState == 5"> 预约已满 </div>
-                <div class="btButton 7" v-if="allData.reservationState != 1 && allData.reservationState != 7 && allData.reservationState != 9 && allData.reservationState != 11" >
-                    {{ allData.stateReason }}
-                </div>
-            </template>
-            <template v-if="!canMake && reservationState == '1'">
-                <div class="btButton active 3 gray">
-                    即将开课，无法预约
-                </div>
-            </template>-->
             </div>
             <div class="popBg" v-show="showNotMPop" @click="showNotMPop=false"></div>
             <div class="popRed" v-show="showNotMPop">

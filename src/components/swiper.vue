@@ -13,19 +13,18 @@
         </div>
         <div class="swiper-member" :id="swiperId" :ref="swiperId"  v-if="param.switchOpen == 2 &&  swipelist.length > 0">
             <div class="swiper-wrapper">
-                    <div class="swiper-slide" v-for="item in swipelist" :key="">
-                        <router-link :to="{name: 'contract', query: {pid: item.contractId}}">
-                        <strong class="member-title">{{item.packageName}}</strong>
-                        <div class="member-date">{{item.paperEndTime | formatDate }}到期</div>
-                        <div class="member-num" v-if="item.sellingCourseType == 3">不限次数</div>
-                        <div class="member-num" v-else>剩余<b>{{item.retainCount || 0}}</b>次可预约</div>
-                        </router-link>
-                    </div>
+                <div class="swiper-slide" v-for="item in swipelist" :key="" @click="contract(item.contractId)">
+                    <strong class="member-title">{{item.packageName}}</strong>
+                    <div class="member-date">{{item.paperEndTime | formatDate }}到期</div>
+                    <div class="member-num" v-if="item.sellingCourseType == 3">不限次数</div>
+                    <div class="member-num" v-else>剩余<b>{{item.retainCount || 0}}</b>次可预约</div>
+                </div>
             </div>
         </div>
     </div>
 </template>
 <script>
+    import * as util from '@/utils/utils.js'
     import Swiper from 'swiper/dist/js/swiper.min.js';
     import 'swiper/dist/css/swiper.css';
     export default {
@@ -80,6 +79,17 @@
                     })
                 })
             },
+            contract(cId) {
+                let params = {
+                    that:this,
+                    router: 'contract',
+                    title: '我的合同',
+                    query: {
+                        pid: cId
+                    }
+                }
+                util.navTo(params);
+            }
         },
     }
 </script>

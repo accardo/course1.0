@@ -35,7 +35,7 @@
             <section class="entrance-model" v-if="coursesData && coursesData.length > 0">
                 <div class="entrance-tit">
                     <strong>最新课程</strong>
-                    <router-link to="/" tag="span"> 查看更多 </router-link>
+                    <span @click="entMore">查看更多</span>
                 </div>
                 <div class="lesson-list">
                     <class-list :list-data="coursesData" :list-type="listType"></class-list>
@@ -302,7 +302,15 @@
                 }
                 util.navTo(params);
             },
-
+            /* 课程列表*/
+            entMore() {
+                let params = {
+                    that: this,
+                    router: 'index',
+                    title: '线下课程',
+                }
+                util.navTo(params);
+            },
             // 获取最近预约课程
             getLastCourseByuid(){
                 let self = this;
@@ -351,7 +359,7 @@
                         }
                     }
                 })
-            }
+            },
         },
         components: {
         	common,

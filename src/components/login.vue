@@ -78,6 +78,7 @@
 <script>
     import popMin from '@/components/popMin.js'
     import common from '@/components/common.js'
+    import * as util from '@/utils/utils.js'
     import _hex_md5 from 'md5'
     import _axios from 'axios'
 
@@ -461,7 +462,12 @@
 
                 if(type){
                     if (this.$route.name == 'details') {
-                        this.$router.push({path: 'index'})
+                        let params = {
+                            that:this,
+                            router: 'entrance',
+                            title: '线下课程',
+                        }
+                        util.navTo(params);
                     } else {
                         window.location.reload()
                     }
