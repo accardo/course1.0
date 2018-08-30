@@ -161,8 +161,8 @@
                     this.loginType = 3;
                 }
             },
-            getScore:function (uid){ //注册送分车页
-                var getScoreUrl  = "/daydaycook/server/score/gainScore.do?uid=" + uid + "&scoreCode=login_first&objId=&title=pgcLogin&scoreCount=3"
+            getScore:function (userUniqueId, uid){ //注册送分车页
+                var getScoreUrl  = "/daydaycook/server/score/gainScore.do?userUniqueId=" + userUniqueId + "&uid=" + uid + "&scoreCode=login_first&objId=&title=pgcLogin&scoreCount=3"
                 this.ajaxDataFun('post',getScoreUrl,function(obj){
                     console.log(obj);
                 });
@@ -194,6 +194,7 @@
             loginFun:function(){
                 var _this = this
                 var uid = this.$store.state.uid || localStorage.getItem('uid')
+                var userUniqueId = this.$store.state.userUniqueId || localStorage.getItem('userUniqueId')
                 console.log("uid===" + uid)
                 _this.isWeChatFun()
                 _this.getLoginType()
@@ -206,7 +207,7 @@
                     this.loginPwdFun()
                 }else{                      //验证码登录
                     if(_this.isWeChat){
-                        if(uid){
+                        if(userUniqueId || uid){
                             console.log("存在uid,微信中登录！")
                             _this.loginInWechat()
                         }else{
@@ -326,14 +327,15 @@
                 console.log("微信里&验证码登录")
                 var _this = this
                 var uid = _this.$store.state.uid || localStorage.getItem('uid')
+                var userUniqueId = _this.$store.state.userUniqueId || localStorage.getItem('userUniqueId')
 
                 if(_this.rightPhone && _this.rightCode){  //手机号正确 验证码正确
                     _this.loginTxt = "登录中..."
                     var _checkCodeUrl = '/daydaycook/server/user/validateCode.do?userName=' + _this.phoneVal + '&code=' + _this.codeVal
 
-                    var _checkPhone = '/daydaycook/server/user/checkUserByPhone.do?phone=' + _this.phoneVal + '&uid=' + uid;
+                    var _checkPhone = '/daydaycook/server/user/checkUserByPhone.do?phone=' + _this.phoneVal + '&uid=' + uid + '&userUniqueId=' + userUniqueId;
 
-                    var _bindUrl = '/daydaycook/server/user/registeredByPhone.do?uid=' + uid + '&userName=' + _this.phoneVal + '&password=&type=' + _this.loginType
+                    var _bindUrl = '/daydaycook/server/user/registeredByPhone.do?uid=' + uid + '&userUniqueId=' + userUniqueId + '&userName=' + _this.phoneVal + '&password=&type=' + _this.loginType
 
                     this.ajaxDataFun('post', _checkCodeUrl, function(obj){
                         if(obj.code == '200'){
@@ -422,6 +424,9 @@
                 this.$store.state.uid = data.id
                 localStorage.setItem('uid', data.id)
 
+                this.$store.state.userUniqueId = data.userUniqueId
+                localStorage.setItem('userUniqueId', data.userUniqueId)
+
                 this.$store.state.avar = data.image
                 localStorage.setItem('avar', data.image)
 
@@ -440,9 +445,9 @@
                 localStorage.setItem('isLogin', true)
 
                 this.clearCountF()
-                this.isMemberFun(data.id)
+                this.isMemberFun(data.userUniqueId, data.id)
 
-                this.getScore(data.id)
+                this.getScore(data.userUniqueId, data.id)
 
                 this.reSend = false  //重置重新发送
                 this.setPwd = false
@@ -473,9 +478,9 @@
                     }
                 }
             },
-            isMemberFun:function(id){
+            isMemberFun:function(userUniqueId, id){
                 var _this = this
-                var _isMenberUrl = '/daydaycook/server/offline/reservationUser/isBuyCourse.do?uid=' + id
+                var _isMenberUrl = '/daydaycook/server/offline/reservationUser/isBuyCourse.do?userUniqueId=' + userUniqueId + '&uid=' + id
                 this.ajaxDataFun('post',_isMenberUrl,function(obj){
                     if(obj.code == '200'){
                         _this.$store.state.isMember = obj.data

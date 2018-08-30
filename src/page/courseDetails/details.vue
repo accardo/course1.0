@@ -108,6 +108,7 @@
                 pageTitle: '预约课程',
                 id: '',
                 uid: '',
+                userUniqueId: '',
                 phone: '',
                 phoneBack: '',
                 isMember: '',
@@ -143,6 +144,7 @@
         methods: {
             initDate:function(){
                 this.uid = this.$store.state.uid || localStorage.getItem('uid')
+                this.userUniqueId = this.$store.state.userUniqueId || localStorage.getItem('userUniqueId')
                 this.phone = localStorage.getItem('phone') || localStorage.getItem('phoneBack') || this.$store.state.phone
                 this.isMember = localStorage.getItem('isMember');
                 this.contractId = localStorage.getItem('contractId');
@@ -210,7 +212,7 @@
             },
             onRecommend:function(){
                 this.recommendTxt = '预约中...'
-                var _RUrl = `/daydaycook/server/offline/reservationUser/save.do?offlineCourseId=${this.$route.query.courseId}&mobile=${this.phone}&uid=${this.uid}&contractId=${this.contractId}`;
+                var _RUrl = `/daydaycook/server/offline/reservationUser/save.do?offlineCourseId=${this.$route.query.courseId}&mobile=${this.phone}&uid=${this.uid}&userUniqueId=${userUniqueId}&contractId=${this.contractId}`;
                 console.log(_RUrl, '立即预约')
                 this.ajaxDataFun('post', _RUrl, (obj) => {
                     this.recommendTxt = '确定'
@@ -235,7 +237,7 @@
             },
             cancelRdF(){
                 this.cancelTxt = '取消中...'
-                var _canlUrl = `/daydaycook/server/offline/reservationUser/cancel.do?id=${this.$route.query.resId}&offlineCourseId=${this.$route.query.courseId}&mobile=${this.phone}&uid=${this.uid}`;
+                var _canlUrl = `/daydaycook/server/offline/reservationUser/cancel.do?id=${this.$route.query.resId}&offlineCourseId=${this.$route.query.courseId}&mobile=${this.phone}&uid=${this.uid}&userUniqueId=${this.userUniqueId}`;
                 console.log(_canlUrl);
                 this.ajaxDataFun('post', _canlUrl, (obj) => {
                     if(obj.code == '200'){

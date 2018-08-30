@@ -130,6 +130,7 @@
                     phone: localStorage.getItem('phone') !== null ?  localStorage.getItem('phone') : '', // 电话
                     addressId: localStorage.getItem('addressId') !== null ?  localStorage.getItem('addressId') : '', // 门店地址
                     contractId: localStorage.getItem('contractId') !== null ?  localStorage.getItem('contractId') : '', // 套餐 id
+                    userUniqueId:  localStorage.getItem('userUniqueId') !== null ?  localStorage.getItem('userUniqueId') : '', // 套餐id 编码
                     filterSubData: {
                         categoryId: [], // 分类id
                         teacherId: [], // 老师id
@@ -171,7 +172,7 @@
              * Date: 2018/8/13
              */
             memberClass() {
-                let _cateUrl = `/daydaycook/server/offline/webcourse/filterList.do?userId=${this.getData.uid}&addressId=${this.getData.addressId}`
+                let _cateUrl = `/daydaycook/server/offline/webcourse/filterList.do?uid=${this.getData.uid}&userUniqueId=${this.getData.userUniqueId}&addressId=${this.getData.addressId}`
                 logic.ajaxGetData(_cateUrl).then(({data}) => {
                     data.selectList.forEach((item) => {
                         item.pick = 2
@@ -197,6 +198,7 @@
                     addressId: id,
                     uid: this.getData.uid,
                     contractId: this.getData.contractId,
+                    userUniqueId: this.getData.userUniqueId,
                     filterSubData: {
                         categoryId: [],
                         teacherId: [],
@@ -215,6 +217,7 @@
                     })
                 })
                 console.log(this.getData, '父层')
+                this.memberClass();
                 this.tipShow();
             },
             chooseFun:function(){
@@ -226,7 +229,7 @@
                 }
             },
             getAddList() {  //获取地址列表
-                var addUrl = `/daydaycook/server/offline/address/list.do?uid=${this.getData.uid}`;
+                var addUrl = `/daydaycook/server/offline/address/list.do?uid=${this.getData.uid}&userUniqueId=${this.getData.userUniqueId}`;
                 this.ajaxDataFun('post', addUrl, (res) => {
                     console.log(res, 'getAddList');
                     if(res.code == '200') {
@@ -374,13 +377,13 @@
                     this.getAddList()    //获取地址列表
                 }
             },
-            showChooseAdd:function(){
+          /*  showChooseAdd:function(){
                 if(this.showChooseAdd == true){
                     document.body.className = 'overflow'
                 }else{
                     document.body.className = ''
                 }
-            },
+            },*/
         }
     }
 </script>

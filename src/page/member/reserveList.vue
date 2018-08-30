@@ -52,6 +52,7 @@
                 uid: '',
                 phone: '',
                 bookList: '',
+                userUniqueId: '',
             }
         },
         created () {
@@ -64,10 +65,11 @@
             initUserInfo() {
                 this.uid = this.$store.state.uid || localStorage.getItem('uid');
                 this.phone = this.$store.state.phone || localStorage.getItem('phone');
+                this.userUniqueId = this.$store.state.userUniqueId || localStorage.getItem('userUniqueId');
                 this.getNumList()
             },
             getNumList() {
-                var numUrl = `/daydaycook/server/contract/queryAllCourseCountByUser.do?uid=${this.uid}&mobile=${this.phone}`;
+                var numUrl = `/daydaycook/server/contract/queryAllCourseCountByUser.do?uid=${this.uid}&userUniqueId=${this.userUniqueId}&mobile=${this.phone}`;
                 this.ajaxDataFun('post', numUrl, (obj) => {
                     if(obj.code == '200'){
                         console.log(obj.data)

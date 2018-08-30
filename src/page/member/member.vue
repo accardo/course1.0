@@ -15,7 +15,7 @@
                     </div>
                 </div>
            </div>
-           <div class="login-out" @click="loginOutShow = true">登出</div>
+           <div class="login-out" v-if="!isApp" @click="loginOutShow = true">登出</div>
        </div>
        <div class="swiper-box">
            <swiper-banner v-if="isshwoSwiper" :swipelist="swipelist" :param="bannerParam"></swiper-banner>
@@ -50,15 +50,17 @@
         data () {
             return {
                 pageTitle: '个人中心',
-                uid: localStorage.getItem('uid'),
+                uid: this.$store.state.uid || localStorage.getItem('uid'),
+                userUniqueId: this.$store.state.userUniqueId || localStorage.getItem('userUniqueId'),
                 avar: '',
-                phone: localStorage.getItem('phone'),
-                nickName: localStorage.getItem('nickName'),
-                lineUserName: localStorage.getItem('lineUserName'),
+                phone: this.$store.state.phone || localStorage.getItem('phone'),
+                nickName: this.$store.state.nickName || localStorage.getItem('nickName'),
+                lineUserName: this.$store.state.lineUserName || localStorage.getItem('lineUserName'),
                 unreadCount: '',
                 currentPage: 1,
                 isHaveContract: '',
                 loginOutShow: false,
+                isApp: localStorage.getItem('isApp') || false,
                 endListen: false,
                 position:2,
                 contractEndTime: '', // 到期日期
@@ -133,7 +135,7 @@
             * Date: 2018/8/22
             */
             getContPackage() {
-                let packageUrl = `/daydaycook/server/newCourse/getContractPackageInfoByUid.do?uid=${this.uid}`;
+                let packageUrl = `/daydaycook/server/newCourse/getContractPackageInfoByUid.do?uid=${this.uid}&${this.userUniqueId}`;
                 console.log(packageUrl)
                 this.ajaxDataFun('post', packageUrl, (obj) => {
                     if(obj.code==200){

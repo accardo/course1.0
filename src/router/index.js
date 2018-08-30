@@ -13,7 +13,7 @@ const notice = r => require.ensure([], () => r(require('../page/member/notice'))
 
 const notMember = r => require.ensure([], () => r(require('../page/member/notMember')), 'notMember')
 
-const entrance = r => require.ensure([], () => r(require('../page/member/entrance')), 'entrance')
+const entrance = r => require.ensure([], () => r(require('../page/home/entrance')), 'entrance')
 const AMap = r => require.ensure([], () => r(require('../page/map/AMap')), 'AMap')
 const expShop = r => require.ensure([], () => r(require('../page/member/expShop')), 'expShop')
 
@@ -52,7 +52,7 @@ export default new Router({
             name: 'notMember',
             component: notMember,
 	        meta: {
-		        requireAuth: false,
+		        requireAuth: true,
 	        },
         },
         {

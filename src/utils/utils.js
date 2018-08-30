@@ -111,8 +111,10 @@ export function formatTimeArray(temp){
 
 // 获取用户session
 export function getSessionId() {
+
 	return new Promise((resolve,reject) => {
 		if(sessionId_app) resolve(sessionId_app)
+		console.log(sessionId_app, 'sessionId_app')
 		let num = 0;
 		let timer = setInterval(() => {
 			num++
@@ -126,10 +128,11 @@ export function getSessionId() {
 					setTimeout(() => {
 						if(userInfo_app && userInfo_app.appVersion){
 							clearInterval(timer);
+							console.log(userInfo_app,'userInfo_app')
 							localStorage.setItem('uid',userInfo_app.uid);
 							if(userInfo_app.uid){
 								sessionId_app = userInfo_app.uid;
-								resolve(userInfo_app.uid)
+								resolve(userInfo_app)
 							}else{
 								reject('')
 							}
@@ -143,57 +146,89 @@ export function getSessionId() {
 		},50)
 	})
 }
-
-
 export function navTo({
    title = '线下课程',
    pathname = window.location.pathname,
    router = null,
    query = null,
+   url = null,
    fullScreen = false,
    that = null,
    replace = false
 }) {
-	// pathname begin with '/' and end without '?'
-	pathname = /^\//.test(pathname) ? pathname.replace(/\?*$/, '') : `/${pathname.replace(/\?*$/, '')}`
-	// combine query
-	let queryStr = query ? '?' : ''
-	for (let key in query) {
-		queryStr = (/\?$/).test(queryStr) ? `${queryStr}${key}=${query[key]}` : `${queryStr}&${key}=${query[key]}`
-	}
-	// combine url with origin pathname router & query
-	let url = `${window.location.origin}${pathname}`
-	if (router) {
-		url = `${url}#/${router}${queryStr}`
-	} else {
-		url = `${url}${queryStr}`
+	if (!url) {
+		// pathname begin with '/' and end without '?'
+		pathname = /^\//.test(pathname) ? pathname.replace(/\?*$/, '') : `/${pathname.replace(/\?*$/, '')}`
+		// combine query
+		let queryStr = query ? '?' : ''
+		for (let key in query) {
+			queryStr = (/\?$/).test(queryStr) ? `${queryStr}${key}=${query[key]}` : `${queryStr}&${key}=${query[key]}`
+		}
+		// combine url with origin pathname router & query
+		url = `${window.location.origin}${pathname}`
+		if (router) {
+			url = `${url}#/${router}${queryStr}`
+		} else {
+			url = `${url}${queryStr}`
+		}
 	}
 
-	if ('object' == typeof ddcApp) {
-		if (!(/\#\/index/.test(url))) {
-			let params = {title, url, fullScreen}
-			if (!replace) {
-				ddcApp.navigateTo(params)
+	checkDdcApp((res) => {
+		if (res) {
+			if (!(/\#\/index/.test(url))) {
+				let params = {title, url, fullScreen}
+				if (!replace) {
+					ddcApp.navigateTo(params)
+				} else {
+					ddcApp.redirectTo(params)
+				}
 			} else {
-				ddcApp.redirectTo(params)
+				ddcApp.goCategory()
 			}
 		} else {
-			ddcApp.goCategory();
+			if (that && router) {
+				let params = {
+					name: router,
+					query: query || {}
+				}
+				if (!replace) {
+					that.$router.push(params)
+				} else {
+					that.$router.replace(params)
+				}
+			} else {
+				window.location = url
+			}
 		}
+	})
+}
+
+export function checkDdcApp(cb) {
+	if (inApp()) {
+		let num = 0;
+		let timer = setInterval(() => {
+			num++
+			if (num > 60) {
+				clearInterval(timer) // stop interval and do nothing
+				console.log('check ddcApp fail')
+			} else {
+				if (typeof ddcApp == 'object' && Object.keys(ddcApp).length > 0){
+					'function' == typeof cb && cb(true)
+					clearInterval(timer)
+				}
+			}
+		}, 50)
 	} else {
-		if (that && router) {
-			let params = {
-				name: router,
-				query: query || {}
-			}
-			if (!replace) {
-				that.$router.push(params)
-			} else {
-				that.$router.replace(params)
-			}
-		} else {
-			window.location = url
-		}
+		'function' == typeof cb && cb(false)
+	}
+}
+
+export function inApp () {
+	let userAgent = navigator.userAgent
+	if (/daydaycook/.test(userAgent)) {
+		return true
+	} else {
+		return false
 	}
 }
 
@@ -219,6 +254,8 @@ export default {
 	formatTimeArray,
 	getSessionId,
 	navTo,
-	closeLoading
+	closeLoading,
+	checkDdcApp,
+	inApp
 };
 

@@ -8,6 +8,7 @@ const state = {
     loadingTxt: '加载中...',
     isShowLogin: false,
 	isLogin: false,
+	userUniqueId: '',
     uid: '',
     avar: '',
     nickName: '',

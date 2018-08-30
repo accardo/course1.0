@@ -42,7 +42,7 @@
             jumpDetail(courseId, state, resId){
                 let params = {
                     that: this,
-                    router: this.listType == 1 ? 'index' : 'details',
+                    router: this.listType == 1 ? 'entrance' : 'details',
                     title:  this.listType == 1 ? '线下课程' : '店铺详情',
                 }
                 this.listType == 2 ? params.query = { courseId, state, resId} : ''
@@ -84,7 +84,7 @@
                 var h = v.getHours()
                 var mn = v.getMinutes()
                 return setv(h) + ':' + setv(mn)
-            }
+            },
         }
     }
 </script>

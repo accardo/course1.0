@@ -14,7 +14,7 @@
                    <!-- <div class="not"> 您尚未购买课程，暂无约课权限</div>-->
                 </div>
             </div>
-            <div class="login-out"  @click="loginOutShow = true">登出</div>
+            <div class="login-out"  v-if="!isApp" @click="loginOutShow = true">登出</div>
         </div>
         <div class="notMemner" v-html="notMemberData"></div>
         <login-out :login-out-show.sync="loginOutShow" v-if="loginOutShow"></login-out>
@@ -38,6 +38,7 @@
                 position: 2,
                 notMemberData: '',
                 loginOutShow: false,
+                isApp: localStorage.getItem('isApp') || false,
             }
         },
         mounted () {

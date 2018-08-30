@@ -67,9 +67,10 @@
                 localStorage.removeItem('addressTxt')
                 localStorage.removeItem('contractId')
                 localStorage.removeItem('uid')
+                localStorage.removeItem('userUniqueId')
                 let params = {
                     that:this,
-                    router: 'entrance',
+                    router: 'index',
                     title: '线下课程',
                 }
                 util.navTo(params);

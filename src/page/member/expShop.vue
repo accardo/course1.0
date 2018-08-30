@@ -93,44 +93,36 @@
                 let self = this;
                 let xxkc_gps = sessionStorage.getItem('xxkc_gps');
                 let mapUrl = `https://uri.amap.com/navigation?from=${xxkc_gps}&to=${self.shopInfo.gps},${self.shopInfo.name},&mode=car&src=DDC LIFE&callnative=1`
-                if(typeof ddcApp == 'object' && shopGps.length){
-                    // 调用地图导航API
-                    ddcApp.navMap({
-                        latitude : self.shopInfo.gps.split(',')[0],
-                        longitude: self.shopInfo.gps.split(',')[1],
-                        title : self.shopInfo.name,
-                        subTitle : self.shopInfo.address
-                    })
-                } else {
-                    // 调启高德App导航
-                    window.open(mapUrl)
-                }
 
-      /*          let self = this;
-                if(this.shopInfo){
-                    let params = {
-                        _this:this,
-                        url:'AMap',
-                        pageTitle:'地图',
-                        query:{
-                            address:this.shopInfo.address,
-                            gps:this.shopInfo.gps,
-                            name:this.shopInfo.name
-                        }
+                util.checkDdcApp((isApp)=> {
+                    if (isApp) {
+                       console.log(self.shopInfo.gps, self.shopInfo.name, self.shopInfo.address, '进入app1');
+                      // return false;
+                        // 调用地图导航API
+                        ddcApp.navMap({
+                            latitude : self.shopInfo.gps.split(',')[1],
+                            longitude: self.shopInfo.gps.split(',')[0],
+                            title : self.shopInfo.name,
+                            subTitle : self.shopInfo.address
+                        })
+
+                    } else {
+                        // 调启高德App导航
+                        window.open(mapUrl)
                     }
-                    util.jumpUrlByIsApp(params);
-                }*/
+                })
             },
 
             /* 查看课程*/
             lookcourse(){
                 let params = {
-                    that:this,
-                    url:'index',
-                    title:'课程列表',
-                    query:{shopid:this.shopid}
+                    that: this,
+                    router: 'entrance',
+                    title: '课程列表',
+                    query: {shopid:this.shopid}
                 }
-                localStorage.setItem('addressId', this.shopid)
+                localStorage.setItem(
+                    'addressId', this.shopid)
                 localStorage.setItem('addressTxt', this.shopInfo.name);
                 util.navTo(params);
             },

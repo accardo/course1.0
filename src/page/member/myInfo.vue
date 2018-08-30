@@ -46,8 +46,9 @@
         methods: {
             initUserInfo:function(){
                 let uid = this.$store.state.uid || localStorage.getItem('uid')
+                let userUniqueId = this.$store.state.uid || localStorage.getItem('userUniqueId')
                 var _this = this
-                var _infoUrl = '/daydaycook/server/contract/userInfo.do?uid=' + uid
+                var _infoUrl = `/daydaycook/server/contract/userInfo.do?uid=${uid}&userUniqueId=${userUniqueId}`;
 
                 this.ajaxDataFun('post', _infoUrl, function(obj){
                     if(obj.code == '200'){

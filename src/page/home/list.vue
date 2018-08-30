@@ -3,7 +3,7 @@
          <div id="dataList">
             <div class="courseItem" v-for="item in listData">
                 <div class="list-img" @click="details(item.courseId, item.reservationState, item.resId)">
-                    <img :src="item.imageUrl" alt="">
+                    <img :src="item.imageUrl + '?x-oss-process=image/resize,w_640'" alt="">
                     <div class="tip">
                         <span>{{ item.cateAttr }}</span>
                     </div>
@@ -102,7 +102,7 @@
         },
         methods: {
             upCallback(page) {
-                let _listUrl = `/daydaycook/server/offline/reservationUser/offlineCourseList.do?timeScope=${this.getData.filterSubData.timeScope}&reservationType=${this.getData.filterSubData.reservationType || 0}&categoryId=${this.getData.filterSubData.categoryId}&mobile=${this.getData.phone}&uid=${this.getData.uid}&addressId=${this.getData.addressId}&contractId=${this.getData.contractId}&teacherId=${this.getData.filterSubData.teacherId}&pageSize=${page.size = 7}&currentPage=${page.num}`;
+                let _listUrl = `/daydaycook/server/offline/reservationUser/offlineCourseList.do?timeScope=${this.getData.filterSubData.timeScope}&reservationType=${this.getData.filterSubData.reservationType || 0}&categoryId=${this.getData.filterSubData.categoryId}&mobile=${this.getData.phone}&uid=${this.getData.uid}&userUniqueId=${this.getData.userUniqueId}&addressId=${this.getData.addressId}&contractId=${this.getData.contractId}&teacherId=${this.getData.filterSubData.teacherId}&pageSize=${page.size = 7}&currentPage=${page.num}`;
                 console.log(_listUrl, '子层')
                 this.ajaxDataFun('post', _listUrl, (res) => {
                     if(res.code == '200') {
