@@ -92,9 +92,11 @@
             goMap(){
                 let self = this;
                 let xxkc_gps = sessionStorage.getItem('xxkc_gps');
-                let mapUrl = `https://uri.amap.com/navigation?from=${xxkc_gps}&to=${self.shopInfo.gps},${self.shopInfo.name},&mode=car&src=DDC LIFE&callnative=1`
-
-                util.checkDdcApp((isApp)=> {
+                let mapUrl = `https://uri.amap.com/navigation?from=${xxkc_gps},我的位置,&via=${self.shopInfo.gps},${self.shopInfo.name},&mode=car&src=DDC LIFE&callnative=1`
+                if (typeof ddcApp !== 'object') {
+                    window.open(mapUrl)
+                }
+                /*util.checkDdcApp((isApp)=> {
                     if (isApp) {
                        console.log(self.shopInfo.gps, self.shopInfo.name, self.shopInfo.address, '进入app1');
                       // return false;
@@ -110,7 +112,7 @@
                         // 调启高德App导航
                         window.open(mapUrl)
                     }
-                })
+                })*/
             },
 
             /* 查看课程*/

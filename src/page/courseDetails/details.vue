@@ -212,7 +212,7 @@
             },
             onRecommend:function(){
                 this.recommendTxt = '预约中...'
-                var _RUrl = `/daydaycook/server/offline/reservationUser/save.do?offlineCourseId=${this.$route.query.courseId}&mobile=${this.phone}&uid=${this.uid}&userUniqueId=${userUniqueId}&contractId=${this.contractId}`;
+                var _RUrl = `/daydaycook/server/offline/reservationUser/save.do?offlineCourseId=${this.$route.query.courseId}&mobile=${this.phone}&uid=${this.uid}&userUniqueId=${this.userUniqueId}&contractId=${this.contractId}`;
                 console.log(_RUrl, '立即预约')
                 this.ajaxDataFun('post', _RUrl, (obj) => {
                     this.recommendTxt = '确定'

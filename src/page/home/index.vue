@@ -254,6 +254,7 @@
                         zoomToAccuracy: true,      //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
                         buttonPosition:'RB'
                     });
+
                     map.addControl(geolocation);
                     geolocation.getCurrentPosition();
                     //返回定位信息
@@ -268,6 +269,7 @@
                         }
                     });
                     AMap.event.addListener(geolocation, 'error', function(){
+                        console.log(2)
                         self.showAll = true;
                         self.getCourseList();
                         self.getShopInfoByUid();
