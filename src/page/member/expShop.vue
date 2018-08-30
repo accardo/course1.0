@@ -52,6 +52,8 @@
                 },
                 shopInfo:[],        //获取到的 店铺信息
                 swipeList: [],
+                uid: localStorage.getItem('uid') || this.$store.state.uid,
+                userUniqueId: localStorage.getItem('userUniqueId') || this.$store.state.userUniqueId,
             }
         },
         created(){
@@ -66,7 +68,7 @@
             /* 初始化 */
             init(){
                 let self = this;
-                let _listUrl = '/daydaycook/server/newCourse/getAddressInfoByAid.do?aid='+this.shopid;
+                let _listUrl = '/daydaycook/server/newCourse/getAddressInfoByAid.do?uid='+ self.uid +'&userUniqueId' +self.userUniqueId+ '&aid='+this.shopid;
                 this.ajaxDataFun('get',_listUrl, function(res){
                     if(res.code =='200' && res.list){
                         self.shopInfo = res.list[0];
@@ -92,7 +94,8 @@
             goMap(){
                 let self = this;
                 let xxkc_gps = sessionStorage.getItem('xxkc_gps');
-                let mapUrl = `https://uri.amap.com/navigation?from=${xxkc_gps},我的位置,&via=${self.shopInfo.gps},${self.shopInfo.name},&mode=car&src=DDC LIFE&callnative=1`
+                let userCurrentddress = localStorage.getItem('userCurrentAddress') || '我的位置';
+                let mapUrl = `https://uri.amap.com/navigation?from=${xxkc_gps},${userCurrentddress},&to=${self.shopInfo.gps},${self.shopInfo.name},&mode=car&src=DDC LIFE&callnative=1`
                 if (typeof ddcApp !== 'object') {
                     window.open(mapUrl)
                 }

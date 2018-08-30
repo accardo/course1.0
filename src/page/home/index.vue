@@ -158,6 +158,7 @@
                 ],
                 listType: 1, //
                 sellingCourseType:0,   // 购买课程类型:1:按分类购买 2:按次数购买 3:按时效购买
+                userCurrentAddress:'',      //用户当前地址信息
             }
         },
         beforeCreate() {
@@ -209,6 +210,8 @@
                             // 如果用户已登录    获取用户信息
                             self.getUserByUid(self.userUniqueId, self.uid);
                             self.getLastCourseByuid();
+                        }else{
+                            self.isShowLogin =!self.userLogin;// 如果用户未登录 强制登录
                         }
                     }
                 })
@@ -254,22 +257,37 @@
                         zoomToAccuracy: true,      //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
                         buttonPosition:'RB'
                     });
-
                     map.addControl(geolocation);
                     geolocation.getCurrentPosition();
+                    localStorage.removeItem('userCurrentAddress');
                     //返回定位信息
                     AMap.event.addListener(geolocation, 'complete', function(data){
                         self.showAll = true;
                         if(data.position){
                             self.positionX = data.position.P;
                             self.positionY = data.position.O;
+                            //加载地理编码插件
+                            let lnglatXY = new AMap.LngLat(self.positionX,self.positionY);
+                            map.plugin(["AMap.Geocoder"], function() {      
+                            let MGeocoder = new AMap.Geocoder({
+                                    radius: 1000,
+                                    extensions: "all"
+                                });
+                                //返回地理编码结果
+                                AMap.event.addListener(MGeocoder, "complete", function(data){
+                                    self.userCurrentAddress = data.regeocode.formattedAddress;
+                                    localStorage.setItem('userCurrentAddress', self.userCurrentAddress);
+                                });
+                                //逆地理编码
+                                MGeocoder.getAddress(lnglatXY);
+                            });
                             sessionStorage.setItem('xxkc_gps',`${data.position.P},${data.position.O}`)
                             self.getCourseList();
                             self.getShopInfoByUid();
                         }
                     });
+                     
                     AMap.event.addListener(geolocation, 'error', function(){
-                        console.log(2)
                         self.showAll = true;
                         self.getCourseList();
                         self.getShopInfoByUid();

@@ -52,8 +52,8 @@
                 </div>
             </div>
         </div>
-       <listLay :get-data="getData" :is-refresh.sync="isRefresh" v-on:scroll-y="scrollY" ref="listRefresh"></listLay>
-        <div class="popNotWrap big">
+       <listLay v-if="isShowNoImg"  @isshowfun="isshowfun" :get-data="getData" :is-refresh.sync="isRefresh" v-on:scroll-y="scrollY" ref="listRefresh"></listLay>
+        <div  class="popNotWrap-img big" :class='{"popnotimg":isShowNoImg}'>
             <img :src="imgIcon.img_1" alt="" />
             <p>咦!?找不到哎!</p>
         </div>
@@ -138,10 +138,11 @@
                         timeScope: '', // 时间
                     },
                 },
+                isShowNoImg:true,  //筛选后是否显示  没有数据图片
                 imgIcon: {
                     img_1: './static/img/not_1.png',
                     img_2: './static/img/tc_icon_mendian.png',
-                }
+                },
             }
         },
         mounted (){
@@ -216,7 +217,6 @@
                         this.$set(itemA, 'isActive', false)
                     })
                 })
-                console.log(this.getData, '父层')
                 this.memberClass();
                 this.tipShow();
             },
@@ -231,11 +231,15 @@
             getAddList() {  //获取地址列表
                 var addUrl = `/daydaycook/server/offline/address/list.do?uid=${this.getData.uid}&userUniqueId=${this.getData.userUniqueId}`;
                 this.ajaxDataFun('post', addUrl, (res) => {
-                    console.log(res, 'getAddList');
                     if(res.code == '200') {
                         this.addListDate = res.data;
                     }
                 })
+            },
+
+            /* 是否获取到数据 */
+            isshowfun(res){
+                this.isShowNoImg = res;
             },
             /*
              * Description: 单选套餐
@@ -257,7 +261,6 @@
              */
             tipShow() {
                 let tip = localStorage.getItem('tip');
-                console.log(tip, '1')
                 if (!tip) {
                     this.tip = true
                     setTimeout(()=> {
@@ -329,6 +332,7 @@
              * Date: 2018/8/15
              */
             filterSub() {
+                this.isShowNoImg = true;
                 this.isRefresh = true
                 this.pfShow.package = false
                 this.pfShow.filter = false
@@ -634,5 +638,34 @@
         background-image: linear-gradient(45deg, #393939 0%, #2F2F2F 100%);
         box-shadow: 0 2px 8px 0 rgba(0,0,0,0.20);
         color: #fff;
+    }
+
+    /* 筛选后 无数据 */
+    .popNotWrap-img {
+        position: fixed;
+        height: 100%;
+        background-color: #fff;
+        padding-bottom: 100px;
+        text-align: center;
+    }
+    .popNotWrap-img.popnotimg{
+        display: none;
+    }
+    .popNotWrap-img.big {
+        padding-top: 24%
+    }
+
+    .popNotWrap-img.moreBig {
+        padding-top: 43%
+    }
+
+    .popNotWrap-img img {
+        width: 42.6666666667%
+    }
+
+    .popNotWrap-img p {
+        font-size: 12px;
+        color: #9B9B9B;
+        margin-top: 3px
     }
 </style>

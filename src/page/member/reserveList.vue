@@ -72,7 +72,6 @@
                 var numUrl = `/daydaycook/server/contract/queryAllCourseCountByUser.do?uid=${this.uid}&userUniqueId=${this.userUniqueId}&mobile=${this.phone}`;
                 this.ajaxDataFun('post', numUrl, (obj) => {
                     if(obj.code == '200'){
-                        console.log(obj.data)
                         this.bookList = obj.data
                     }
                 })
@@ -85,7 +84,7 @@
                         contractId: cId,
                         sellingCourseTypeId: sId,
                         from: 1,
-                    }
+                    },
                     title: '我的约课明细',
                 }
                 util.navTo(params);

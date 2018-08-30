@@ -136,7 +136,6 @@
             */
             getContPackage() {
                 let packageUrl = `/daydaycook/server/newCourse/getContractPackageInfoByUid.do?uid=${this.uid}&userUniqueId=${this.userUniqueId}`;
-                console.log(packageUrl)
                 this.ajaxDataFun('post', packageUrl, (obj) => {
                     if(obj.code==200){
                         this.swipelist = obj.list;

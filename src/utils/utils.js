@@ -174,6 +174,8 @@ export function navTo({
 	}
 
 	checkDdcApp((res) => {
+		console.log('是否app内跳转')
+		console.log(res);
 		if (res) {
 			if (!(/\#\/index/.test(url))) {
 				let params = {title, url, fullScreen}

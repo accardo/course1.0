@@ -106,12 +106,18 @@
                 console.log(_listUrl, '子层')
                 this.ajaxDataFun('post', _listUrl, (res) => {
                     if(res.code == '200') {
-                        if (page.num == 1) this.listData = [];
-                        this.listData = this.listData.concat(res.data);
-                        this.$emit('update:isRefresh', false);
-                        this.$nextTick(() => {
-                            this.mescroll.endSuccess(res.data.length);
-                        })
+                        if(res.data && res.data.length >0){
+                            if (page.num == 1) this.listData = [];
+                            this.listData = this.listData.concat(res.data);
+                            this.$emit('update:isRefresh', false);
+                            this.$nextTick(() => {
+                                this.mescroll.endSuccess(res.data.length);
+                            })
+                            this.$emit('isshowfun',true);
+                        }else{
+                            this.$emit('isshowfun',false);
+                            this.mescroll.endErr();
+                        }
                         console.log(res.data, 'upCallback');
                     } else if(res.code == '911') {
                         popMin.show("icon-yk_icon_warning",res.msg);
