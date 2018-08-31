@@ -249,7 +249,6 @@ export function closeLoading(){
 	},50)
 }
 
-
 export default {
 	isWeChatFun,
 	timeStamp,
@@ -258,6 +257,6 @@ export default {
 	navTo,
 	closeLoading,
 	checkDdcApp,
-	inApp
+	inApp,
 };
 

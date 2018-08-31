@@ -91,7 +91,9 @@
     import LoginLay from '@/components/login'
     import AMap from 'AMap'
     import classList from '@/components/classlist'
+    import WebStorageCache from 'web-storage-cache'
     import * as util from '@/utils/utils.js'
+    const wsCache = new WebStorageCache();
     export default {
         name:'entrance',
         data () {
@@ -168,8 +170,6 @@
             console.log(JSON.stringify(navigator.userAgent));
             console.log(typeof ddcApp)
             this.init()
-
-
         },
         methods:{
             /* 初始化 */
@@ -217,11 +217,14 @@
                 })
             },
             isGps() {
-                let positionInfo = sessionStorage.getItem('xxkc_gps');
+                let positionInfo = wsCache.get('xxkc_gps');
+               // console.log(JSON.parse(JSON.parse(positionInfo).v));
+                console.log(positionInfo);
+               // return false
                 if(positionInfo){
                     //如果存储的有 gps 地址
-                    this.positionX = positionInfo.split(',')[0];
-                    this.positionY = positionInfo.split(',')[1];
+                    this.positionX = positionInfo.x;
+                    this.positionY = positionInfo.y;
                     this.getCourseList();
                     this.getShopInfoByUid();
                 }else{
@@ -268,7 +271,7 @@
                             self.positionY = data.position.O;
                             //加载地理编码插件
                             let lnglatXY = new AMap.LngLat(self.positionX,self.positionY);
-                            map.plugin(["AMap.Geocoder"], function() {      
+                            map.plugin(["AMap.Geocoder"], function() {
                             let MGeocoder = new AMap.Geocoder({
                                     radius: 1000,
                                     extensions: "all"
@@ -281,12 +284,12 @@
                                 //逆地理编码
                                 MGeocoder.getAddress(lnglatXY);
                             });
-                            sessionStorage.setItem('xxkc_gps',`${data.position.P},${data.position.O}`)
+                            wsCache.set('xxkc_gps', {x: data.position.P, y: data.position.O}, {exp : 864000});
                             self.getCourseList();
                             self.getShopInfoByUid();
                         }
                     });
-                     
+
                     AMap.event.addListener(geolocation, 'error', function(){
                         self.showAll = true;
                         self.getCourseList();
@@ -313,7 +316,7 @@
                     if(obj.code == '200'){
                         let res = obj.userContract;
                         self.sellingCourseType  = obj.sellingCourseType;
-                        self.userInfo['userHeader'] = res.img ? res.img : './static/img/profile.png';
+                        self.userInfo['userHeader'] = res.img ? res.img : './static/img/pic_touxiang.png';
                         self.userInfo['lineUserName'] = res.lineUserName;
                         self.userInfo['nickName'] = res.nickName;
                         self.userInfo['buyCourseNum'] = obj.refundCount;

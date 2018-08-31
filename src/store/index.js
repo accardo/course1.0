@@ -29,6 +29,7 @@ const state = {
     validContractCount: '',
     indexPageY: 0,
     currentPage: 1,
+	selectList: [],
 }
 
 

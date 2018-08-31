@@ -6,6 +6,8 @@
 
 <script>
     import AMap from 'AMap';   //在页面中引入高德地图
+    import WebStorageCache from 'web-storage-cache'
+    const wsCache = new WebStorageCache();
 	export default {
         data () {
             return {
@@ -16,6 +18,7 @@
         },
         created(){
             let query = this.$router.history.current.query;
+            console.log(query)
             if(query){
                 this.gps = query.gps;
                 // 测试 地址定位
@@ -48,7 +51,12 @@
                 });
                 map.add(marker);
                 marker.on('click', function() {
-                    if(typeof ddcApp == 'object' && shopGps.length){
+                    let xxkc_gps = wsCache.get('xxkc_gps');
+                    let userCurrentddress = localStorage.getItem('userCurrentAddress') || '我的位置';
+                    let mapUrl = `https://uri.amap.com/navigation?from=${xxkc_gps},${userCurrentddress},&to=${self.gps},${self.name},&mode=car&src=DDC LIFE&callnative=1`
+                    // 调启高德App导航
+                    window.open(mapUrl)
+                   /* if(typeof ddcApp == 'object' && shopGps.length){
                         // 调用地图导航API
                         ddcApp.navMap({
                             latitude : shopGps[0],
@@ -59,7 +67,7 @@
                     } else {
                         // 调启高德App导航
 
-                    }
+                    }*/
                 });
             },
         }

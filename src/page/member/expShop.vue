@@ -31,6 +31,10 @@
             <button class="exp-shop-button" @click="lookcourse" type="button">查看课程</button>
         </div>
         <dia-iphone :phone-array="shopInfo.phone" :is-iphone.sync="isIphone" v-if="isIphone"></dia-iphone>
+        <!--<div id="loading" v-show="!showAll">
+            <img src="../../assets/img/profile.png" alt="loading">
+            <span>数据加载中...</span>
+        </div>-->
     </div>
 </template>
 
@@ -38,6 +42,7 @@
     import swiperBanner from '@/components/swiper'
     import diaIphone from '@/components/diaIphone'
     import * as util from '@/utils/utils.js'
+    import AMap from 'AMap'
     export default {
 		data() {
 		    return {
@@ -50,6 +55,7 @@
                     delay:5000,
                     switchOpen: 1,
                 },
+               // showAll:false,
                 shopInfo:[],        //获取到的 店铺信息
                 swipeList: [],
                 uid: localStorage.getItem('uid') || this.$store.state.uid,
@@ -93,13 +99,7 @@
             /* 跳转到 地图 */
             goMap(){
                 let self = this;
-                let xxkc_gps = sessionStorage.getItem('xxkc_gps');
-                let userCurrentddress = localStorage.getItem('userCurrentAddress') || '我的位置';
-                let mapUrl = `https://uri.amap.com/navigation?from=${xxkc_gps},${userCurrentddress},&to=${self.shopInfo.gps},${self.shopInfo.name},&mode=car&src=DDC LIFE&callnative=1`
-                if (typeof ddcApp !== 'object') {
-                    window.open(mapUrl)
-                }
-                /*util.checkDdcApp((isApp)=> {
+                util.checkDdcApp((isApp)=> {
                     if (isApp) {
                        console.log(self.shopInfo.gps, self.shopInfo.name, self.shopInfo.address, '进入app1');
                       // return false;
@@ -112,10 +112,19 @@
                         })
 
                     } else {
-                        // 调启高德App导航
-                        window.open(mapUrl)
+                        let params = {
+                            that: self,
+                            router: 'AMap',
+                            title: '地图导航',
+                            query: {
+                                address: self.shopInfo.address,
+                                gps: self.shopInfo.gps,
+                                name: self.shopInfo.name
+                            }
+                        }
+                        util.navTo(params);
                     }
-                })*/
+                })
             },
 
             /* 查看课程*/
@@ -126,8 +135,7 @@
                     title: '课程列表',
                     query: {shopid:this.shopid}
                 }
-                localStorage.setItem(
-                    'addressId', this.shopid)
+                localStorage.setItem('addressId', this.shopid)
                 localStorage.setItem('addressTxt', this.shopInfo.name);
                 util.navTo(params);
             },

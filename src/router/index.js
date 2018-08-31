@@ -37,7 +37,7 @@ export default new Router({
         {
             path: '/details',
             name: 'details',
-            component: details
+            component: details,
         },
         {
             path: '/member',
@@ -91,7 +91,7 @@ export default new Router({
             path: '/entrance',
             name: 'entrance',
             meta: {
-               requireAuth: false,
+               requireAuth: true,
             },
             component: entrance
         },
@@ -99,7 +99,7 @@ export default new Router({
             path: '/AMap',
             name: 'AMap',
             meta: {
-               requireAuth: false,
+               requireAuth: true,
             },
             component: AMap
         },

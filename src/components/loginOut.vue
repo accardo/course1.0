@@ -46,7 +46,6 @@
                 localStorage.removeItem('avar')
                 localStorage.removeItem('phone')
                 localStorage.removeItem('addressId')
-                localStorage.removeItem('addressTxt')
                 localStorage.removeItem('categoryId')
                 localStorage.removeItem('categoryName')
                 localStorage.removeItem('courseStatus')
@@ -63,11 +62,14 @@
                 localStorage.removeItem('teacherId')
                 localStorage.removeItem('teacherName')
                 localStorage.removeItem('tip')
-                localStorage.removeItem('addressId')
                 localStorage.removeItem('addressTxt')
                 localStorage.removeItem('contractId')
                 localStorage.removeItem('uid')
                 localStorage.removeItem('userUniqueId')
+                localStorage.removeItem('packageText')
+                localStorage.removeItem('listIndex')
+                localStorage.removeItem('userCurrentAddress')
+                localStorage.removeItem('xxkc_gps')
                 let params = {
                     that:this,
                     router: 'index',

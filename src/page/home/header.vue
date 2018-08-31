@@ -45,15 +45,15 @@
                             <button @click="() => {foldIs = !foldIs}">{{foldIs ? '收起' : '展开'}}</button>
                         </div>
                     </dl>
-                    <div class="fication-button">
-                        <span @click="filterClear">重置</span>
-                        <span @click="filterSub">确定</span>
-                    </div>
+                </div>
+                <div class="fication-button" v-show="pfShow.filter">
+                    <span @click="filterClear">重置</span>
+                    <span @click="filterSub">确定</span>
                 </div>
             </div>
         </div>
-       <listLay v-if="isShowNoImg"  @isshowfun="isshowfun" :get-data="getData" :is-refresh.sync="isRefresh" v-on:scroll-y="scrollY" ref="listRefresh"></listLay>
-        <div  class="popNotWrap-img big" :class='{"popnotimg":isShowNoImg}'>
+       <listLay :get-data="getData" :is-refresh.sync="isRefresh" v-on:scroll-y="scrollY" ref="listRefresh"></listLay>
+        <div  class="popNotWrap big">
             <img :src="imgIcon.img_1" alt="" />
             <p>咦!?找不到哎!</p>
         </div>
@@ -118,12 +118,14 @@
                     filter: false
                 },
                 // 假数据
-                listIndex: '',
+                listIndex: 0,
                 packageText: '',
                 tip: false,
                // listFilter: [],
                 foldIs: false,
-                listFilter: {},
+                listFilter: {
+                    selectList: []
+                },
                 isRefresh: false, // 当筛选的时候是否执行子组件重新加载
                 getData: { // 需要传的参数
                     uid: localStorage.getItem('uid') !== null ?  localStorage.getItem('uid') : '', // 用户id
@@ -138,7 +140,6 @@
                         timeScope: '', // 时间
                     },
                 },
-                isShowNoImg:true,  //筛选后是否显示  没有数据图片
                 imgIcon: {
                     img_1: './static/img/not_1.png',
                     img_2: './static/img/tc_icon_mendian.png',
@@ -164,8 +165,17 @@
                 if (addressId) {
                     this.tipShow();
                 }
+                this.initSelectList();
                 this.memberClass();
                 this.getAddList();
+            },
+            initSelectList() {
+                let selectList = JSON.parse(localStorage.getItem('selectList'));
+                let getData = JSON.parse(localStorage.getItem('getData'));
+                if (selectList && getData) {
+                    this.listFilter.selectList = selectList
+                    this.getData = getData
+                }
             },
             /*
              * Description: 获取筛选分类
@@ -186,11 +196,25 @@
                     })
 
                     if (data.packageList !== null) { // 有套餐需要把第一项赋值
-                        this.packageText = data.packageList[0].packageName;
-                        this.getData.contractId = data.packageList[0].contractId;
-                        localStorage.setItem('contractId', data.packageList[0].contractId);
+                        let contractId = localStorage.getItem('contractId');
+                        let packageText = localStorage.getItem('packageText');
+                        let listIndex = localStorage.getItem('listIndex');
+                        if (contractId && packageText) {
+                            this.packageText = packageText;
+                            this.getData.contractId = contractId;
+                        } else {
+                            this.packageText = data.packageList[0].packageName;
+                            this.getData.contractId = data.packageList[0].contractId;
+                        }
+                        if (listIndex) {
+                            this.listIndex = listIndex
+                        }
+                        localStorage.setItem('contractId', this.getData.contractId);
+                        localStorage.setItem('packageText', this.packageText);
+
                     }
                      this.listFilter = data;
+                     this.initSelectList();
                 })
             },
             chooseAddFun:function(id, txt){ // 切换地址
@@ -236,11 +260,6 @@
                     }
                 })
             },
-
-            /* 是否获取到数据 */
-            isshowfun(res){
-                this.isShowNoImg = res;
-            },
             /*
              * Description: 单选套餐
              * Author: yanlichen <lichen.yan@daydaycook.com.cn>
@@ -253,6 +272,8 @@
                 this.packageText = txt;
                 this.isRefresh = true;
                 localStorage.setItem('contractId', contractId);
+                localStorage.setItem('packageText', txt);
+                localStorage.setItem('listIndex', index);
             },
             /*
              * Description: 第一次进入显示气泡
@@ -332,10 +353,12 @@
              * Date: 2018/8/15
              */
             filterSub() {
-                this.isShowNoImg = true;
                 this.isRefresh = true
                 this.pfShow.package = false
                 this.pfShow.filter = false
+                localStorage.setItem("selectList",JSON.stringify(this.listFilter.selectList));
+                localStorage.setItem("getData",JSON.stringify(this.getData));
+               // this.$store.state.selectList = this.listFilter.selectList
             },
             /*
              * Description: 重置筛选条件
@@ -534,10 +557,11 @@
         margin-right: 4px;
     }
     .fication-content {
+        position: relative;
         margin-top: -1px;
         max-height: 388px;
         overflow:scroll;
-        -webkit-overflow-scrolling:touch;
+
     }
     .fication-package {
         border-top: #eee solid 1px;
@@ -566,7 +590,8 @@
         background: #fff;
         max-height: 388px;
         overflow:scroll;
-        -webkit-overflow-scrolling:touch;
+
+        padding-bottom: 55px;
     }
     .fication-filter dl {
         padding: 20px 20px 20px 20px;
@@ -611,10 +636,15 @@
         padding: 5px;
     }
     .fication-button {
+        border-top: 1px solid #eee;
+        width: 100%;
+        background: #fff;
+        left: 0;
+        bottom: 0;
+        position: absolute;
         display: -webkit-flex;
         display: flex;
         height: 45px;
-        margin-top: 20px;
         -webkit-justify-content: center;
         justify-content: center;
         -webkit-align-items: center;
