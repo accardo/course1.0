@@ -52,7 +52,7 @@
                 </div>
             </div>
         </div>
-       <listLay :get-data="getData" :is-refresh.sync="isRefresh" v-on:scroll-y="scrollY" ref="listRefresh"></listLay>
+       <listLay :get-data="getData" :is-refresh.sync="isRefresh" v-on:scroll-y="scrollY"></listLay>
         <div  class="popNotWrap big">
             <img :src="imgIcon.img_1" alt="" />
             <p>咦!?找不到哎!</p>
