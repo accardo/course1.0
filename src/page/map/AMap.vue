@@ -164,7 +164,7 @@
         width: 240px;
         height: 60px;
         background: #fff;
-        border: #f0f0f0 solid 1px;
+        border: #ccc solid 1px;
         border-radius: 4px;
     }
     .marker-route:before {
@@ -172,26 +172,26 @@
         position: absolute;
         content: ' ';
         left: 70px;
-        bottom: -8px;
         z-index: 2;
         width: 0;
         height: 0;
-        border-left: 6px solid transparent;
-        border-right: 6px solid transparent;
-        border-top: 8px solid #fff;
+        bottom: -19px;
+        border-left: 13px solid transparent;
+        border-right: 14px solid transparent;
+        border-top: 20px solid #fdfdfd;
     }
     .marker-route:after {
         display: block;
         position: absolute;
         content: ' ';
         left: 69px;
-        bottom: -9px;
         z-index: 1;
         width: 0;
         height: 0;
-        border-left: 7px solid transparent;
-        border-right: 7px solid transparent;
-        border-top: 9px solid #ededed;
+        bottom: -21px;
+        border-left: 16px solid transparent;
+        border-right: 16px solid transparent;
+        border-top: 22px solid #999;
     }
     .marker-left {
         padding: 6px 0 6px 10px;

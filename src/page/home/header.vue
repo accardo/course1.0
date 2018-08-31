@@ -218,24 +218,20 @@
                 })
             },
             chooseAddFun:function(id, txt){ // 切换地址
+                let getData = JSON.parse(localStorage.getItem('getData'));
+                localStorage.setItem('addressTxt', txt);
+                localStorage.setItem('addressId', id);
                 this.getData = { // 切换重置 数据
                     phone: this.getData.phone,
                     addressId: id,
                     uid: this.getData.uid,
                     contractId: this.getData.contractId,
                     userUniqueId: this.getData.userUniqueId,
-                    filterSubData: {
-                        categoryId: [],
-                        teacherId: [],
-                        reservationType: '',
-                        timeScope: '',
-                    }
+                    filterSubData: getData.filterSubData
                 }
+                localStorage.setItem("getData",JSON.stringify(this.getData));
                 this.addressTxt = txt
-                localStorage.setItem('addressTxt', txt);
-                localStorage.setItem('addressId', id);
                 this.showChooseAdd = false;
-                this.isRefresh = true
                 this.listFilter.selectList.forEach((item) => {
                     item.list.forEach((itemA) => {
                         this.$set(itemA, 'isActive', false)
@@ -243,6 +239,7 @@
                 })
                 this.memberClass();
                 this.tipShow();
+                this.isRefresh = true
             },
             chooseFun:function(){
                 this.showChooseAdd = true

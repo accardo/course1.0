@@ -24,7 +24,7 @@
             </div>
         </div>
         <div class="exp-main">
-            <h4><i></i>门店服务</h4>
+            <h4><i></i>门店介绍</h4>
             <div class="exp-content" v-html="shopInfo.introduce"></div>
         </div>
         <div class="exp-shop-bg">
@@ -83,7 +83,7 @@
                             shopData.phone = shopData.phone.split(',');
                         }
                         if(shopData.lable){
-                            shopData.lable = shopData.lable.split(',');
+                            shopData.lable = shopData.lable.split(' ').slice(0, 5);
                         }
                         if(shopData.image && shopData.image.length >0){
                             shopData.image.map(item => {
@@ -169,7 +169,7 @@
     .exp-shop ul li{
         padding: 0px 6px;
         display: inline-block;
-        margin-right:7px;
+        margin: 3px;
         background: #eee;
         border-radius: 2px;
         color: #7F7F7F;

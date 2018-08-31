@@ -21,13 +21,15 @@
 	            <div class="time" v-if="userContract.startTime">入学时间 : {{ userContract.startTime | formatDate}}</div>
 	        </div>
 	    </div>
+<!--
 	    <footerLay v-bind:position="position"></footerLay>
+-->
 	</div>
 </template>
 
 <script>
     import VTitle from '@/components/title'
-    import footerLay from '@/components/footer'
+  // import footerLay from '@/components/footer'
     export default {
         data () {
             return {
@@ -41,7 +43,7 @@
         },
         components: {
             VTitle,
-        	footerLay
+        	//footerLay
         },
         methods: {
             initUserInfo:function(){
@@ -49,7 +51,6 @@
                 let userUniqueId = this.$store.state.uid || localStorage.getItem('userUniqueId')
                 var _this = this
                 var _infoUrl = `/daydaycook/server/contract/userInfo.do?uid=${uid}&userUniqueId=${userUniqueId}`;
-
                 this.ajaxDataFun('post', _infoUrl, function(obj){
                     if(obj.code == '200'){
                         _this.userContract = obj.userContract
