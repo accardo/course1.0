@@ -133,7 +133,10 @@
                     that: this,
                     router: 'entrance',
                     title: '课程列表',
-                    query: {shopid:this.shopid}
+                    query: {
+                      shopid:this.shopid,
+                      isAddress: true
+                    }
                 }
                 localStorage.setItem('addressId', this.shopid)
                 localStorage.setItem('addressTxt', this.shopInfo.name);

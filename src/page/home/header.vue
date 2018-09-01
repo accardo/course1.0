@@ -24,7 +24,8 @@
             </div>
             <div class="fication-content">
                 <ul class="fication-package" v-show="pfShow.package" >
-                    <li v-for="(item, index) in listFilter.packageList "
+                    <li v-for="(item, index) in listFilter.packageList"
+                        v-if="listFilter.packageList.length > 0"
                         :class='{"active icon-yk_icon_select": index == listIndex}'
                         @click="packgeList(item.packageName, item.contractId, index)"
                     >{{item.packageName}}</li>
@@ -124,7 +125,6 @@
                // listFilter: [],
                 foldIs: false,
                 listFilter: {
-                    selectList: []
                 },
                 isRefresh: false, // 当筛选的时候是否执行子组件重新加载
                 getData: { // 需要传的参数
@@ -144,6 +144,7 @@
                     img_1: './static/img/not_1.png',
                     img_2: './static/img/tc_icon_mendian.png',
                 },
+                isAddress: false,
             }
         },
         mounted (){
@@ -159,22 +160,37 @@
                 let  addressTxt = localStorage.getItem('addressTxt');
                 let  addressId = localStorage.getItem('addressId');
                 this.isMember =  localStorage.getItem('isMember');
+                let listFilter = JSON.parse(localStorage.getItem('listFilter'));
+                let getData = JSON.parse(localStorage.getItem('getData'));
                 if (!addressTxt && !addressId) {
                     this.showChooseAdd = true;
                 }
                 if (addressId) {
                     this.tipShow();
                 }
-                this.initSelectList();
-                this.memberClass();
+                if (listFilter && getData) {
+                    this.initSelectList();
+                } else {
+                    this.memberClass();
+                }
+
+               // this.initSelectList();
                 this.getAddList();
             },
             initSelectList() {
-                let selectList = JSON.parse(localStorage.getItem('selectList'));
+                let listFilter = JSON.parse(localStorage.getItem('listFilter'));
                 let getData = JSON.parse(localStorage.getItem('getData'));
-                if (selectList && getData) {
-                    this.listFilter.selectList = selectList
+                let packageText = localStorage.getItem('packageText');
+                let listIndex = localStorage.getItem('listIndex');
+                console.log(listFilter, getData, 'initSelect')
+                if (listFilter && getData) {
+                    this.listFilter = listFilter
                     this.getData = getData
+                    this.packageText = packageText
+                    this.listIndex = listIndex
+                }
+                if (this.$route.query.isAddress) {
+                    this.getData.addressId = this.$route.query.shopid
                 }
             },
             /*
@@ -185,6 +201,10 @@
             memberClass() {
                 let _cateUrl = `/daydaycook/server/offline/webcourse/filterList.do?uid=${this.getData.uid}&userUniqueId=${this.getData.userUniqueId}&addressId=${this.getData.addressId}`
                 logic.ajaxGetData(_cateUrl).then(({data}) => {
+                   /* this.listFilter = {
+                        selectList: [],
+                        packageList: [],
+                    }*/
                     data.selectList.forEach((item) => {
                         item.pick = 2
                         if (item.title =='条件' || item.title == '时间') {
@@ -211,25 +231,33 @@
                         }
                         localStorage.setItem('contractId', this.getData.contractId);
                         localStorage.setItem('packageText', this.packageText);
-
                     }
                      this.listFilter = data;
-                     this.initSelectList();
+                  //  this.initSelectList();
+
                 })
             },
             chooseAddFun:function(id, txt){ // 切换地址
-                let getData = JSON.parse(localStorage.getItem('getData'));
+              //  let getData = JSON.parse(localStorage.getItem('getData'));
                 localStorage.setItem('addressTxt', txt);
                 localStorage.setItem('addressId', id);
-                this.getData = { // 切换重置 数据
-                    phone: this.getData.phone,
-                    addressId: id,
-                    uid: this.getData.uid,
-                    contractId: this.getData.contractId,
-                    userUniqueId: this.getData.userUniqueId,
-                    filterSubData: getData.filterSubData
-                }
-                localStorage.setItem("getData",JSON.stringify(this.getData));
+                //if (getData) {
+                    this.getData = { // 切换重置 数据
+                        phone: this.getData.phone,
+                        addressId: id,
+                        uid: this.getData.uid,
+                        contractId: this.getData.contractId,
+                        userUniqueId: this.getData.userUniqueId,
+                        filterSubData: {
+                            categoryId: [], // 分类id
+                            teacherId: [], // 老师id
+                            reservationType: '', // 条件
+                            timeScope: '', // 时间
+                        },
+                    }
+                    localStorage.removeItem("getData");
+                    localStorage.removeItem("selectList");
+                //}
                 this.addressTxt = txt
                 this.showChooseAdd = false;
                 this.listFilter.selectList.forEach((item) => {
@@ -267,10 +295,11 @@
                 this.pfShow.package = false;
                 this.getData.contractId = contractId;
                 this.packageText = txt;
-                this.isRefresh = true;
+                localStorage.setItem("getData",JSON.stringify(this.getData));
                 localStorage.setItem('contractId', contractId);
                 localStorage.setItem('packageText', txt);
                 localStorage.setItem('listIndex', index);
+                this.isRefresh = true;
             },
             /*
              * Description: 第一次进入显示气泡
@@ -353,7 +382,7 @@
                 this.isRefresh = true
                 this.pfShow.package = false
                 this.pfShow.filter = false
-                localStorage.setItem("selectList",JSON.stringify(this.listFilter.selectList));
+                localStorage.setItem("listFilter",JSON.stringify(this.listFilter));
                 localStorage.setItem("getData",JSON.stringify(this.getData));
                // this.$store.state.selectList = this.listFilter.selectList
             },
@@ -401,6 +430,10 @@
                     this.getAddList()    //获取地址列表
                 }
             },
+            getData(val) {
+              this.isAddress = true;
+              console.log(val,11)
+            }
           /*  showChooseAdd:function(){
                 if(this.showChooseAdd == true){
                     document.body.className = 'overflow'

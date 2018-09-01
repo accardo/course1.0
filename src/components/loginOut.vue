@@ -70,6 +70,8 @@
                 localStorage.removeItem('listIndex')
                 localStorage.removeItem('userCurrentAddress')
                 localStorage.removeItem('xxkc_gps')
+                localStorage.removeItem('listFilter')
+                localStorage.removeItem('getData')
                 let params = {
                     that:this,
                     router: 'index',
