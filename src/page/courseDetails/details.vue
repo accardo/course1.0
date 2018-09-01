@@ -8,7 +8,7 @@
             <div class="banner">
                 <img :src="allData.imageUrl + '?x-oss-process=image/resize,w_640'" alt="banner" />
                 <div class="tip" >
-                    <span>{{ allData.courseName }}</span>
+                    <span>{{ allData.cateAttr }}</span>
                 </div>
             </div>
             <div class="infoBox">

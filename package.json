@@ -54,7 +54,7 @@
     "secure-random": "^1.1.1",
     "semver": "^5.5.0",
     "shelljs": "^0.7.8",
-    "url-loader": "^0.5.9",
+    "url-loader": "^1.1.1",
     "vue": "^2.5.17",
     "vue-loader": "^13.7.1",
     "vue-router": "^2.8.1",
