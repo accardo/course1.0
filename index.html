@@ -24,15 +24,45 @@
 </head>
 <body>
 	<div id="app"></div>
-    <!--<script>
-        var _hmt = _hmt || [];
+    <script type="text/javascript">
+        ;(function(){
+            var num = 0;
+            var timer = setInterval(function() {
+                num++;
+                if(num > 60 || typeof ddcApp == 'object'){
+                    clearInterval(timer);
+                }
+                if(typeof ddcApp == 'object'){
+                    //关闭loading
+                    ddcApp.closeLoading();
+                }
+            },50)
+        })();
+        //test: 8737fe450ce9dc46
+        //prod: b1669eb9de4b5de9
+        var _vds = _vds || [];
+        window._vds = _vds;
+        (function(){
+            _vds.push(['setAccountId', 'b1669eb9de4b5de9']);
+            (function() {
+                var vds = document.createElement('script');
+                vds.type='text/javascript';
+                vds.async = true;
+                vds.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'dn-growing.qbox.me/vds.js';
+                var s = document.getElementsByTagName('script')[0];
+                s.parentNode.insertBefore(vds, s);
+            })();
+        })();
+
+       /* var _hmt = _hmt || [];
         (function () {
             if ('需要调试' === '需要调试') {
                 var src = '//cdn.bootcss.com/eruda/1.2.4/eruda.min.js';
                 document.write('<scr' + 'ipt src="' + src + '"></scr' + 'ipt>');
                 document.write('<scr' + 'ipt>eruda.init();</scr' + 'ipt>');
             }
-        })();
-    </script>-->
+        })();*/
+    </script>
+
 </body>
 </html>
