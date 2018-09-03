@@ -36,7 +36,7 @@
                 var map = new AMap.Map("container", {
                     resizeEnable: true,
                     center: shopGps,// 地图中心点
-                    zoom: 13 // 地图显示的缩放级别
+                    zoom: 17 // 地图显示的缩放级别
                 });
                 let marker = new AMap.Marker({
                     map: map,
