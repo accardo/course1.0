@@ -77,7 +77,7 @@
                 listType: 2, // 2 -> mermber页面
                 listData: [],
                 imgIcon: {
-                    img_1: './static/img/default.png',
+                    img_1: './static/img/pic_touxiang.png',
                     img_2: './static/img/not_1.png'
                 }
             }

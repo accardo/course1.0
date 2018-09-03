@@ -11,8 +11,8 @@
                 <dl v-if="userLogin">
                     <dt v-if="userInfo.lineUserName">{{userInfo.lineUserName}}</dt>
                     <dt v-else>{{userInfo.nickName}}</dt>
-                    <dd v-if="sellingCourseType == 2" >剩余<strong>{{userInfo.buyCourseNum}}</strong>次可预约，{{userInfo.endtime}}到期</dd>
-                    <dd v-else-if="sellingCourseType == 3" >您的课程套餐，{{userInfo.endtime}}到期</dd>
+                    <dd v-if="sellingCourseType == 2" >剩余<strong>{{userInfo.buyCourseNum}}</strong>次可预约{{userInfo.endtime}}到期</dd>
+                    <dd v-else-if="sellingCourseType == 3" >您的课程套餐{{userInfo.endtime}}到期</dd>
                     <dd v-else>您尚未购买课程，暂无约课权限</dd>
                 </dl>
                 <div v-else @click="showLogin" class="nologin">点击登录</div>

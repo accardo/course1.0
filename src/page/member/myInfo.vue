@@ -9,7 +9,7 @@
 	            </div>
 	            <div class="avar">
                     <img v-if="userContract.image" :src="userContract.image" />
-                    <img v-if="!userContract.image || userContract.image == 'null'" src="../../../static/img/default.png" />
+                    <img v-if="!userContract.image || userContract.image == 'null'" src="../../../static/img/pic_touxiang.png" />
 	                <span v-if="userContract.sex == 0" class="icon icon-icon_profile_male"></span>
 	                <span v-if="userContract.sex == 1" class="icon icon-icon_profile_female"></span>
 	            </div>

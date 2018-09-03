@@ -5,7 +5,7 @@
             <div class="top box">
                 <div class="avar">
                     <img v-if="avar && avar != 'null'" :src="avar" />
-                    <img v-if="!avar || avar == 'null'" src="../../../static/img/default.png" />
+                    <img v-if="!avar || avar == 'null'" src="../../../static/img/pic_touxiang.png" />
                 </div>
                 <div class="name inline">
                     <p v-if="lineUserName != 'null'">{{ lineUserName }}</p>
