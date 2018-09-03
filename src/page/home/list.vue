@@ -3,7 +3,9 @@
          <div id="dataList">
             <div class="courseItem" v-for="item in listData">
                 <div class="list-img" @click="details(item.courseId, item.reservationState, item.resId)">
-                    <img :src="item.imageUrl + '?x-oss-process=image/resize,w_640'" alt="">
+                    <div style="text-align: center">
+                        <img :src="item.imageUrl + '?x-oss-process=image/resize,w_640'" alt="">
+                    </div>
                     <div class="tip">
                         <span>{{ item.cateAttr }}</span>
                     </div>

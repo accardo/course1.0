@@ -344,6 +344,7 @@
                                     _this.ajaxDataFun('post', _bindUrl, function(obj){
                                         if(obj.code == '200'){
                                             _this.loginSuccess(obj.data)
+                                            console.log(obj.data);
                                         }else if(obj.code == '403'){
                                             _this.loginOutWechat()
                                         }

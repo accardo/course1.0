@@ -5,7 +5,7 @@
             <img src="../../assets/img/profile.png" alt="loading">
         </div>
         <div class="details">
-            <div class="banner">
+            <div class="banner" style="text-align: center">
                 <img :src="allData.imageUrl + '?x-oss-process=image/resize,w_640'" alt="banner" />
                 <div class="tip" >
                     <span>{{ allData.cateAttr }}</span>
