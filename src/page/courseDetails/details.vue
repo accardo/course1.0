@@ -47,9 +47,8 @@
                 <div class="tip">您暂无法在线预约</div>
                 <div class="des">
                     <p>课程名额有限，即刻联系门店进行预约！</p>
-                    <a href="tel:11233455"></a>
                 </div>
-                <div class="button" @click="showNotMPop=false"><a style="color: #fff" :href="'tel:' + allData.addressPhone">联系门店</a></div>
+                <div class="button" @click="telPhone(allData.addressPhone)"><a style="color: #fff">联系门店</a></div>
                 <div class="close icon-yk_btn_clear" @click="showNotMPop=false"></div>
             </div>
 
@@ -201,6 +200,21 @@
                 } else {
                     this.RSuccess = true;
                 }
+            },
+            /*
+             * Description: 拨打电话
+             * Author: yanlichen <lichen.yan@daydaycook.com.cn>
+             * Date: 2018/9/4
+             */
+            telPhone(phone) {
+                if (typeof ddcApp == "object") {
+                    ddcApp.makePhoneCall({
+                        phone: phone
+                    })
+                } else {
+                    window.location.href = `tel:${phone}`;
+                }
+                this.showNotMPop = false;
             },
             /*
              * Description: 取消预约

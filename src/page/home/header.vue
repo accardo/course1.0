@@ -152,6 +152,7 @@
                 this.initDate()      //获取全局数据
             })
         },
+
         components: {
             listLay,
         },

@@ -2,7 +2,7 @@
     <div class="mask-iphone" data-cancel="cancel" @click="cancelIphone">
         <div class="iphone-wrap">
             <div>拨打门店电话</div>
-            <div v-for="(item,index) in phoneArray"><a :href="'tel:' + item">{{item}}</a></div>
+            <div v-for="(item,index) in phoneArray"><a @click=telPhone(item)>{{item}}</a></div>
             <!-- <div><a href="tel:021-63230886">021-63230886</a></div>
             <div><a href="tel:021-63233279">021-63233279</a></div> -->
             <div data-cancel="cancel" @click="cancelIphone">取消</div>
@@ -38,6 +38,21 @@
                 if (e.target.dataset.cancel == 'cancel') {
                     this.$emit('update:isIphone', false);
                 }
+            },
+            /*
+             * Description: 拨打电话
+             * Author: yanlichen <lichen.yan@daydaycook.com.cn>
+             * Date: 2018/9/4
+             */
+            telPhone(phone) {
+                if (typeof ddcApp == "object") {
+                    ddcApp.makePhoneCall({
+                        phone: phone
+                    })
+                } else {
+                    window.location.href = `tel:${phone}`;
+                }
+                this.$emit('update:isIphone', false);
             }
         },
 	}

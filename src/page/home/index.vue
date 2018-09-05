@@ -186,19 +186,24 @@
                             imgUrl:'https://mobile.daydaycook.com.cn/logo.png',
                             linkUrl:window.location.href
                         });
+
                         util.getSessionId().then(res => {
                             console.log(res, 'res');
                             if(res){
+                                // wsCache.set('xxkc_gps', {x: res.latitude, y: res.longitude}, {exp : 864000});
+                                self.positionX = res.latitude;
+                                self.positionY = res.longitude;
                                 self.userLogin = true;
                                 self.userUniqueId = res.uid;
                                 self.getUserByUid(self.userUniqueId);
                                 self.isMemberFun(self.userUniqueId);
                                 self.getLastCourseByuid();
-                                self.isGps();
-                                localStorage.setItem('userUniqueId', self.userUniqueId);
+                                self.getShopInfoByUid();
+                                self.getCourseList()
+                                localStorage.setItem('userUniqueId', res.uid);
                                 localStorage.setItem('nickName', res.userName);
+                                localStorage.setItem('phone', res.phone);
                                 localStorage.setItem('isApp', true);
-                                // localStorage.setItem('phone', self.userphone);
                             }else{
                                 console.log('app内用户未登录');
                             }
@@ -323,6 +328,8 @@
 
                         let endtime = res.contractEndTime ? util.formatTimeArray(res.contractEndTime) : '';
                         self.userInfo.endtime = endtime ? `${endtime[0]}/${endtime[1]}/${endtime[2]}` : '';
+                        this.$store.state.lineUserName = res.lineUserName
+                        localStorage.setItem('lineUserName', res.lineUserName)
                     }else{
                         this.userLogin = false;
                     }
