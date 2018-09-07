@@ -115,35 +115,27 @@ export function getSessionId() {
 	return new Promise((resolve,reject) => {
 		if(sessionId_app) resolve(sessionId_app)
 		console.log(sessionId_app, 'sessionId_app')
-		let num = 0;
-		let timer = setInterval(() => {
-			num++
-			if(num > 60){
-				clearInterval(timer);
-				reject('')
-			}else{
-				if(typeof ddcApp == 'object'){
-					//内嵌在APP中执
-					ddcApp.getSystemInfo();
-					setTimeout(() => {
-						if(userInfo_app && userInfo_app.appVersion){
-							clearInterval(timer);
+		checkDdcApp((isApp) => {
+			if (isApp) {
+				ddcApp.getSystemInfo();
+				console.log('after ddcApp.getSystemInfo')
+				let num = 0;
+				let timer = setInterval(() => {
+					num++
+					if (num > 60) {
+						clearInterval(timer);
+						reject('用户信息获取失败')
+					} else {
+						if(userInfo_app) {
 							console.log(userInfo_app,'userInfo_app')
-							localStorage.setItem('uid',userInfo_app.uid);
-							if(userInfo_app.uid){
-								sessionId_app = userInfo_app.uid;
-								resolve(userInfo_app)
-							}else{
-								reject('')
-							}
-						}else{
+							localStorage.setItem('uid', userInfo_app.uid);
+							resolve(userInfo_app)
 							clearInterval(timer);
-							reject('')
 						}
-					},30)
-				}
+					}
+				},30)
 			}
-		},50)
+		})
 	})
 }
 export function navTo({

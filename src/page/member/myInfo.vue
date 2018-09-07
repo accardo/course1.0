@@ -77,6 +77,11 @@
         }
     }
 </script>
+<style scoped>
+    .myInfo {
+        background: url("../../../static/img/bg_big.png");
+    }
+</style>
 <style type="text/css">
     html{ height:100%; }
 </style>

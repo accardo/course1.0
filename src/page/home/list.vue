@@ -278,12 +278,9 @@
         bottom: 0;
         height: auto;
     }
-    .mescroll-top{
-        position: fixed;
-        top:90px;
-        bottom: 0;
-        height: auto;
-    }
+     .mescroll-top{
+         top:90px;
+     }
 </style>
 <style>
     #dataList .mescroll-empty {
