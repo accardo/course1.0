@@ -129,7 +129,7 @@
                 swipeList: [
                     {
                         id:1,
-                        imageUrl:'./static/img/pic_aboutus1.jpg',
+                        imageUrl:'./static/img/pic_aboutus12.jpg',
                         pageId:1,
                     },
                     {
