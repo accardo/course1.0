@@ -171,6 +171,7 @@
                 }
                 if (listFilter && getData) {
                     this.initSelectList();
+                    this.memberPackage();
                 } else {
                     this.memberClass();
                 }
@@ -193,6 +194,26 @@
                 if (this.$route.query.isAddress) {
                     this.getData.addressId = this.$route.query.shopid
                 }
+            },
+            /*
+             * Description: 会员套餐读取取出，防止无套餐 突然有套餐导致缓存数据出错
+             * Author: yanlichen <lichen.yan@daydaycook.com.cn>
+             * Date: 2018/9/18
+             */
+            memberPackage() {
+                let _cateUrl = `/daydaycook/server/offline/webcourse/filterList.do?uid=${this.getData.uid}&userUniqueId=${this.getData.userUniqueId}&addressId=${this.getData.addressId}`
+                logic.ajaxGetData(_cateUrl).then(({data}) => {
+                    if (data.packageList !== null) { // 有套餐需要把第一项赋值
+                        this.packageText = data.packageList[0].packageName;
+                        this.getData.contractId = data.packageList[0].contractId;
+                        localStorage.setItem('contractId', this.getData.contractId);
+                        localStorage.setItem('packageText', this.packageText);
+                    }
+                    console.log(data, '123')
+                    this.listFilter.packageList = data.packageList;
+                    //  this.initSelectList();
+
+                })
             },
             /*
              * Description: 获取筛选分类

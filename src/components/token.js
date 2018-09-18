@@ -5,7 +5,7 @@ import _axios from 'axios'
 
 var domainAdd = window.location.protocol + "//" + window.location.host;
 if(domainAdd.indexOf('localhost') > -1 ||  domainAdd.indexOf('192') > -1 || domainAdd.indexOf('127') > -1 || domainAdd.indexOf('mobile-test') > -1 || domainAdd.indexOf('mobile-staging') > -1 || domainAdd.indexOf('test') > -1){
-	domainAdd = "https://app-s.daydaycook.com.cn";
+	domainAdd = "https://offline-course-t.daydaycook.com.cn";
 	//domainAdd = "https://test.daydaycook.com.cn";
 }else{
     domainAdd = "//api.daydaycook.com.cn";
