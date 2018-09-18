@@ -10,8 +10,58 @@
 	<meta name="x5-fullscreen" content="true">
     <meta name="full-screen" content="yes">
 	<title>预约课程</title>
+	<script>
+        //全局获取用户信息
+		var userInfo_app;
+        var sessionId_app;
+        function setSystemInfo(obj){
+            if(obj){
+                userInfo_app = obj;
+            }
+        }
+    </script>
+    <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.8&key=a866f84da4a7dba1dd2506c02e43c1da"></script>
 </head>
 <body>
 	<div id="app"></div>
+    <script type="text/javascript">
+        ;(function(){
+            var num = 0;
+            var timer = setInterval(function() {
+                num++;
+                if(num > 60 || typeof ddcApp == 'object'){
+                    clearInterval(timer);
+                }
+                if(typeof ddcApp == 'object'){
+                    //关闭loading
+                    ddcApp.closeLoading();
+                }
+            },50)
+        })();
+        //test: 8737fe450ce9dc46
+        //prod: b1669eb9de4b5de9
+        var _vds = _vds || [];
+        window._vds = _vds;
+        (function(){
+            _vds.push(['setAccountId', 'b1669eb9de4b5de9']);
+            (function() {
+                var vds = document.createElement('script');
+                vds.type='text/javascript';
+                vds.async = true;
+                vds.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'dn-growing.qbox.me/vds.js';
+                var s = document.getElementsByTagName('script')[0];
+                s.parentNode.insertBefore(vds, s);
+            })();
+        })();
+
+       /* var _hmt = _hmt || [];
+        (function () {
+            if ('需要调试' === '需要调试') {
+                var src = '//cdn.bootcss.com/eruda/1.2.4/eruda.min.js';
+                document.write('<scr' + 'ipt src="' + src + '"></scr' + 'ipt>');
+                document.write('<scr' + 'ipt>eruda.init();</scr' + 'ipt>');
+            }
+        })();*/
+    </script>
 </body>
 </html>

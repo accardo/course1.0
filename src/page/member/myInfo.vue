@@ -4,12 +4,12 @@
 	    <div class="myInfo">
 	        <div class="wrap">
 	            <div class="logo">
-	                <img class="one" src="../../../static/img/profile.png" alt="logo" />
+	                <img class="one" src="../../assets/img/profile.png" alt="logo" />
 	                <img class="two" src="../../../static/img/member.png" alt="logo" />
 	            </div>
 	            <div class="avar">
                     <img v-if="userContract.image" :src="userContract.image" />
-                    <img v-if="!userContract.image || userContract.image == 'null'" src="../../../static/img/default.png" />
+                    <img v-if="!userContract.image || userContract.image == 'null'" src="../../../static/img/pic_touxiang.png" />
 	                <span v-if="userContract.sex == 0" class="icon icon-icon_profile_male"></span>
 	                <span v-if="userContract.sex == 1" class="icon icon-icon_profile_female"></span>
 	            </div>
@@ -21,13 +21,15 @@
 	            <div class="time" v-if="userContract.startTime">入学时间 : {{ userContract.startTime | formatDate}}</div>
 	        </div>
 	    </div>
+<!--
 	    <footerLay v-bind:position="position"></footerLay>
+-->
 	</div>
 </template>
 
 <script>
     import VTitle from '@/components/title'
-    import footerLay from '@/components/footer'
+  // import footerLay from '@/components/footer'
     export default {
         data () {
             return {
@@ -41,14 +43,14 @@
         },
         components: {
             VTitle,
-        	footerLay
+        	//footerLay
         },
-        methods: { 
+        methods: {
             initUserInfo:function(){
                 let uid = this.$store.state.uid || localStorage.getItem('uid')
+                let userUniqueId = this.$store.state.uid || localStorage.getItem('userUniqueId')
                 var _this = this
-                var _infoUrl = '/daydaycook/server/contract/userInfo.do?uid=' + uid
-               
+                var _infoUrl = `/daydaycook/server/contract/userInfo.do?uid=${uid}&userUniqueId=${userUniqueId}`;
                 this.ajaxDataFun('post', _infoUrl, function(obj){
                     if(obj.code == '200'){
                         _this.userContract = obj.userContract
@@ -75,6 +77,11 @@
         }
     }
 </script>
+<style scoped>
+    .myInfo {
+        background: url("../../../static/img/bg_big.png");
+    }
+</style>
 <style type="text/css">
     html{ height:100%; }
 </style>

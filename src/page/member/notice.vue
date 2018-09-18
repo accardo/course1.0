@@ -1,7 +1,7 @@
 <template>
 	<div id="container">
         <v-title>{{ pageTitle }}</v-title>
-        <div class="notic"  v-show="infoList.length">
+        <div class="notic" v-show="infoList.length">
             <ul>
                 <li v-for="item in infoList" @click="readFun(item.id, item.courseId, item.isRead)">
                     <div class="img">
@@ -48,7 +48,7 @@
             VTitle,
         	footerLay
         },
-        methods: { 
+        methods: {
             readFun:function(id,cid,type){
                 var _this = this
                 if(type == 0){
@@ -94,21 +94,21 @@
             timeInfo:function (dd){
                 var mydate = Date.parse(new Date());
                 var minus = mydate - dd;
-                if (minus/1000 < 60) { 
+                if (minus/1000 < 60) {
                     return Math.floor(minus/1000) + "秒前"
                 } else if (minus/1000/60 < 60) {
                     return Math.floor(minus/1000/60) + "分钟前"
                 } else if (minus/1000/60/60 < 24) {
                     return Math.floor(minus/1000/60/60) + "小时前"
                 } else if (minus/1000/60/60 < 48) {
-                    return "昨天"; 
+                    return "昨天";
                 } else {
                     var dy = new Date(dd);
                     var year=dy.getFullYear();
                     var month=dy.getMonth()+1;
                     var day=dy.getDate();
                     var hour=dy.getHours();
-                    var minute=dy.getMinutes();     
+                    var minute=dy.getMinutes();
                     var second=dy.getSeconds();
                     month = month<10?"0"+month:month;
                     day = day<10?"0"+day:day;

@@ -8,6 +8,7 @@ const state = {
     loadingTxt: '加载中...',
     isShowLogin: false,
 	isLogin: false,
+	userUniqueId: '',
     uid: '',
     avar: '',
     nickName: '',
@@ -28,6 +29,7 @@ const state = {
     validContractCount: '',
     indexPageY: 0,
     currentPage: 1,
+	selectList: [],
 }
 
 

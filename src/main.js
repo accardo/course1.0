@@ -13,6 +13,11 @@ import mintUI from 'mint-ui';
 Vue.use(mintUI);
 
 Vue.config.productionTip = false;
+/*if (typeof ddcApp !== "undefined") {
+	Vue.prototype.$ddcApp = ddcApp;
+} else {
+	Vue.prototype.$ddcApp = {};
+}*/
 /**
  * Description: 判断是否登录
  */
@@ -82,7 +87,8 @@ new Vue({
 		* */
 		isMemberFun() {
 			let uid = this.$store.state.uid || localStorage.getItem('uid');
-			let isMenberUrl = `/daydaycook/server/offline/reservationUser/isBuyCourse.do?uid=${uid}`;
+			let userUniqueId = this.$store.state.userUniqueId || localStorage.getItem('userUniqueId');
+			let isMenberUrl = `/daydaycook/server/offline/reservationUser/isBuyCourse.do?uid=${uid}&userUniqueId=${userUniqueId}`;
 			return new Promise((resolve) => {
 				this.ajaxDataFun('post', isMenberUrl, (data) => {
 					return resolve(data);
