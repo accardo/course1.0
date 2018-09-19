@@ -23,6 +23,10 @@
                 <p v-show="allData.reservationState != 12">{{ allData.startTime | formatTimeOne }}-{{ allData.endTime | formatTimeTwo }}</p>
                 <p>{{ allData.address }} </p>
             </div>
+            <div class="related-goods" v-if="true">
+                <div class="tl">相关商品</div>
+                <Goods :goodsIds="['1674', '479', '3459', '3335', '3485']"></Goods>
+            </div>
             <div class="infoItem" v-html="allData.introduction"></div>
             <div class="exp-shop-bg">
                 <button v-if="allData.reservationState == 0" class="active">敬请期待</button>
@@ -101,6 +105,7 @@
     import popMin from '@/components/popMin'
     import loginLay from '@/components/login'
     import VTitle from '@/components/title'
+    import Goods from '@/components/goods'
     export default {
         data () {
             return {
@@ -139,6 +144,7 @@
         components: {
             VTitle,
             loginLay,
+            Goods
         },
         methods: {
             initDate:function(){
@@ -409,5 +415,14 @@
         bottom: -50px;
         right: 50%;
         top: auto;
+    }
+    .related-goods {
+        width: 100%;
+        margin-top: 20px;
+    }
+    .related-goods .tl {
+        padding-left: 14px;
+        font-size: 14px;
+        color: #1A1A1A;
     }
 </style>
