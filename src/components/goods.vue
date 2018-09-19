@@ -52,6 +52,7 @@ export default {
             let _url = window.location.href;
             // 0开发环境  1测试环境  2stagng环境  3生产环境
             let status = (_url.indexOf('127') > -1 || _url.indexOf('localhost') > -1)?0:_url.indexOf('mobile-test') > -1?1:_url.indexOf('mobile-staging') > -1?2:3;
+            status = 1
             let ajaxUrl8 = status== 0? 'https://commission-app-d.daydaycook.com.cn': status==1?'https://commission-app-t.daydaycook.com.cn':status==2?'https://commission-app-s.daydaycook.com.cn':'https://commission-app.daydaycook.com.cn';
 
             if (this.goodsIds && this.goodsIds.length > 0) {
@@ -147,7 +148,9 @@ export default {
     background-size: 100% 100%;
 }
 .collapse:after {
+    transform: translateY(-50%) rotate(-90deg);
     background: url('../../static/img/icon_arrow.png') no-repeat;
+    background-size: 100% 100%;
 }
 .flex-column {
     display: flex;
