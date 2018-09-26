@@ -30,8 +30,8 @@ export default {
     name: 'goods',
     props: {
         goodsIds: {
-            type: Array,
-            value: []
+            type: String,
+            value: ''
         }
     },
     data() {
@@ -52,16 +52,18 @@ export default {
             let _url = window.location.href;
             // 0开发环境  1测试环境  2stagng环境  3生产环境
             let status = (_url.indexOf('127') > -1 || _url.indexOf('localhost') > -1)?0:_url.indexOf('mobile-test') > -1?1:_url.indexOf('mobile-staging') > -1?2:3;
-            status = 1
+            // status = 1
             let ajaxUrl8 = status== 0? 'https://commission-app-d.daydaycook.com.cn': status==1?'https://commission-app-t.daydaycook.com.cn':status==2?'https://commission-app-s.daydaycook.com.cn':'https://commission-app.daydaycook.com.cn';
 
             if (this.goodsIds && this.goodsIds.length > 0) {
                 axios.post(ajaxUrl8 + '/product-query/queryItemByItemIds',{
-                    itemIds: this.goodsIds
+                    itemIds: this.goodsIds.split(',')
                 }).then(res => {
                     if(res.status == 200 && res.data){
                         if (res.data.rows && res.data.rows.length > 0) {
                             this.goodsList = res.data.rows
+                        } else {
+                            this.$emit('getGoodsFailed')
                         }
                     }else{
                         console.log(res.message || '未知错误')
@@ -69,10 +71,12 @@ export default {
                 }).catch(error => {
                     console.log(error)
                 })
+            } else {
+                this.$emit('getGoodsFailed')
             }
         },
         goToProductDetail(goodsId) {
-            let url = `${window.origin}${util.inApp() ? '/app2/' : '/shop/'}#/productdetail?productId=${goodsId}`
+            let url = `${window.location.origin}${util.inApp() ? '/app2/' : '/shop/'}#/productdetail?productId=${goodsId}`
             util.navTo({
                 title: '商品详情',
                 url

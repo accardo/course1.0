@@ -23,9 +23,9 @@
                 <p v-show="allData.reservationState != 12">{{ allData.startTime | formatTimeOne }}-{{ allData.endTime | formatTimeTwo }}</p>
                 <p>{{ allData.address }} </p>
             </div>
-            <div class="related-goods" v-if="true">
+            <div class="related-goods" v-if="showRelatedGoods">
                 <div class="tl">相关商品</div>
-                <Goods :goodsIds="['1674', '479', '3459', '3335', '3485']"></Goods>
+                <Goods :goodsIds="allData.productIds" @getGoodsFailed="showRelatedGoods = false"></Goods>
             </div>
             <div class="infoItem" v-html="allData.introduction"></div>
             <div class="exp-shop-bg">
@@ -131,6 +131,7 @@
                 contractId: '', // 合同id
                 status: '',
                 cancel: false, // 控制已取消
+                showRelatedGoods: false, // 相关商品是否显示
             }
         },
         mounted () {
@@ -294,6 +295,9 @@
             '$route':function(to, from) {
                 this.initDate()
             },
+            allData() {
+                this.showRelatedGoods = this.allData.productIds && '' != this.allData.productIds
+            }
         },
         filters:{
             formatTimeOne:function(str){

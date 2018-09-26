@@ -124,6 +124,8 @@
                         console.log(res.data, 'upCallback');
                     } else if(res.code == '911') {
                         popMin.show("icon-yk_icon_warning",res.msg);
+                        localStorage.removeItem('contractId')
+                        localStorage.removeItem('getData')
                         window.location.reload();
                     }
 
