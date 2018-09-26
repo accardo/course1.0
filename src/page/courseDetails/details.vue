@@ -233,7 +233,7 @@
             },
             onRecommend:function(){
                 this.recommendTxt = '预约中...'
-                var _RUrl = `/daydaycook/server/offline/reservationUser/save.do?offlineCourseId=${this.$route.query.courseId}&mobile=${this.phone}&uid=${this.uid}&userUniqueId=${this.userUniqueId}&contractId=${this.contractId}`;
+                var _RUrl = `/daydaycook/server/offline/reservationUser/save.do?offlineCourseId=${this.$route.query.courseId}&mobile=${this.phone}&uid=${this.uid || ''}&userUniqueId=${this.userUniqueId}&contractId=${this.contractId}`;
                 console.log(_RUrl, '立即预约')
                 this.ajaxDataFun('post', _RUrl, (obj) => {
                     this.recommendTxt = '确定'
@@ -258,7 +258,7 @@
             },
             cancelRdF(){
                 this.cancelTxt = '取消中...'
-                var _canlUrl = `/daydaycook/server/offline/reservationUser/cancel.do?id=${this.$route.query.resId}&offlineCourseId=${this.$route.query.courseId}&mobile=${this.phone}&uid=${this.uid}&userUniqueId=${this.userUniqueId}`;
+                var _canlUrl = `/daydaycook/server/offline/reservationUser/cancel.do?id=${this.$route.query.resId}&offlineCourseId=${this.$route.query.courseId}&mobile=${this.phone}&uid=${this.uid || ''}&userUniqueId=${this.userUniqueId}`;
                 console.log(_canlUrl);
                 this.ajaxDataFun('post', _canlUrl, (obj) => {
                     if(obj.code == '200'){

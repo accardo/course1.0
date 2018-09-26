@@ -190,20 +190,26 @@
                         util.getSessionId().then(res => {
                             console.log(res, 'res');
                             if(res){
+                                let userUniqueId = localStorage.getItem('userUniqueId');
+                                if (userUniqueId && userUniqueId !== res.uid) {
+                                    console.log('APP内 退出登陆，重新登陆新用户移除前一个用户')
+                                    util.removeCache();
+                                }
                                 // wsCache.set('xxkc_gps', {x: res.latitude, y: res.longitude}, {exp : 864000});
                                 self.positionX = res.latitude;
                                 self.positionY = res.longitude;
                                 self.userLogin = true;
                                 self.userUniqueId = res.uid;
-                                self.getUserByUid(self.userUniqueId);
-                                self.isMemberFun(self.userUniqueId);
-                                self.getLastCourseByuid();
-                                self.getShopInfoByUid();
-                                self.getCourseList()
                                 localStorage.setItem('userUniqueId', res.uid);
                                 localStorage.setItem('nickName', res.userName);
                                 localStorage.setItem('phone', res.phone);
                                 localStorage.setItem('isApp', true);
+                                self.getUserByUid(self.userUniqueId);
+                                self.isMemberFun(self.userUniqueId);
+                                self.getLastCourseByuid();
+                                self.getShopInfoByUid();
+                                self.getCourseList();
+                                console.log(self.userUniqueId, 'userUniqueId')
                             }else{
                                 console.log('app内用户未登录');
                             }
@@ -238,7 +244,7 @@
             },
             isMemberFun(userUniqueId) {
                 var _this = this
-                var _isMenberUrl = '/daydaycook/server/offline/reservationUser/isBuyCourse.do?userUniqueId=' + userUniqueId
+                var _isMenberUrl = `/daydaycook/server/offline/reservationUser/isBuyCourse.do?uid=${this.uid || ''}&userUniqueId=${userUniqueId}`
                 this.ajaxDataFun('post',_isMenberUrl,function(obj){
                     if(obj.code == '200'){
                         _this.$store.state.isMember = obj.data
@@ -247,7 +253,7 @@
                         localStorage.setItem('isLogin', true);
                         _this.$store.state.isLogin = true
                     }
-                   console.log('App 获取是否是会员用户', obj.data)
+                   console.log('App 获取是否是会员用户', obj)
                 })
             },
             /* 获取用户gps */
@@ -316,7 +322,7 @@
             /* 根据用户uid 获取用户信息 */
             getUserByUid(userUniqueId, uid){
                 let self = this;
-                let infoUrl = `/daydaycook/server/contract/userInfo.do?uid=${uid}&userUniqueId=${userUniqueId}`;
+                let infoUrl = `/daydaycook/server/contract/userInfo.do?uid=${uid || ''}&userUniqueId=${userUniqueId}`;
                 this.ajaxDataFun('post', infoUrl, (obj) => {
                     if(obj.code == '200'){
                         let res = obj.userContract;
@@ -362,7 +368,7 @@
             // 获取最近预约课程
             getLastCourseByuid(){
                 let self = this;
-                let _listUrl = `/daydaycook/server/offline/reservationUser/theLastTimeRes.do?uid=${self.uid}&userUniqueId=${self.userUniqueId}`;
+                let _listUrl = `/daydaycook/server/offline/reservationUser/theLastTimeRes.do?uid=${self.uid || ''}&userUniqueId=${self.userUniqueId}`;
                 this.ajaxDataFun('get',_listUrl, function(res){
                     if(res.code =='200' && res.data){
                         self.courseData = res.data;
@@ -376,7 +382,7 @@
             /* 根据Uid 获取店铺信息 */
             getShopInfoByUid(){
                 let self = this;
-                let _listUrl = '/daydaycook/server/newCourse/getAddressInfoByUid.do?userUniqueId='+ self.userUniqueId+'&x='+self.positionX+'&y='+self.positionY;
+                let _listUrl = `/daydaycook/server/newCourse/getAddressInfoByUid.do?uid=${self.uid || ''}&userUniqueId=${self.userUniqueId}&x=${self.positionX}&y=${self.positionY}`;
                 this.ajaxDataFun('post',_listUrl, function(res){
                     self.showAll = true;
                     if(res &&  res.code =='200'){
@@ -401,7 +407,7 @@
             /* 获取课程列表 */
             getCourseList(){
                 let self = this;
-                var _listUrl = '/daydaycook/server/newCourse/getAddressCourseInfo.do?uid=' + self.uid + '&userUniqueId=' + self.userUniqueId + '&x='+self.positionX+'&y='+self.positionY;
+                var _listUrl = `/daydaycook/server/newCourse/getAddressCourseInfo.do?uid=${self.uid || ''}&userUniqueId=${self.userUniqueId}&x=${self.positionX}&y=${self.positionY}`;
                 this.ajaxDataFun('post', _listUrl, function(obj){
                     if(obj.code == '200'){
                         if(obj.list && obj.list.length >0){

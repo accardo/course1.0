@@ -162,7 +162,7 @@
                 }
             },
             getScore:function (userUniqueId, uid){ //注册送分车页
-                var getScoreUrl  = "/daydaycook/server/score/gainScore.do?userUniqueId=" + userUniqueId + "&uid=" + uid + "&scoreCode=login_first&objId=&title=pgcLogin&scoreCount=3"
+                var getScoreUrl  = `/daydaycook/server/score/gainScore.do?userUniqueId=${userUniqueId}&uid=${uid || ''}&scoreCode=login_first&objId=&title=pgcLogin&scoreCount=3`
                 this.ajaxDataFun('post',getScoreUrl,function(obj){
                     console.log(obj);
                 });
@@ -333,9 +333,9 @@
                     _this.loginTxt = "登录中..."
                     var _checkCodeUrl = '/daydaycook/server/user/validateCode.do?userName=' + _this.phoneVal + '&code=' + _this.codeVal
 
-                    var _checkPhone = '/daydaycook/server/user/checkUserByPhone.do?phone=' + _this.phoneVal + '&uid=' + uid + '&userUniqueId=' + userUniqueId;
+                    var _checkPhone = `/daydaycook/server/user/checkUserByPhone.do?phone=${_this.phoneVal}&uid=${uid || ''}&userUniqueId=${userUniqueId}`;
 
-                    var _bindUrl = '/daydaycook/server/user/registeredByPhone.do?uid=' + uid + '&userUniqueId=' + userUniqueId + '&userName=' + _this.phoneVal + '&password=&type=' + _this.loginType
+                    var _bindUrl = `/daydaycook/server/user/registeredByPhone.do?uid=${uid || ''}&userUniqueId=${userUniqueId}&userName=${_this.phoneVal}&password=&type=${this.loginType}`;
 
                     this.ajaxDataFun('post', _checkCodeUrl, function(obj){
                         if(obj.code == '200'){
@@ -481,7 +481,7 @@
             },
             isMemberFun:function(userUniqueId, id){
                 var _this = this
-                var _isMenberUrl = '/daydaycook/server/offline/reservationUser/isBuyCourse.do?userUniqueId=' + userUniqueId + '&uid=' + id
+                var _isMenberUrl = `/daydaycook/server/offline/reservationUser/isBuyCourse.do?uid=${id || ''}&userUniqueId=${userUniqueId}`;
                 this.ajaxDataFun('post',_isMenberUrl,function(obj){
                     if(obj.code == '200'){
                         _this.$store.state.isMember = obj.data

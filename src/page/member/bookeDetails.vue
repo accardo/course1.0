@@ -128,7 +128,7 @@
                     this.$route.query.categoryId == 'undefined') ? 0 : this.$route.query.categoryId || 0;
                 // let sellingCourseTypeId = (this.$route.query.sellingCourseTypeId == 'null' ||
                 //     this.$route.query.sellingCourseTypeId == 'undefined') ? 0 : this.$route.query.sellingCourseTypeId || 0;
-                let cateUrl = `/daydaycook/server/contract/queryAllCourseByUser.do?uid=${this.uid}&userUniqueId=${this.userUniqueId}&mobile=${this.phone}&categoryId=${categoryId}`;
+                let cateUrl = `/daydaycook/server/contract/queryAllCourseByUser.do?uid=${this.uid || ''}&userUniqueId=${this.userUniqueId}&mobile=${this.phone}&categoryId=${categoryId}`;
                 return new Promise((resolve) => {
                     this.ajaxDataFun('post', cateUrl, (data) => {
                         if(data.code== '200'){
@@ -145,7 +145,7 @@
                 let sellingCourseTypeId = (this.$route.query.sellingCourseTypeId == 'null' ||
                     this.$route.query.sellingCourseTypeId == 'undefined') ? 0 : this.$route.query.sellingCourseTypeId || 0;
                 this.index = index;
-                let listUrl = `/daydaycook/server/offline/record/list.do?uid=${this.uid}&userUniqueId=${this.userUniqueId}&userPhone=${this.phone}&categoryId=${categoryId}&attributeId=${cid || 0}&contractId=${contractId}&sellingCourseType=${sellingCourseTypeId}`;
+                let listUrl = `/daydaycook/server/offline/record/list.do?uid=${this.uid || ''}&userUniqueId=${this.userUniqueId}&userPhone=${this.phone}&categoryId=${categoryId}&attributeId=${cid || 0}&contractId=${contractId}&sellingCourseType=${sellingCourseTypeId}`;
                 this.ajaxDataFun('post', listUrl, (obj) => {
                     if(obj.code == '200'){
                         this.dataList = obj.data.maplist
@@ -167,7 +167,7 @@
                     this.$route.query.contractId == 'undefined') ? 0 : this.$route.query.contractId || 0;
                 let sellingCourseTypeId = (this.$route.query.sellingCourseTypeId == 'null' ||
                     this.$route.query.sellingCourseTypeId == 'undefined') ? 0 : this.$route.query.sellingCourseTypeId || 0;
-                let listUrl = `/daydaycook/server/offline/record/list.do?uid=${this.uid}&userUniqueId=${this.userUniqueId}&userPhone=${this.phone}&categoryId=${categoryId}&attributeId=${attributeId}&contractId=${contractId}&sellingCourseType=${sellingCourseTypeId}`;
+                let listUrl = `/daydaycook/server/offline/record/list.do?uid=${this.uid || ''}&userUniqueId=${this.userUniqueId}&userPhone=${this.phone}&categoryId=${categoryId}&attributeId=${attributeId}&contractId=${contractId}&sellingCourseType=${sellingCourseTypeId}`;
                 return new Promise((resolve) => {
                    this.ajaxDataFun('post', listUrl, (obj) => {
                        if(obj.code == '200'){

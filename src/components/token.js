@@ -9,7 +9,7 @@ if(domainAdd.indexOf('localhost') > -1 ||  domainAdd.indexOf('192') > -1 || doma
 	//domainAdd = "https://test.daydaycook.com.cn";
 } else if (domainAdd.indexOf('mobile-staging') > -1 || domainAdd.indexOf('staging') > -1) {
     domainAdd = "https://offline-course-s.daydaycook.com.cn"
-    
+
 } else{
     domainAdd = "https://offcourse.daydaycook.com.cn";
 }

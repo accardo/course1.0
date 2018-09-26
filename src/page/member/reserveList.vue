@@ -69,7 +69,7 @@
                 this.getNumList()
             },
             getNumList() {
-                var numUrl = `/daydaycook/server/contract/queryAllCourseCountByUser.do?uid=${this.uid}&userUniqueId=${this.userUniqueId}&mobile=${this.phone}`;
+                var numUrl = `/daydaycook/server/contract/queryAllCourseCountByUser.do?uid=${this.uid || ''}&userUniqueId=${this.userUniqueId}&mobile=${this.phone}`;
                 this.ajaxDataFun('post', numUrl, (obj) => {
                     if(obj.code == '200'){
                         this.bookList = obj.data

@@ -126,9 +126,9 @@ export function getSessionId() {
 						clearInterval(timer);
 						reject('用户信息获取失败')
 					} else {
+						console.log(userInfo_app,'userInfo_app')
 						if(userInfo_app) {
-							console.log(userInfo_app,'userInfo_app')
-							localStorage.setItem('uid', userInfo_app.uid);
+	//						localStorage.setItem('userUniqueId', userInfo_app.uid);
 							resolve(userInfo_app)
 							clearInterval(timer);
 						}
@@ -240,7 +240,39 @@ export function closeLoading(){
 		}
 	},50)
 }
-
+export function removeCache() {
+	localStorage.removeItem('isLogin')
+	localStorage.removeItem('isMember')
+	localStorage.removeItem('avar')
+	localStorage.removeItem('phone')
+	localStorage.removeItem('addressId')
+	localStorage.removeItem('categoryId')
+	localStorage.removeItem('categoryName')
+	localStorage.removeItem('courseStatus')
+	localStorage.removeItem('courseStatusTxt')
+	localStorage.removeItem('startday')
+	localStorage.removeItem('startdayTxt')
+	localStorage.removeItem('nickName')
+	localStorage.removeItem('lineUserName')
+	localStorage.removeItem('indexPageY')
+	localStorage.removeItem('newIndexPageY')
+	localStorage.removeItem('validContractCount')
+	localStorage.removeItem('categoryCount')
+	localStorage.removeItem('phoneBack')
+	localStorage.removeItem('teacherId')
+	localStorage.removeItem('teacherName')
+	localStorage.removeItem('tip')
+	localStorage.removeItem('addressTxt')
+	localStorage.removeItem('contractId')
+	localStorage.removeItem('uid')
+	localStorage.removeItem('userUniqueId')
+	localStorage.removeItem('packageText')
+	localStorage.removeItem('listIndex')
+	localStorage.removeItem('userCurrentAddress')
+	localStorage.removeItem('xxkc_gps')
+	localStorage.removeItem('listFilter')
+	localStorage.removeItem('getData')
+}
 export default {
 	isWeChatFun,
 	timeStamp,
@@ -250,5 +282,6 @@ export default {
 	closeLoading,
 	checkDdcApp,
 	inApp,
+	removeCache,
 };
 
