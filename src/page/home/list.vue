@@ -135,7 +135,7 @@
                 let params = {
                      that:this,
                      router: 'details',
-                     title: '店铺详情',
+                     title: '课程详情',
                      query: {
                         courseId: cId,
                         state: rState,
