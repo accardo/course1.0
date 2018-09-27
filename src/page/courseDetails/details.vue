@@ -23,6 +23,10 @@
                 <p v-show="allData.reservationState != 12">{{ allData.startTime | formatTimeOne }}-{{ allData.endTime | formatTimeTwo }}</p>
                 <p>{{ allData.address }} </p>
             </div>
+            <div class="related-goods" v-if="showRelatedGoods">
+                <div class="tl">相关商品</div>
+                <Goods :goodsIds="allData.productIds" @getGoodsFailed="showRelatedGoods = false"></Goods>
+            </div>
             <div class="infoItem" v-html="allData.introduction"></div>
             <div class="exp-shop-bg">
                 <button v-if="allData.reservationState == 0" class="active">敬请期待</button>
@@ -101,6 +105,7 @@
     import popMin from '@/components/popMin'
     import loginLay from '@/components/login'
     import VTitle from '@/components/title'
+    import Goods from '@/components/goods'
     export default {
         data () {
             return {
@@ -126,6 +131,7 @@
                 contractId: '', // 合同id
                 status: '',
                 cancel: false, // 控制已取消
+                showRelatedGoods: false, // 相关商品是否显示
             }
         },
         mounted () {
@@ -139,6 +145,7 @@
         components: {
             VTitle,
             loginLay,
+            Goods
         },
         methods: {
             initDate:function(){
@@ -226,7 +233,7 @@
             },
             onRecommend:function(){
                 this.recommendTxt = '预约中...'
-                var _RUrl = `/daydaycook/server/offline/reservationUser/save.do?offlineCourseId=${this.$route.query.courseId}&mobile=${this.phone}&uid=${this.uid}&userUniqueId=${this.userUniqueId}&contractId=${this.contractId}`;
+                var _RUrl = `/daydaycook/server/offline/reservationUser/save.do?offlineCourseId=${this.$route.query.courseId}&mobile=${this.phone}&uid=${this.uid || ''}&userUniqueId=${this.userUniqueId}&contractId=${this.contractId}`;
                 console.log(_RUrl, '立即预约')
                 this.ajaxDataFun('post', _RUrl, (obj) => {
                     this.recommendTxt = '确定'
@@ -251,7 +258,7 @@
             },
             cancelRdF(){
                 this.cancelTxt = '取消中...'
-                var _canlUrl = `/daydaycook/server/offline/reservationUser/cancel.do?id=${this.$route.query.resId}&offlineCourseId=${this.$route.query.courseId}&mobile=${this.phone}&uid=${this.uid}&userUniqueId=${this.userUniqueId}`;
+                var _canlUrl = `/daydaycook/server/offline/reservationUser/cancel.do?id=${this.$route.query.resId}&offlineCourseId=${this.$route.query.courseId}&mobile=${this.phone}&uid=${this.uid || ''}&userUniqueId=${this.userUniqueId}`;
                 console.log(_canlUrl);
                 this.ajaxDataFun('post', _canlUrl, (obj) => {
                     if(obj.code == '200'){
@@ -288,6 +295,9 @@
             '$route':function(to, from) {
                 this.initDate()
             },
+            allData() {
+                this.showRelatedGoods = this.allData.productIds && '' != this.allData.productIds
+            }
         },
         filters:{
             formatTimeOne:function(str){
@@ -409,5 +419,14 @@
         bottom: -50px;
         right: 50%;
         top: auto;
+    }
+    .related-goods {
+        width: 100%;
+        margin-top: 20px;
+    }
+    .related-goods .tl {
+        padding-left: 14px;
+        font-size: 14px;
+        color: #1A1A1A;
     }
 </style>

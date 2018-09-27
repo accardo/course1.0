@@ -104,7 +104,7 @@
         },
         methods: {
             upCallback(page) {
-                let _listUrl = `/daydaycook/server/offline/reservationUser/offlineCourseList.do?timeScope=${this.getData.filterSubData.timeScope}&reservationType=${this.getData.filterSubData.reservationType || 0}&categoryId=${this.getData.filterSubData.categoryId}&mobile=${this.getData.phone}&uid=${this.getData.uid}&userUniqueId=${this.getData.userUniqueId}&addressId=${this.getData.addressId}&contractId=${this.getData.contractId}&teacherId=${this.getData.filterSubData.teacherId}&pageSize=${page.size = 7}&currentPage=${page.num}`;
+                let _listUrl = `/daydaycook/server/offline/reservationUser/offlineCourseList.do?timeScope=${this.getData.filterSubData.timeScope}&reservationType=${this.getData.filterSubData.reservationType || 0}&categoryId=${this.getData.filterSubData.categoryId}&mobile=${this.getData.phone}&uid=${this.getData.uid || ''}&userUniqueId=${this.getData.userUniqueId}&addressId=${this.getData.addressId}&contractId=${this.getData.contractId}&teacherId=${this.getData.filterSubData.teacherId}&pageSize=${page.size = 7}&currentPage=${page.num}`;
                 console.log(_listUrl, '子层')
                 this.ajaxDataFun('post', _listUrl, (res) => {
                     if(res.code == '200') {
@@ -124,6 +124,8 @@
                         console.log(res.data, 'upCallback');
                     } else if(res.code == '911') {
                         popMin.show("icon-yk_icon_warning",res.msg);
+                        localStorage.removeItem('contractId')
+                        localStorage.removeItem('getData')
                         window.location.reload();
                     }
 
@@ -133,7 +135,7 @@
                 let params = {
                      that:this,
                      router: 'details',
-                     title: '店铺详情',
+                     title: '课程详情',
                      query: {
                         courseId: cId,
                         state: rState,

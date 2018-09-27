@@ -4,11 +4,14 @@ import _axios from 'axios'
 
 
 var domainAdd = window.location.protocol + "//" + window.location.host;
-if(domainAdd.indexOf('localhost') > -1 ||  domainAdd.indexOf('192') > -1 || domainAdd.indexOf('127') > -1 || domainAdd.indexOf('mobile-test') > -1 || domainAdd.indexOf('mobile-staging') > -1 || domainAdd.indexOf('test') > -1){
+if(domainAdd.indexOf('localhost') > -1 ||  domainAdd.indexOf('192') > -1 || domainAdd.indexOf('127') > -1 || domainAdd.indexOf('mobile-test') > -1 || domainAdd.indexOf('test') > -1){
 	domainAdd = "https://offline-course-t.daydaycook.com.cn";
 	//domainAdd = "https://test.daydaycook.com.cn";
-}else{
-    domainAdd = "//api.daydaycook.com.cn";
+} else if (domainAdd.indexOf('mobile-staging') > -1 || domainAdd.indexOf('staging') > -1) {
+    domainAdd = "https://offline-course-s.daydaycook.com.cn"
+
+} else{
+    domainAdd = "https://offcourse.daydaycook.com.cn";
 }
    //  domainAdd = "http://101.37.81.46"
 Vue.prototype.ajaxDataFun = function(method,url,callSuccess,jsonM){

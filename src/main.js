@@ -88,7 +88,7 @@ new Vue({
 		isMemberFun() {
 			let uid = this.$store.state.uid || localStorage.getItem('uid');
 			let userUniqueId = this.$store.state.userUniqueId || localStorage.getItem('userUniqueId');
-			let isMenberUrl = `/daydaycook/server/offline/reservationUser/isBuyCourse.do?uid=${uid}&userUniqueId=${userUniqueId}`;
+			let isMenberUrl = `/daydaycook/server/offline/reservationUser/isBuyCourse.do?uid=${uid || ''}&userUniqueId=${userUniqueId}`;
 			return new Promise((resolve) => {
 				this.ajaxDataFun('post', isMenberUrl, (data) => {
 					return resolve(data);

@@ -201,7 +201,7 @@
              * Date: 2018/9/18
              */
             memberPackage() {
-                let _cateUrl = `/daydaycook/server/offline/webcourse/filterList.do?uid=${this.getData.uid}&userUniqueId=${this.getData.userUniqueId}&addressId=${this.getData.addressId}`
+                let _cateUrl = `/daydaycook/server/offline/webcourse/filterList.do?uid=${this.getData.uid || ''}&userUniqueId=${this.getData.userUniqueId}&addressId=${this.getData.addressId}`
                 logic.ajaxGetData(_cateUrl).then(({data}) => {
                     if (data.packageList !== null) { // 有套餐需要把第一项赋值
                         this.packageText = data.packageList[0].packageName;
@@ -221,7 +221,7 @@
              * Date: 2018/8/13
              */
             memberClass() {
-                let _cateUrl = `/daydaycook/server/offline/webcourse/filterList.do?uid=${this.getData.uid}&userUniqueId=${this.getData.userUniqueId}&addressId=${this.getData.addressId}`
+                let _cateUrl = `/daydaycook/server/offline/webcourse/filterList.do?uid=${this.getData.uid || ''}&userUniqueId=${this.getData.userUniqueId}&addressId=${this.getData.addressId}`
                 logic.ajaxGetData(_cateUrl).then(({data}) => {
                    /* this.listFilter = {
                         selectList: [],
@@ -300,7 +300,7 @@
                 }
             },
             getAddList() {  //获取地址列表
-                var addUrl = `/daydaycook/server/offline/address/list.do?uid=${this.getData.uid}&userUniqueId=${this.getData.userUniqueId}`;
+                var addUrl = `/daydaycook/server/offline/address/list.do?uid=${this.getData.uid || ''}&userUniqueId=${this.getData.userUniqueId}`;
                 this.ajaxDataFun('post', addUrl, (res) => {
                     if(res.code == '200') {
                         this.addListDate = res.data;

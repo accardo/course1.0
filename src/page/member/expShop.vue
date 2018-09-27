@@ -74,7 +74,7 @@
             /* 初始化 */
             init(){
                 let self = this;
-                let _listUrl = '/daydaycook/server/newCourse/getAddressInfoByAid.do?uid='+ self.uid +'&userUniqueId' +self.userUniqueId+ '&aid='+this.shopid;
+                let _listUrl = `/daydaycook/server/newCourse/getAddressInfoByAid.do?uid=${self.uid || ''}&userUniqueId=${self.userUniqueId}&aid=${this.shopid}`;
                 this.ajaxDataFun('get',_listUrl, function(res){
                     if(res.code =='200' && res.list){
                         self.shopInfo = res.list[0];
